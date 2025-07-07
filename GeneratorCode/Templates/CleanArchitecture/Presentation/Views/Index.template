@@ -1,0 +1,37 @@
+@model IEnumerable<{{namespace}}.Presentation.ViewModels.{{entityName}}ViewModel>
+
+@{
+    ViewData["Title"] = "{{entityName}} List";
+}
+
+<h1>{{entityName}} List</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            {{#each properties}}
+            <th>{{name}}</th>
+            {{/each}}
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                {{#each properties}}
+                <td>@Html.DisplayFor(modelItem => item.{{name}})</td>
+                {{/each}}
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table> 

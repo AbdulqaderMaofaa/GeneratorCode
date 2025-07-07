@@ -1,0 +1,21 @@
+@model {{namespace}}.Presentation.ViewModels.{{entityName}}ViewModel
+
+@{
+    ViewData["Title"] = "{{entityName}} Details";
+}
+
+<h1>{{entityName}} Details</h1>
+
+<div>
+    <dl class="row">
+        {{#each properties}}
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.{{name}})</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.{{name}})</dd>
+        {{/each}}
+    </dl>
+</div>
+
+<div class="mt-3">
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div> 

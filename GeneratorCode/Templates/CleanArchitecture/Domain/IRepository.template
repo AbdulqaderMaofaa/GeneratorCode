@@ -1,0 +1,24 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using {{namespace}}.Domain.Common;
+
+namespace {{namespace}}.Domain.Repositories
+{
+    public interface IRepository<T> where T : BaseEntity
+    {
+        Task<T> GetByIdAsync(int id);
+        Task<IReadOnlyList<T>> GetAllAsync();
+        Task<T> AddAsync(T entity);
+        Task UpdateAsync(T entity);
+        Task DeleteAsync(T entity);
+        Task<bool> ExistsAsync(int id);
+    }
+
+    public interface I{{entityName}}Repository : IRepository<{{entityName}}>
+    {
+        {{#each customMethods}}
+        Task<{{returnType}}> {{name}}Async({{parameters}});
+        {{/each}}
+    }
+} 

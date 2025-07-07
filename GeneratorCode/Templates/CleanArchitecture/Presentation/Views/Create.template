@@ -1,0 +1,32 @@
+@model {{namespace}}.Presentation.ViewModels.{{entityName}}ViewModel
+
+@{
+    ViewData["Title"] = "Create {{entityName}}";
+}
+
+<h1>Create {{entityName}}</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            {{#each properties}}
+            <div class="form-group">
+                <label asp-for="{{name}}" class="control-label"></label>
+                <input asp-for="{{name}}" class="form-control" />
+                <span asp-validation-for="{{name}}" class="text-danger"></span>
+            </div>
+            {{/each}}
+            
+            <div class="form-group mt-3">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} 

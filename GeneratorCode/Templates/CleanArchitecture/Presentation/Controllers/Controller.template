@@ -1,0 +1,134 @@
+using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
+using {{namespace}}.Application.Interfaces;
+using {{namespace}}.Application.DTOs;
+using {{namespace}}.Presentation.ViewModels;
+
+namespace {{namespace}}.Presentation.Controllers
+{
+    public class {{entityName}}Controller : Controller
+    {
+        private readonly I{{entityName}}Service _service;
+        private readonly IMapper _mapper;
+
+        public {{entityName}}Controller(I{{entityName}}Service service, IMapper mapper)
+        {
+            _service = service;
+            _mapper = mapper;
+        }
+
+        // GET: {{entityName}}
+        public async Task<IActionResult> Index()
+        {
+            var dtos = await _service.GetAllAsync();
+            var viewModels = _mapper.Map<List<{{entityName}}ViewModel>>(dtos);
+            return View(viewModels);
+        }
+
+        // GET: {{entityName}}/Details/5
+        public async Task<IActionResult> Details(int id)
+        {
+            var dto = await _service.GetByIdAsync(id);
+            if (dto == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = _mapper.Map<{{entityName}}ViewModel>(dto);
+            return View(viewModel);
+        }
+
+        // GET: {{entityName}}/Create
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: {{entityName}}/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create({{entityName}}ViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var dto = _mapper.Map<{{entityName}}DTO>(viewModel);
+                await _service.CreateAsync(dto);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(viewModel);
+        }
+
+        // GET: {{entityName}}/Edit/5
+        public async Task<IActionResult> Edit(int id)
+        {
+            var dto = await _service.GetByIdAsync(id);
+            if (dto == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = _mapper.Map<{{entityName}}ViewModel>(dto);
+            return View(viewModel);
+        }
+
+        // POST: {{entityName}}/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, {{entityName}}ViewModel viewModel)
+        {
+            if (id != viewModel.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var dto = _mapper.Map<{{entityName}}DTO>(viewModel);
+                    await _service.UpdateAsync(dto);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception)
+                {
+                    if (!await EntityExists(id))
+                    {
+                        return NotFound();
+                    }
+                    throw;
+                }
+            }
+            return View(viewModel);
+        }
+
+        // GET: {{entityName}}/Delete/5
+        public async Task<IActionResult> Delete(int id)
+        {
+            var dto = await _service.GetByIdAsync(id);
+            if (dto == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = _mapper.Map<{{entityName}}ViewModel>(dto);
+            return View(viewModel);
+        }
+
+        // POST: {{entityName}}/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            await _service.DeleteAsync(id);
+            return RedirectToAction(nameof(Index));
+        }
+
+        private async Task<bool> EntityExists(int id)
+        {
+            var entity = await _service.GetByIdAsync(id);
+            return entity != null;
+        }
+    }
+} 

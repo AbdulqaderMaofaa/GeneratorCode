@@ -1,0 +1,22 @@
+using AutoMapper;
+using {{namespace}}.Domain.Entities;
+using {{namespace}}.Application.DTOs;
+
+namespace {{namespace}}.Application.Mappings
+{
+    public class {{entityName}}MappingProfile : Profile
+    {
+        public {{entityName}}MappingProfile()
+        {
+            CreateMap<{{entityName}}, {{entityName}}DTO>();
+            CreateMap<Create{{entityName}}DTO, {{entityName}}>()
+                {{#each customMappings}}
+                .ForMember(dest => dest.{{destProperty}}, opt => opt.{{mappingAction}})
+                {{/each}};
+            CreateMap<Update{{entityName}}DTO, {{entityName}}>()
+                {{#each customMappings}}
+                .ForMember(dest => dest.{{destProperty}}, opt => opt.{{mappingAction}})
+                {{/each}};
+        }
+    }
+} 
