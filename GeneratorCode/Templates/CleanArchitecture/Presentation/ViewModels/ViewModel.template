@@ -1,0 +1,21 @@
+using System;
+using System.ComponentModel.DataAnnotations;
+
+namespace {{namespace}}.Presentation.ViewModels
+{
+    public class {{entityName}}ViewModel
+    {
+        public int Id { get; set; }
+
+        {{#each properties}}
+        [Display(Name = "{{displayName}}")]
+        {{#if required}}
+        [Required(ErrorMessage = "{{name}} is required")]
+        {{/if}}
+        {{#if maxLength}}
+        [StringLength({{maxLength}}, ErrorMessage = "{{name}} cannot exceed {{maxLength}} characters")]
+        {{/if}}
+        public {{type}} {{name}} { get; set; }
+        {{/each}}
+    }
+} 

@@ -1,0 +1,15 @@
+{
+  "DatabaseType": "PostgreSQL",
+  "EnableDI": false,
+  "EnableValidation": false,
+  "EnableTesting": false,
+  "DefaultNamespace": "",
+  "DefaultOutputPath": "",
+  "PostgreSqlDefaultUsername": "postgres",
+  "PostgreSqlDefaultPassword": "4oh70*w8QT",
+  "PostgreSqlDefaultPort": "5432",
+  "SqlServerDefaultUsername": "sa",
+  "SqlServerDefaultPassword": "CX_cxAdm0n",
+  "MySqlDefaultUsername": "",
+  "MySqlDefaultPassword": ""
+}

@@ -1,0 +1,69 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using {{namespace}}.Application.DTOs;
+using {{namespace}}.Application.Interfaces;
+
+namespace {{namespace}}.API.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class {{entityName}}Controller : ControllerBase
+    {
+        private readonly I{{entityName}}Service _service;
+
+        public {{entityName}}Controller(I{{entityName}}Service service)
+        {
+            _service = service;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<List<{{entityName}}DTO>>> GetAll()
+        {
+            var items = await _service.GetAllAsync();
+            return Ok(items);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<{{entityName}}DTO>> Get(int id)
+        {
+            var item = await _service.GetByIdAsync(id);
+            if (item == null)
+                return NotFound();
+
+            return Ok(item);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<{{entityName}}DTO>> Create(Create{{entityName}}DTO dto)
+        {
+            var created = await _service.CreateAsync(dto);
+            return CreatedAtAction(nameof(Get), new { id = created.Id }, created);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, Update{{entityName}}DTO dto)
+        {
+            if (id != dto.Id)
+                return BadRequest();
+
+            await _service.UpdateAsync(dto);
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _service.DeleteAsync(id);
+            return NoContent();
+        }
+
+        {{#each customEndpoints}}
+        [Http{{httpMethod}}("{{route}}")]
+        public async Task<ActionResult<{{returnType}}>> {{name}}({{parameters}})
+        {
+            {{methodBody}}
+        }
+        {{/each}}
+    }
+} 
