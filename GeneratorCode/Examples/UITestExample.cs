@@ -44,72 +44,64 @@ namespace GeneratorCode.Examples
         /// </summary>
         public static async Task TestCompleteCodeGeneration()
         {
-            try
+            var context = CreateTestContext();
+            var codeGenerationService = CreateCodeGenerationService();
+            
+            // اختبار الاتصال
+            var canConnect = codeGenerationService.TestDatabaseConnection(
+                context.DatabaseType, context.ConnectionString);
+            
+            if (!canConnect)
             {
-                var context = CreateTestContext();
-                var codeGenerationService = CreateCodeGenerationService();
-                
-                // اختبار الاتصال
-                var canConnect = codeGenerationService.TestDatabaseConnection(
-                    context.DatabaseType, context.ConnectionString);
-                
-                if (!canConnect)
-                {
-                    MessageBox.Show("فشل في الاتصال بقاعدة البيانات للاختبار", "خطأ", 
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-                
-                // الحصول على الجداول
-                var tables = codeGenerationService.GetTables(
-                    context.DatabaseType, context.ConnectionString);
-                
-                if (tables.Count == 0)
-                {
-                    MessageBox.Show("لا توجد جداول في قاعدة البيانات", "تحذير", 
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-                
-                // اختيار أول جدول للاختبار
-                var firstTable = tables[0];
-                context.TableName = firstTable.Name;
-                context.EntityName = firstTable.Name;
-                context.ClassName = firstTable.Name;
-                context.TableInfo = firstTable;
-                
-                // توليد الكود
-                var result = await codeGenerationService.GenerateCodeAsync(context);
-                
-                if (result.Success)
-                {
-                    MessageBox.Show(
-                        $"تم توليد الكود بنجاح!\n\n" +
-                        $"عدد الملفات المولدة: {result.GeneratedFiles.Count}\n" +
-                        $"الحجم الإجمالي: {result.TotalSizeInBytes} بايت\n" +
-                        $"الرسالة: {result.Message}\n\n" +
-                        $"الملفات المولدة:\n" +
-                        string.Join("\n", result.GeneratedFiles.Select(f => $"- {f.FileName} ({f.Layer})")),
-                        "نجح الاختبار",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information
-                    );
-                }
-                else
-                {
-                    MessageBox.Show(
-                        $"فشل في توليد الكود:\n{result.Message}\n\n" +
-                        $"الأخطاء:\n{string.Join("\n", result.Errors)}",
-                        "فشل الاختبار",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error
-                    );
-                }
+                MessageBox.Show("فشل في الاتصال بقاعدة البيانات للاختبار", "خطأ", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
-            catch (Exception ex)
+            
+            // الحصول على الجداول
+            var tables = codeGenerationService.GetTables(
+                context.DatabaseType, context.ConnectionString);
+            
+            if (tables.Count == 0)
             {
-                MessageBox.Show($"خطأ في الاختبار: {ex.Message}", "خطأ", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("لا توجد جداول في قاعدة البيانات", "تحذير", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            
+            // اختيار أول جدول للاختبار
+            var firstTable = tables[0];
+            context.TableName = firstTable.Name;
+            context.EntityName = firstTable.Name;
+            context.ClassName = firstTable.Name;
+            context.TableInfo = firstTable;
+            
+            // توليد الكود
+            var result = await codeGenerationService.GenerateCodeAsync(context);
+            
+            if (result.Success)
+            {
+                MessageBox.Show(
+                    $"تم توليد الكود بنجاح!\n\n" +
+                    $"عدد الملفات المولدة: {result.GeneratedFiles.Count}\n" +
+                    $"الحجم الإجمالي: {result.TotalSizeInBytes} بايت\n" +
+                    $"الرسالة: {result.Message}\n\n" +
+                    $"الملفات المولدة:\n" +
+                    string.Join("\n", result.GeneratedFiles.Select(f => $"- {f.FileName} ({f.Layer})")),
+                    "نجح الاختبار",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+            }
+            else
+            {
+                MessageBox.Show(
+                    $"فشل في توليد الكود:\n{result.Message}\n\n" +
+                    $"الأخطاء:\n{string.Join("\n", result.Errors)}",
+                    "فشل الاختبار",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 

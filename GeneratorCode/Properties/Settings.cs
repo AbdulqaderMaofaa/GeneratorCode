@@ -47,22 +47,15 @@ namespace GeneratorCode.Properties
 
         private static Settings Load()
         {
-            try
+            // محاولة تحميل الإعدادات من ملف Resources
+            if (File.Exists(SettingsPath))
             {
-                // محاولة تحميل الإعدادات من ملف Resources
-                if (File.Exists(SettingsPath))
+                var json = File.ReadAllText(SettingsPath);
+                var settings = JsonSerializer.Deserialize<Settings>(json);
+                if (settings != null)
                 {
-                    var json = File.ReadAllText(SettingsPath);
-                    var settings = JsonSerializer.Deserialize<Settings>(json);
-                    if (settings != null)
-                    {
-                        return settings;
-                    }
+                    return settings;
                 }
-            }
-            catch (Exception)
-            {
-                // في حالة حدوث أي خطأ، نعيد نسخة جديدة مع القيم الافتراضية
             }
 
             // إذا لم يوجد الملف أو حدث خطأ، نعيد نسخة جديدة مع القيم الافتراضية
@@ -71,24 +64,17 @@ namespace GeneratorCode.Properties
 
         public void Save()
         {
-            try
+            // إنشاء مجلد Resources إذا لم يكن موجوداً
+            var resourcesDir = Path.GetDirectoryName(SettingsPath);
+            if (!Directory.Exists(resourcesDir))
             {
-                // إنشاء مجلد Resources إذا لم يكن موجوداً
-                var resourcesDir = Path.GetDirectoryName(SettingsPath);
-                if (!Directory.Exists(resourcesDir))
-                {
-                    Directory.CreateDirectory(resourcesDir);
-                }
+                Directory.CreateDirectory(resourcesDir);
+            }
 
-                // حفظ الإعدادات كملف JSON
-                var options = new JsonSerializerOptions { WriteIndented = true };
-                var json = JsonSerializer.Serialize(this, options);
-                File.WriteAllText(SettingsPath, json);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"فشل حفظ الإعدادات في المسار {SettingsPath}", ex);
-            }
+            // حفظ الإعدادات كملف JSON
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            var json = JsonSerializer.Serialize(this, options);
+            File.WriteAllText(SettingsPath, json);
         }
     }
 }

@@ -24,14 +24,14 @@ namespace GeneratorCode.Core.Interfaces
         /// </summary>
         /// <param name="context">سياق توليد الكود</param>
         /// <returns>نتيجة توليد الكود</returns>
-        CodeGenerationResult Generate(CodeGenerationContext context);
+        Task<CodeGenerationResult> Generate(CodeGenerationContext context);
         
         /// <summary>
         /// التحقق من دعم قاعدة البيانات
         /// </summary>
         /// <param name="databaseType">نوع قاعدة البيانات</param>
         /// <returns>true إذا كانت مدعومة</returns>
-        bool SupportsDatabaseType(DatabaseType databaseType);
+        bool SupportsDatabaseType(DatabaseType dbType);
         
         /// <summary>
         /// الحصول على الطبقات المطلوبة لهذا النمط

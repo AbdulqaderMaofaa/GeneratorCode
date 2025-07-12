@@ -5,6 +5,7 @@ using MySqlX.XDevAPI.Relational;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,6 +23,7 @@ namespace GeneratorCode.Forms
         private readonly CodeGenerationContext _context;
         private readonly CodeGenerationService _codeGenerationService;
         private List<TableInfo> _availableTables;
+        private FrmProgress _progressForm;
 
         #endregion
 
@@ -31,13 +33,11 @@ namespace GeneratorCode.Forms
         {
             InitializeComponent();
 
+            // تحسين المظهر العام للنموذج
+            //SetupFormStyling();
+
             // تهيئة أعمدة الجدول
-            gridColumns.Columns.Add("ColumnName", "اسم العمود");
-            gridColumns.Columns.Add("DataType", "نوع البيانات");
-            gridColumns.Columns.Add("IsNullable", "يقبل Null");
-            gridColumns.Columns.Add("IsPrimaryKey", "مفتاح رئيسي");
-            gridColumns.Columns.Add("IsForeignKey", "مفتاح خارجي");
-            gridColumns.Columns.Add("ReferencedTable", "الجدول المرجعي");
+            SetupDataGridColumns();
 
             // إنشاء سياق افتراضي
             _context = new CodeGenerationContext
@@ -59,6 +59,7 @@ namespace GeneratorCode.Forms
 
             InitializeFormWithContext();
             SetupEventHandlers();
+            SetupTooltips();
 
             // إضافة مستمع لحدث تحديث الإعدادات
             FrmSettings.SettingsUpdated += OnSettingsUpdated;
@@ -68,9 +69,69 @@ namespace GeneratorCode.Forms
 
         #region Initialization Methods
 
-        private void InitializeFormWithContext()
+        private void SetupFormStyling()
         {
-            try
+            // تحسين المظهر العام للنموذج
+            this.BackColor = Color.FromArgb(248, 249, 250);
+            
+            // إعداد التبويبات بشكل افتراضي
+            tabControl.SizeMode = TabSizeMode.Fixed;
+            tabControl.ItemSize = new Size(200, 35);
+            
+            // التأكد من دعم RTL للنموذج
+            this.RightToLeft = RightToLeft.Yes;
+            this.RightToLeftLayout = true;
+            
+            // إضافة دعم RTL للتبويبات
+            tabControl.RightToLeft = RightToLeft.Yes;
+            tabControl.RightToLeftLayout = true;
+        }
+
+        private void SetupDataGridColumns()
+        {
+            gridColumns.Columns.Add("ColumnName", "اسم العمود");
+            gridColumns.Columns.Add("DataType", "نوع البيانات");
+            gridColumns.Columns.Add("IsNullable", "يقبل Null");
+            gridColumns.Columns.Add("IsPrimaryKey", "مفتاح رئيسي");
+            gridColumns.Columns.Add("IsForeignKey", "مفتاح خارجي");
+            gridColumns.Columns.Add("ReferencedTable", "الجدول المرجعي");
+            
+            // تحسين مظهر الجدول
+            gridColumns.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            gridColumns.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            gridColumns.MultiSelect = false;
+            gridColumns.ReadOnly = true;
+            gridColumns.AllowUserToAddRows = false;
+            gridColumns.AllowUserToDeleteRows = false;
+            gridColumns.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(52, 152, 219);
+            gridColumns.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            gridColumns.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            gridColumns.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(245, 245, 245);
+            
+            // إضافة دعم RTL للجدول
+            gridColumns.RightToLeft = RightToLeft.Yes;
+            gridColumns.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            gridColumns.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            gridColumns.DefaultCellStyle.Font = new Font("Segoe UI", 9F);
+        }
+
+        private void SetupTooltips()
+        {
+            var tooltip = new ToolTip();
+            tooltip.SetToolTip(chkGenerateAllTables, "إذا تم تحديد هذا الخيار، سيتم توليد الكود لجميع الجداول في قاعدة البيانات");
+            tooltip.SetToolTip(cmbArchitecture, "اختر النمط المعماري الذي تريد استخدامه في مشروعك");
+            tooltip.SetToolTip(cmbLanguage, "اختر لغة البرمجة أو إطار العمل المطلوب");
+            tooltip.SetToolTip(txtNamespace, "مساحة الاسم التي سيتم استخدامها في الكود المولد");
+            tooltip.SetToolTip(txtOutputPath, "المسار الذي سيتم حفظ الملفات المولدة فيه");
+            tooltip.SetToolTip(btnGenerate, "انقر لبدء عملية توليد الكود");
+            tooltip.SetToolTip(btnPreview, "انقر لمعاينة الكود قبل التوليد");
+            tooltip.SetToolTip(lstTables, "قائمة الجداول المتاحة في قاعدة البيانات - يمكن تحديد عدة جداول بالضغط على Ctrl");
+            tooltip.SetToolTip(gridColumns, "تفاصيل الأعمدة للجدول المحدد");
+            
+            // التلميحات ستتبع إعدادات RTL للنموذج تلقائياً
+        }
+
+        private void InitializeFormWithContext()
             {
                 UpdateStatusLabel("جاري تهيئة النموذج...");
 
@@ -90,11 +151,6 @@ namespace GeneratorCode.Forms
                 SetDefaultValues();
 
                 UpdateStatusLabel("تم تهيئة النموذج بنجاح");
-            }
-            catch (Exception ex)
-            {
-                ShowError("خطأ في تهيئة النموذج", ex);
-            }
         }
 
         private void SetupEventHandlers()
@@ -113,6 +169,12 @@ namespace GeneratorCode.Forms
             btnPreview.Click += BtnPreview_Click;
             btnBrowse.Click += BtnBrowse_Click;
             btnSettings.Click += BtnSettings_Click;
+            
+            // أحداث خيار توليد جميع الجداول
+            chkGenerateAllTables.CheckedChanged += ChkGenerateAllTables_CheckedChanged;
+            
+            // أحداث التبويبات
+            tabControl.SelectedIndexChanged += TabControl_SelectedIndexChanged;
         }
 
         private void LoadArchitecturePatterns()
@@ -149,8 +211,6 @@ namespace GeneratorCode.Forms
         }
 
         private void LoadTables()
-        {
-            try
             {
                 UpdateStatusLabel("جاري تحميل الجداول...");
                 progressBar.Style = ProgressBarStyle.Marquee;
@@ -179,17 +239,18 @@ namespace GeneratorCode.Forms
                 }
 
                 UpdateStatusLabel($"تم تحميل {_availableTables.Count} جدول");
-            }
-            catch (Exception ex)
-            {
-                ShowError("خطأ في تحميل الجداول", ex);
-                UpdateStatusLabel("فشل تحميل الجداول");
-            }
-            finally
-            {
                 progressBar.Style = ProgressBarStyle.Blocks;
                 progressBar.Visible = false;
+            
+            // تحديث النص التوضيحي للجداول
+            lblTablesSelection.Text = $"الجداول المتاحة ({_availableTables.Count} جدول متاح):";
+            if (chkGenerateAllTables.Checked)
+            {
+                lblTablesSelection.Text = $"سيتم توليد الكود لجميع الجداول ({_availableTables.Count} جداول):";
             }
+            
+            // التأكد من دعم RTL للقائمة
+            lstTables.RightToLeft = RightToLeft.Yes;
         }
 
         private void SetDefaultValues()
@@ -216,6 +277,22 @@ namespace GeneratorCode.Forms
             chkGenerateRead.Checked = true;
             chkGenerateUpdate.Checked = true;
             chkGenerateDelete.Checked = true;
+            
+            // خيارات اختيار الجداول
+            chkGenerateAllTables.Checked = false; // الافتراضي هو التحديد اليدوي
+            
+            // خيارات بنية المشروع
+            chkGenerateStartup.Checked = true;
+            chkGenerateProgram.Checked = true;
+            chkGenerateGitignore.Checked = true;
+            chkGenerateReadme.Checked = true;
+            chkGenerateSolution.Checked = true;
+            
+            // خيارات طبقات النمط المعماري
+            chkInfrastructureLayer.Checked = true;
+            chkApplicationLayer.Checked = true;
+            chkDomainLayer.Checked = true;
+            chkPresentationLayer.Checked = true;
         }
 
         #endregion
@@ -228,6 +305,20 @@ namespace GeneratorCode.Forms
             {
                 var selectedTable = _availableTables[lstTables.SelectedIndex];
                 LoadTableDetails(selectedTable);
+            }
+            
+            // تحديث النص التوضيحي للجداول المحددة
+            if (!chkGenerateAllTables.Checked)
+            {
+                int selectedCount = lstTables.SelectedItems.Count;
+                if (selectedCount > 0)
+                {
+                    lblTablesSelection.Text = $"الجداول المتاحة (محدد {selectedCount} من {lstTables.Items.Count}):";
+                }
+                else
+                {
+                    lblTablesSelection.Text = "الجداول المتاحة (يمكن تحديد عدة جداول):";
+                }
             }
         }
 
@@ -243,25 +334,128 @@ namespace GeneratorCode.Forms
             UpdateLanguageOptions();
         }
 
+        private void ChkGenerateAllTables_CheckedChanged(object sender, EventArgs e)
+        {
+            // عند تفعيل خيار "توليد جميع الجداول"
+            if (chkGenerateAllTables.Checked)
+            {
+                // تحديد جميع الجداول
+                for (int i = 0; i < lstTables.Items.Count; i++)
+                {
+                    lstTables.SetSelected(i, true);
+                }
+                lstTables.Enabled = false; // منع التحديد اليدوي
+                lblTablesSelection.Text = $"سيتم توليد الكود لجميع الجداول ({lstTables.Items.Count} جداول):";
+            }
+            else
+            {
+                // إلغاء تحديد جميع الجداول
+                lstTables.ClearSelected();
+                lstTables.Enabled = true; // تمكين التحديد اليدوي
+                lblTablesSelection.Text = "الجداول المتاحة (يمكن تحديد عدة جداول):";
+            }
+        }
+
+        private void TabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // تحديث الحالة عند تغيير التبويب
+            switch (tabControl.SelectedIndex)
+            {
+                case 0: // تبويب الجداول
+                    UpdateStatusLabel("اختر الجداول المطلوبة لتوليد الكود");
+                    break;
+                case 1: // تبويب النمط المعماري
+                    UpdateStatusLabel("اختر النمط المعماري ولغة البرمجة");
+                    break;
+                case 2: // تبويب خيارات التوليد
+                    UpdateStatusLabel("حدد خيارات التوليد المطلوبة");
+                    break;
+                case 3: // تبويب الإعدادات
+                    UpdateStatusLabel("تحقق من إعدادات المشروع");
+                    break;
+                case 4: // تبويب المخرجات
+                    UpdateStatusLabel("جاهز لتوليد الكود");
+                    ValidateReadyForGeneration();
+                    break;
+            }
+        }
+
+        private void ValidateReadyForGeneration()
+        {
+            // التحقق من جاهزية التوليد
+            bool isValid = true;
+            string validationMessage = "";
+
+            // التحقق من اختيار الجداول
+            if (!chkGenerateAllTables.Checked && lstTables.SelectedItems.Count == 0)
+            {
+                isValid = false;
+                validationMessage = "يجب اختيار جدول واحد على الأقل أو تحديد خيار توليد جميع الجداول";
+            }
+
+            // التحقق من مسار الإخراج
+            if (string.IsNullOrWhiteSpace(txtOutputPath.Text))
+            {
+                isValid = false;
+                validationMessage = "يجب تحديد مسار الإخراج";
+            }
+
+            // التحقق من مساحة الاسم
+            if (string.IsNullOrWhiteSpace(txtNamespace.Text))
+            {
+                isValid = false;
+                validationMessage = "يجب تحديد مساحة الاسم";
+            }
+
+            // تحديث واجهة المستخدم
+            if (isValid)
+            {
+                btnGenerate.Enabled = true;
+                btnPreview.Enabled = true;
+                UpdateStatusLabel("✅ جاهز للتوليد - جميع الإعدادات صحيحة");
+                lblStatus.ForeColor = Color.Green;
+            }
+            else
+            {
+                btnGenerate.Enabled = false;
+                btnPreview.Enabled = false;
+                UpdateStatusLabel($"❌ {validationMessage}");
+                lblStatus.ForeColor = Color.Red;
+            }
+        }
+
         private async void BtnGenerate_Click(object sender, EventArgs e)
         {
             if (ValidateInputs())
             {
                 try
                 {
-                    UpdateStatusLabel("جاري توليد المشروع...");
-                    progressBar.Style = ProgressBarStyle.Marquee;
-                    progressBar.Visible = true;
-                    if (lstTables.SelectedIndex != -1)
+                    // إنشاء وإعداد نافذة التقدم
+                    _progressForm = new FrmProgress();
+                    
+                    // حساب إجمالي الملفات المتوقعة
+                    int totalFiles = CalculateExpectedFilesCount();
+                    _progressForm.SetTotalFiles(totalFiles);
+                    
+                    // عرض نافذة التقدم
+                    _progressForm.Show();
+                    _progressForm.ReportInfo($"بدء توليد المشروع: {_context.Namespace}");
+                    
+                    // تحديث السياق الأساسي
+                    if (_availableTables != null && _availableTables.Any())
                     {
-                        var selectedTable = _availableTables[lstTables.SelectedIndex];
-                        UpdateGenerationContext(selectedTable);
+                        UpdateGenerationContext(_availableTables.First());
+                    }
 
                         // إنشاء مجلد المشروع
                         var projectPath = Path.Combine(_context.OutputPath, _context.Namespace);
                         Directory.CreateDirectory(projectPath);
+                    _progressForm.SetProjectPath(projectPath);
+                    _progressForm.ReportInfo($"تم إنشاء مجلد المشروع: {projectPath}");
 
                         // توليد هيكل المشروع
+                    _progressForm.ShowStep("توليد هيكل المشروع");
+                    
                         if (chkGenerateStartup.Checked)
                             await GenerateStartupFile(projectPath);
 
@@ -275,6 +469,8 @@ namespace GeneratorCode.Forms
                             await GenerateReadme(projectPath);
 
                         // توليد الطبقات المعمارية
+                    _progressForm.ShowStep("توليد الطبقات المعمارية");
+                    
                         if (chkInfrastructureLayer.Checked)
                             await GenerateInfrastructureLayer(projectPath);
                         if (chkApplicationLayer.Checked)
@@ -284,32 +480,63 @@ namespace GeneratorCode.Forms
                         if (chkPresentationLayer.Checked)
                             await GeneratePresentationLayer(projectPath);
 
-                        // توليد الكود للجداول المحددة
+                    // توليد الكود للجداول المحددة أو جميع الجداول
+                    _progressForm.ShowStep("توليد الكود للجداول");
+                    
+                    if (chkGenerateAllTables.Checked)
+                    {
+                        // توليد لجميع الجداول
+                        if (_availableTables != null && _availableTables.Any())
+                        {
+                            foreach (var table in _availableTables)
+                            {
+                                _progressForm.ShowTable(table.Name);
+                                await GenerateCodeForTableAsync(table);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // توليد للجداول المحددة فقط
                         if (lstTables.SelectedItems.Count > 0)
                         {
                             foreach (var item in lstTables.SelectedItems)
                             {
                                 var table = _availableTables.First(t => t.Name == item.ToString());
+                                _progressForm.ShowTable(table.Name);
                                 await GenerateCodeForTableAsync(table);
+                            }
                             }
                         }
 
                         // توليد ملف الحل
+                    _progressForm.ShowStep("توليد ملف الحل");
                         if (chkGenerateSolution.Checked)
                             await GenerateSolutionFile(projectPath);
 
+                    // إنهاء التقدم
+                    _progressForm.CompleteProgress();
+                    
+                    // حساب عدد الجداول المُولدة
+                    int generatedTablesCount = chkGenerateAllTables.Checked 
+                        ? _availableTables.Count 
+                        : lstTables.SelectedItems.Count;
+                    
+                    _progressForm.ReportInfo($"تم توليد {generatedTablesCount} جدول بنجاح!");
+                    _progressForm.ReportInfo($"مسار المشروع: {projectPath}");
+                    
+                    // إخفاء مؤشر التقدم في النافذة الرئيسية
                         UpdateStatusLabel("تم توليد المشروع بنجاح");
-                        ShowSuccess("تم توليد المشروع", "تم توليد المشروع بنجاح. هل تريد فتح المجلد؟");
-                    }
-                    // تحديث إعدادات السياق
-                   
+                    progressBar.Style = ProgressBarStyle.Blocks;
+                    progressBar.Visible = false;
                 }
                 catch (Exception ex)
                 {
-                    ShowError("خطأ في توليد المشروع", ex);
-                }
-                finally
-                {
+                    _progressForm?.ReportError($"حدث خطأ أثناء التوليد: {ex.Message}");
+                    ShowError("خطأ في التوليد", ex);
+                    
+                    // إخفاء مؤشر التقدم في النافذة الرئيسية
+                    UpdateStatusLabel("فشل في توليد المشروع");
                     progressBar.Style = ProgressBarStyle.Blocks;
                     progressBar.Visible = false;
                 }
@@ -347,8 +574,6 @@ namespace GeneratorCode.Forms
         #region Helper Methods
 
         private void LoadTableDetails(TableInfo table)
-        {
-            try
             {
                 if (table == null)
                 {
@@ -373,16 +598,7 @@ namespace GeneratorCode.Forms
                 DisplayTableDetails(table, columns);
 
                 UpdateStatusLabel($"تم تحميل تفاصيل الجدول {table.Name}");
-            }
-            catch (Exception ex)
-            {
-                ShowError("خطأ في تحميل تفاصيل الجدول", ex);
-                UpdateStatusLabel("فشل تحميل تفاصيل الجدول");
-            }
-            finally
-            {
                 progressBar.Visible = false;
-            }
         }
 
         private void DisplayTableDetails(TableInfo table, IEnumerable<ColumnInfo> columns)
@@ -416,11 +632,12 @@ namespace GeneratorCode.Forms
         }
 
         private async Task GenerateCodeForTableAsync(TableInfo table)
-        {
-            try
             {
                 UpdateStatusLabel($"جاري توليد الكود للجدول {table.Name}...");
-                _context.TableInfo = table;
+            
+            // تحديث السياق لكل جدول على حدة
+            UpdateGenerationContext(table);
+            
                 var options = new GenerationOptions
                 {
                     // Core Generation Options
@@ -462,18 +679,33 @@ namespace GeneratorCode.Forms
                     GeneratePresentationLayer = true
                 };
                 _context.Options = options;
+            
+            // تقرير الملفات الفردية
+            if (chkEntities.Checked)
+                _progressForm?.ReportFileGenerated($"{table.Name}.cs", "Entity");
+            if (chkDTOs.Checked)
+                _progressForm?.ReportFileGenerated($"{table.Name}DTO.cs", "DTO");
+            if (chkRepositories.Checked)
+                _progressForm?.ReportFileGenerated($"{table.Name}Repository.cs", "Repository");
+            if (chkServices.Checked)
+                _progressForm?.ReportFileGenerated($"{table.Name}Service.cs", "Service");
+            if (chkControllers.Checked)
+                _progressForm?.ReportFileGenerated($"{table.Name}Controller.cs", "Controller");
+            if (chkUnitTests.Checked)
+                _progressForm?.ReportFileGenerated($"{table.Name}Tests.cs", "Unit Test");
+            if (chkValidation.Checked)
+                _progressForm?.ReportFileGenerated($"{table.Name}Validator.cs", "Validator");
+            
                 await _codeGenerationService.GenerateCodeAsync(_context);
                 UpdateStatusLabel($"تم توليد الكود للجدول {table.Name}");
-            }
-            catch (Exception ex)
-            {
-                ShowError($"خطأ في توليد الكود للجدول {table.Name}", ex);
-            }
         }
 
         private void UpdateGenerationContext(TableInfo table)
         {
             _context.TableInfo = table;
+            _context.TableName = table.Name;
+            _context.EntityName = table.Name; // Set EntityName from table name
+            _context.ClassName = table.Name; // Set ClassName from table name
             _context.ArchitecturePattern = cmbArchitecture.SelectedItem?.ToString().Trim();
             _context.TargetLanguage = (ProgrammingLanguage)cmbLanguage.SelectedIndex;
             _context.Options = new GenerationOptions
@@ -619,26 +851,7 @@ namespace GeneratorCode.Forms
             chkDependencyInjection.Enabled = false;
         }
 
-        private void UpdateSettingsInfo()
-        {
-            try
-            {
-                var settings = Properties.Settings.Default;
 
-                lblDIInfo.Text = settings.EnableDI ? "مفعل" : "معطل";
-                lblDIInfo.ForeColor = settings.EnableDI ? Color.Green : Color.Red;
-
-                lblValidationInfo.Text = settings.EnableValidation ? "مفعل" : "معطل";
-                lblValidationInfo.ForeColor = settings.EnableValidation ? Color.Green : Color.Red;
-
-                lblTestingInfo.Text = settings.EnableTesting ? "مفعل" : "معطل";
-                lblTestingInfo.ForeColor = settings.EnableTesting ? Color.Green : Color.Red;
-            }
-            catch (Exception ex)
-            {
-                ShowError("خطأ في تحديث معلومات الإعدادات", ex);
-            }
-        }
 
         private bool ValidateInputs()
         {
@@ -654,9 +867,16 @@ namespace GeneratorCode.Forms
                 return false;
             }
 
-            if (lstTables.SelectedItems.Count == 0)
+            if (_availableTables == null || !_availableTables.Any())
             {
-                ShowError("خطأ في المدخلات", "الرجاء اختيار جدول واحد على الأقل");
+                ShowError("خطأ في المدخلات", "لا توجد جداول متاحة للتوليد");
+                return false;
+            }
+
+            // التحقق من الجداول المحددة إذا لم يتم تفعيل خيار "توليد جميع الجداول"
+            if (!chkGenerateAllTables.Checked && lstTables.SelectedItems.Count == 0)
+            {
+                ShowError("خطأ في المدخلات", "الرجاء اختيار جدول واحد على الأقل أو تفعيل خيار 'توليد جميع الجداول'");
                 return false;
             }
 
@@ -718,8 +938,6 @@ namespace GeneratorCode.Forms
         }
 
         private void ShowPreview(TableInfo table)
-        {
-            try
             {
                 UpdateStatusLabel("جاري تحضير المعاينة...");
 
@@ -739,12 +957,6 @@ namespace GeneratorCode.Forms
                 {
                     ShowError("خطأ في المعاينة", preview.Error);
                     UpdateStatusLabel("فشل عرض المعاينة");
-                }
-            }
-            catch (Exception ex)
-            {
-                ShowError("خطأ في عرض المعاينة", ex);
-                UpdateStatusLabel("فشل عرض المعاينة");
             }
         }
 
@@ -773,6 +985,7 @@ namespace GeneratorCode.Forms
             UpdateStatusLabel("جاري توليد Startup.cs...");
             var startupPath = Path.Combine(projectPath, "Startup.cs");
             await _codeGenerationService.GenerateStartupFile(_context, startupPath);
+            _progressForm?.ReportFileGenerated("Startup.cs", "تم توليد");
         }
 
         private async Task GenerateProgramFile(string projectPath)
@@ -780,6 +993,7 @@ namespace GeneratorCode.Forms
             UpdateStatusLabel("جاري توليد Program.cs...");
             var programPath = Path.Combine(projectPath, "Program.cs");
             await _codeGenerationService.GenerateProgramFile(_context, programPath);
+            _progressForm?.ReportFileGenerated("Program.cs", "تم توليد");
         }
 
         private async Task GenerateGitignore(string projectPath)
@@ -787,6 +1001,7 @@ namespace GeneratorCode.Forms
             UpdateStatusLabel("جاري توليد .gitignore...");
             var gitignorePath = Path.Combine(projectPath, ".gitignore");
             await _codeGenerationService.GenerateGitignore(gitignorePath);
+            _progressForm?.ReportFileGenerated(".gitignore", "تم توليد");
         }
 
         private async Task GenerateReadme(string projectPath)
@@ -794,50 +1009,82 @@ namespace GeneratorCode.Forms
             UpdateStatusLabel("جاري توليد README.md...");
             var readmePath = Path.Combine(projectPath, "README.md");
             await _codeGenerationService.GenerateReadme(_context, readmePath);
+            _progressForm?.ReportFileGenerated("README.md", "تم توليد");
         }
 
         private async Task GenerateInfrastructureLayer(string projectPath)
         {
             UpdateStatusLabel("جاري توليد طبقة Infrastructure...");
-            var infrastructurePath = Path.Combine(projectPath, "Infrastructure");
-            Directory.CreateDirectory(infrastructurePath);
-            await _codeGenerationService.GenerateInfrastructureLayer(_context, infrastructurePath);
+            await _codeGenerationService.GenerateInfrastructureLayer(_context, projectPath);
+            _progressForm?.ReportFileGenerated("Infrastructure Layer", "تم توليد طبقة");
         }
 
         private async Task GenerateApplicationLayer(string projectPath)
         {
             UpdateStatusLabel("جاري توليد طبقة Application...");
-            var applicationPath = Path.Combine(projectPath, "Application");
-            Directory.CreateDirectory(applicationPath);
-            await _codeGenerationService.GenerateApplicationLayer(_context, applicationPath);
+            await _codeGenerationService.GenerateApplicationLayer(_context, projectPath);
+            _progressForm?.ReportFileGenerated("Application Layer", "تم توليد طبقة");
         }
 
         private async Task GenerateDomainLayer(string projectPath)
         {
             UpdateStatusLabel("جاري توليد طبقة Domain...");
-            var domainPath = Path.Combine(projectPath, "Domain");
-            Directory.CreateDirectory(domainPath);
-            await _codeGenerationService.GenerateDomainLayer(_context, domainPath);
+            await _codeGenerationService.GenerateDomainLayer(_context, projectPath);
+            _progressForm?.ReportFileGenerated("Domain Layer", "تم توليد طبقة");
         }
 
         private async Task GeneratePresentationLayer(string projectPath)
         {
             UpdateStatusLabel("جاري توليد طبقة Presentation...");
-            var presentationPath = Path.Combine(projectPath, "Presentation");
-            
-            // إنشاء المجلدات المطلوبة
-            Directory.CreateDirectory(presentationPath);
-            Directory.CreateDirectory(Path.Combine(presentationPath, "Controllers"));
-            Directory.CreateDirectory(Path.Combine(presentationPath, "Views", _context.EntityName));
-            Directory.CreateDirectory(Path.Combine(presentationPath, "ViewModels"));
-            
-            await _codeGenerationService.GeneratePresentationLayer(_context, presentationPath);
+            await _codeGenerationService.GeneratePresentationLayer(_context, projectPath);
+            _progressForm?.ReportFileGenerated("Presentation Layer", "تم توليد طبقة");
         }
 
         private async Task GenerateSolutionFile(string projectPath)
         {
             UpdateStatusLabel("جاري توليد ملف الحل...");
             await _codeGenerationService.GenerateSolutionFile(_context, projectPath);
+            _progressForm?.ReportFileGenerated("Solution File", "تم توليد");
+        }
+
+        private int CalculateExpectedFilesCount()
+        {
+            int count = 0;
+            
+            // حساب عدد الجداول المُولدة
+            int tablesCount = chkGenerateAllTables.Checked 
+                ? _availableTables.Count 
+                : lstTables.SelectedItems.Count;
+            
+            // ملفات هيكل المشروع
+            if (chkGenerateStartup.Checked) count++;
+            if (chkGenerateProgram.Checked) count++;
+            if (chkGenerateGitignore.Checked) count++;
+            if (chkGenerateReadme.Checked) count++;
+            if (chkGenerateSolution.Checked) count++;
+            
+            // ملفات الطبقات المعمارية (تقدير 2-3 ملفات لكل طبقة)
+            if (chkInfrastructureLayer.Checked) count += 2;
+            if (chkApplicationLayer.Checked) count += 2;
+            if (chkDomainLayer.Checked) count += 2;
+            if (chkPresentationLayer.Checked) count += 2;
+            
+            // ملفات الكود لكل جدول
+            if (tablesCount > 0)
+            {
+                int filesPerTable = 0;
+                if (chkEntities.Checked) filesPerTable++;
+                if (chkDTOs.Checked) filesPerTable++;
+                if (chkRepositories.Checked) filesPerTable++;
+                if (chkServices.Checked) filesPerTable++;
+                if (chkControllers.Checked) filesPerTable++;
+                if (chkUnitTests.Checked) filesPerTable++;
+                if (chkValidation.Checked) filesPerTable++;
+                
+                count += tablesCount * filesPerTable;
+            }
+            
+            return Math.Max(count, 1); // على الأقل ملف واحد
         }
 
         #endregion

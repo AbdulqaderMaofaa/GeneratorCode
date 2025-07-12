@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using GeneratorCode.Core.Interfaces;
 using GeneratorCode.Core.Models;
 
@@ -16,14 +17,13 @@ namespace GeneratorCode.Core.ArchitecturePatterns
         
         public override string Description => "نمط معماري بسيط يتكون من Models و DAL و Business Logic";
         
-        public override CodeGenerationResult Generate(CodeGenerationContext context)
+        public override async Task<CodeGenerationResult> Generate(CodeGenerationContext context)
         {
             var result = new CodeGenerationResult();
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-            
+
             try
             {
-                // توليد Model
                 var modelContent = GenerateModel(context);
                 result.GeneratedFiles.Add(new GeneratedFile
                 {
@@ -34,7 +34,7 @@ namespace GeneratorCode.Core.ArchitecturePatterns
                     FileType = "cs",
                     Layer = "Models"
                 });
-                
+
                 // توليد DAL
                 var dalContent = GenerateDAL(context);
                 result.GeneratedFiles.Add(new GeneratedFile
@@ -46,7 +46,7 @@ namespace GeneratorCode.Core.ArchitecturePatterns
                     FileType = "cs",
                     Layer = "DAL"
                 });
-                
+
                 // توليد Business Logic
                 var businessContent = GenerateBusinessLogic(context);
                 result.GeneratedFiles.Add(new GeneratedFile
@@ -58,22 +58,20 @@ namespace GeneratorCode.Core.ArchitecturePatterns
                     FileType = "cs",
                     Layer = "Business"
                 });
-                
+
                 result.Success = true;
                 result.Message = "تم توليد النمط المعماري البسيط بنجاح";
             }
             catch (Exception ex)
             {
                 result.Success = false;
-                result.Message = $"خطأ في توليد الكود: {ex.Message}";
-                result.Errors.Add(ex.Message);
+                result.Message = $"حدث خطأ أثناء توليد الكود: {ex.Message}";
+                result.Errors.Add(ex.ToString());
             }
-            finally
-            {
-                stopwatch.Stop();
-                result.GenerationTime = stopwatch.Elapsed;
-            }
-            
+
+            stopwatch.Stop();
+            result.GenerationTime = stopwatch.Elapsed;
+
             return result;
         }
         

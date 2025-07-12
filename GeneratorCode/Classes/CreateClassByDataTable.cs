@@ -342,9 +342,7 @@ namespace GeneratorCode.Classes
             int i = 0;
             StreamWriter sw = null;
 
-            try
-            {
-                sw = new StreamWriter(filePath, false); /*For ColumnName's */
+            sw = new StreamWriter(filePath, false); /*For ColumnName's */
                 for (i = 0; i < dtToText.Columns.Count - 1; i++)
                 {
                     sw.Write(dtToText.Columns[i].ColumnName + '~');
@@ -363,11 +361,6 @@ namespace GeneratorCode.Classes
                     sw.WriteLine();
                 }
                 sw.Close();
-            }
-            catch (Exception)
-            {
-                throw new Exception("");
-            }
         }
         string GetDataType(string dataType)
         {
@@ -429,11 +422,7 @@ namespace GeneratorCode.Classes
             }
             List<string> Columns = new List<string>();
             List<string> Params = new List<string>();
-            try
-            {
-
-
-                using (StreamWriter w = new StreamWriter(nfilePath, true))
+            using (StreamWriter w = new StreamWriter(nfilePath, true))
                 {
                     #region المكتبات
                     w.WriteLine("using System;");
@@ -585,12 +574,7 @@ namespace GeneratorCode.Classes
                     return true;
                 }
 
-            }
-            catch (Exception)
-            {
-
-                return false;
-            }
+            return false;
         }
         private void BindPararm(StreamWriter w)
         {
@@ -623,122 +607,113 @@ namespace GeneratorCode.Classes
             }
             List<string> Columns = new List<string>();
             List<string> Params = new List<string>();
-            try
-            {
-                using (StreamWriter w = new StreamWriter(nfilePath, true))
-                {
-
-                    w.WriteLine("using System;");
-                    w.WriteLine("using System.Collections.Generic;");
-                    w.WriteLine("using System.Data;");
-                    w.WriteLine("using System.Linq;");
-                    w.WriteLine("using System.Text;");
-                    w.WriteLine("using System.Threading.Tasks;");
-
-                    w.WriteLine("public class" + "  AdminDAL ");
-                    w.WriteLine("{");
-                    w.WriteLine("SqlConnection conn;");
-                    w.WriteLine("SqlCommand _Com;");
-                    w.WriteLine("public AdminDAL(string connectionString)");
-                    w.WriteLine("{");
-                    w.WriteLine("conn= new SqlConnection(connectionString);");
-                    w.WriteLine(" _Com = new SqlCommand();");
-                    w.WriteLine("_Com.Connection = conn;");
-                    w.WriteLine("_Com.CommandType = CommandType.StoredProcedure;");
-                    w.WriteLine("_Com.CommandTimeout = 50000;");
-                    w.WriteLine("}");
-                    w.WriteLine(Environment.NewLine);
-
-                    #region DSDoQuery
-                    w.WriteLine("public DataSet DSDoQuery(string StoredProcedure, Dictionary<string, object> Para)");
-                    w.WriteLine("{");
-                    w.WriteLine("_Com = new SqlCommand();");
-                    w.WriteLine("SqlDataAdapter Adapter;");
-                    w.WriteLine("_Com.Connection = conn;");
-                    w.WriteLine("_Com.CommandType = CommandType.StoredProcedure;");
-                    w.WriteLine("_Com.CommandText = StoredProcedure;");
-                    w.WriteLine("_Com.CommandTimeout = 50000;");
-                    w.WriteLine("if (Para != null)");
-                    w.WriteLine("{");
-                    w.WriteLine("foreach (KeyValuePair<string, object> Current in Para)");
-                    w.WriteLine("{_Com.Parameters.Add(new SqlParameter(Current.Key, Current.Value));}");
-                    w.WriteLine("}");
-                    w.WriteLine("Adapter = new SqlDataAdapter(_Com);");
-                    w.WriteLine("DataSet _ds = new DataSet();");
-                    w.WriteLine("if (conn.State != System.Data.ConnectionState.Open)");
-                    w.WriteLine("{");
-                    w.WriteLine("conn.Open();");
-                    w.WriteLine("}");
-                    w.WriteLine("Adapter.Fill(_ds);");
-                    w.WriteLine("conn.Close();");
-                    w.WriteLine("return _ds;");
-                    w.WriteLine("}");
-                    #endregion
-                    #region   DoQuery
-                    w.WriteLine("public DataTable DoQuery(string StoredProcedure, Dictionary<string, object> Para)");
-                    w.WriteLine("{");
-                    w.WriteLine("_Com = new SqlCommand();");
-                    w.WriteLine("SqlDataAdapter Adapter;");
-                    w.WriteLine("_Com.Connection = conn;");
-                    w.WriteLine("_Com.CommandType = CommandType.StoredProcedure;");
-                    w.WriteLine("_Com.CommandText = StoredProcedure;");
-                    w.WriteLine("_Com.CommandTimeout = 50000;");
-                    w.WriteLine("if (Para != null)");
-                    w.WriteLine("{");
-                    w.WriteLine("foreach (KeyValuePair<string, object> Current in Para)");
-                    w.WriteLine("{_Com.Parameters.Add(new SqlParameter(Current.Key, Current.Value));}");
-                    w.WriteLine("}");
-                    w.WriteLine("Adapter = new SqlDataAdapter(_Com);");
-                    w.WriteLine("DataTable Result = new DataTable();");
-                    w.WriteLine("if (conn.State != System.Data.ConnectionState.Open)");
-                    w.WriteLine("{");
-                    w.WriteLine("conn.Open();");
-                    w.WriteLine("}");
-                    w.WriteLine("Adapter.Fill(Result);");
-                    w.WriteLine("conn.Close();");
-                    w.WriteLine("return Result;");
-                    w.WriteLine("}");
-                    #endregion
-                    #region DoUpdate
-                    w.WriteLine("public int DoUpdate(string StoredProcedure, Dictionary<string, object> Para)");
-                    w.WriteLine("{");
-                    w.WriteLine(" int Result = 0;");
-                    w.WriteLine("_Com = new SqlCommand();");
-                    w.WriteLine("SqlDataAdapter Adapter;");
-                    w.WriteLine("_Com.Connection = conn;");
-                    w.WriteLine("_Com.CommandType = CommandType.StoredProcedure;");
-                    w.WriteLine("_Com.CommandText = StoredProcedure;");
-                    w.WriteLine("_Com.CommandTimeout = 50000;");
-                    w.WriteLine("if (Para != null)");
-                    w.WriteLine("{");
-                    w.WriteLine("foreach (KeyValuePair<string, object> Current in Para)");
-                    w.WriteLine("{_Com.Parameters.Add(new SqlParameter(Current.Key, Current.Value));}");
-                    w.WriteLine("}");
-
-                    w.WriteLine("if (conn.State != System.Data.ConnectionState.Open)");
-                    w.WriteLine("{");
-                    w.WriteLine("conn.Open();");
-                    w.WriteLine("}");
-                    w.WriteLine(" Result = _Com.ExecuteNonQuery();");
-                    w.WriteLine("conn.Close();");
-                    w.WriteLine("return Result;");
-                    w.WriteLine("}");
-                    #endregion
-
-
-
-                    w.WriteLine(Environment.NewLine);
-                    w.WriteLine(Environment.NewLine);
-                    w.WriteLine(Environment.NewLine);
-                    w.WriteLine("}");
-                    return true;
-                }
-
-            }
-            catch (Exception)
+            using (StreamWriter w = new StreamWriter(nfilePath, true))
             {
 
-                return false;
+                w.WriteLine("using System;");
+                w.WriteLine("using System.Collections.Generic;");
+                w.WriteLine("using System.Data;");
+                w.WriteLine("using System.Linq;");
+                w.WriteLine("using System.Text;");
+                w.WriteLine("using System.Threading.Tasks;");
+
+                w.WriteLine("public class" + "  AdminDAL ");
+                w.WriteLine("{");
+                w.WriteLine("SqlConnection conn;");
+                w.WriteLine("SqlCommand _Com;");
+                w.WriteLine("public AdminDAL(string connectionString)");
+                w.WriteLine("{");
+                w.WriteLine("conn= new SqlConnection(connectionString);");
+                w.WriteLine(" _Com = new SqlCommand();");
+                w.WriteLine("_Com.Connection = conn;");
+                w.WriteLine("_Com.CommandType = CommandType.StoredProcedure;");
+                w.WriteLine("_Com.CommandTimeout = 50000;");
+                w.WriteLine("}");
+                w.WriteLine(Environment.NewLine);
+
+                #region DSDoQuery
+                w.WriteLine("public DataSet DSDoQuery(string StoredProcedure, Dictionary<string, object> Para)");
+                w.WriteLine("{");
+                w.WriteLine("_Com = new SqlCommand();");
+                w.WriteLine("SqlDataAdapter Adapter;");
+                w.WriteLine("_Com.Connection = conn;");
+                w.WriteLine("_Com.CommandType = CommandType.StoredProcedure;");
+                w.WriteLine("_Com.CommandText = StoredProcedure;");
+                w.WriteLine("_Com.CommandTimeout = 50000;");
+                w.WriteLine("if (Para != null)");
+                w.WriteLine("{");
+                w.WriteLine("foreach (KeyValuePair<string, object> Current in Para)");
+                w.WriteLine("{_Com.Parameters.Add(new SqlParameter(Current.Key, Current.Value));}");
+                w.WriteLine("}");
+                w.WriteLine("Adapter = new SqlDataAdapter(_Com);");
+                w.WriteLine("DataSet _ds = new DataSet();");
+                w.WriteLine("if (conn.State != System.Data.ConnectionState.Open)");
+                w.WriteLine("{");
+                w.WriteLine("conn.Open();");
+                w.WriteLine("}");
+                w.WriteLine("Adapter.Fill(_ds);");
+                w.WriteLine("conn.Close();");
+                w.WriteLine("return _ds;");
+                w.WriteLine("}");
+                #endregion
+                #region   DoQuery
+                w.WriteLine("public DataTable DoQuery(string StoredProcedure, Dictionary<string, object> Para)");
+                w.WriteLine("{");
+                w.WriteLine("_Com = new SqlCommand();");
+                w.WriteLine("SqlDataAdapter Adapter;");
+                w.WriteLine("_Com.Connection = conn;");
+                w.WriteLine("_Com.CommandType = CommandType.StoredProcedure;");
+                w.WriteLine("_Com.CommandText = StoredProcedure;");
+                w.WriteLine("_Com.CommandTimeout = 50000;");
+                w.WriteLine("if (Para != null)");
+                w.WriteLine("{");
+                w.WriteLine("foreach (KeyValuePair<string, object> Current in Para)");
+                w.WriteLine("{_Com.Parameters.Add(new SqlParameter(Current.Key, Current.Value));}");
+                w.WriteLine("}");
+                w.WriteLine("Adapter = new SqlDataAdapter(_Com);");
+                w.WriteLine("DataTable Result = new DataTable();");
+                w.WriteLine("if (conn.State != System.Data.ConnectionState.Open)");
+                w.WriteLine("{");
+                w.WriteLine("conn.Open();");
+                w.WriteLine("}");
+                w.WriteLine("Adapter.Fill(Result);");
+                w.WriteLine("conn.Close();");
+                w.WriteLine("return Result;");
+                w.WriteLine("}");
+                #endregion
+                #region DoUpdate
+                w.WriteLine("public int DoUpdate(string StoredProcedure, Dictionary<string, object> Para)");
+                w.WriteLine("{");
+                w.WriteLine(" int Result = 0;");
+                w.WriteLine("_Com = new SqlCommand();");
+                w.WriteLine("SqlDataAdapter Adapter;");
+                w.WriteLine("_Com.Connection = conn;");
+                w.WriteLine("_Com.CommandType = CommandType.StoredProcedure;");
+                w.WriteLine("_Com.CommandText = StoredProcedure;");
+                w.WriteLine("_Com.CommandTimeout = 50000;");
+                w.WriteLine("if (Para != null)");
+                w.WriteLine("{");
+                w.WriteLine("foreach (KeyValuePair<string, object> Current in Para)");
+                w.WriteLine("{_Com.Parameters.Add(new SqlParameter(Current.Key, Current.Value));}");
+                w.WriteLine("}");
+
+                w.WriteLine("if (conn.State != System.Data.ConnectionState.Open)");
+                w.WriteLine("{");
+                w.WriteLine("conn.Open();");
+                w.WriteLine("}");
+                w.WriteLine(" Result = _Com.ExecuteNonQuery();");
+                w.WriteLine("conn.Close();");
+                w.WriteLine("return Result;");
+                w.WriteLine("}");
+                #endregion
+
+
+
+                w.WriteLine(Environment.NewLine);
+                w.WriteLine(Environment.NewLine);
+                w.WriteLine(Environment.NewLine);
+                w.WriteLine("}");
+                return true;
             }
         }
 

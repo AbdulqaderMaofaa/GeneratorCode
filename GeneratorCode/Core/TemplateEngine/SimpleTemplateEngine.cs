@@ -191,78 +191,56 @@ namespace GeneratorCode.Core.TemplateEngine
         
         public bool CreateTemplate(TemplateInfo templateInfo, string templateContent)
         {
-            try
-            {
-                var fullPath = Path.Combine(_templatesPath, templateInfo.Path);
-                var directory = Path.GetDirectoryName(fullPath);
+            var fullPath = Path.Combine(_templatesPath, templateInfo.Path);
+            var directory = Path.GetDirectoryName(fullPath);
+            
+            if (!Directory.Exists(directory))
+                Directory.CreateDirectory(directory);
                 
-                if (!Directory.Exists(directory))
-                    Directory.CreateDirectory(directory);
-                    
-                File.WriteAllText(fullPath, templateContent);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            File.WriteAllText(fullPath, templateContent);
+            return true;
         }
         
         public bool DeleteTemplate(string templatePath)
         {
-            try
+            var fullPath = Path.Combine(_templatesPath, templatePath);
+            if (File.Exists(fullPath))
             {
-                var fullPath = Path.Combine(_templatesPath, templatePath);
-                if (File.Exists(fullPath))
-                {
-                    File.Delete(fullPath);
-                    return true;
-                }
-                return false;
+                File.Delete(fullPath);
+                return true;
             }
-            catch
-            {
-                return false;
-            }
+            return false;
         }
         
         public TemplateValidationResult ValidateTemplate(string template)
         {
             var result = new TemplateValidationResult { IsValid = true };
             
-            try
+            // التحقق من صحة المتغيرات
+            var variablePattern = @"\{\{(\w+)\}\}";
+            var matches = Regex.Matches(template, variablePattern);
+            
+            foreach (Match match in matches)
             {
-                // التحقق من صحة المتغيرات
-                var variablePattern = @"\{\{(\w+)\}\}";
-                var matches = Regex.Matches(template, variablePattern);
-                
-                foreach (Match match in matches)
-                {
-                    var variableName = match.Groups[1].Value;
-                    if (!result.RequiredVariables.Contains(variableName))
-                        result.RequiredVariables.Add(variableName);
-                }
-                
-                // التحقق من صحة الحلقات
-                var loopPattern = @"\{\{#each\s+(\w+)\}\}(.*?)\{\{/each\}\}";
-                if (!IsValidPattern(template, loopPattern))
-                {
-                    result.IsValid = false;
-                    result.Errors.Add("خطأ في صيغة الحلقات");
-                }
-                
-                // التحقق من صحة الشروط
-                var conditionPattern = @"\{\{#if\s+(\w+)\}\}(.*?)\{\{/if\}\}";
-                if (!IsValidPattern(template, conditionPattern))
-                {
-                    result.IsValid = false;
-                    result.Errors.Add("خطأ في صيغة الشروط");
-                }
+                var variableName = match.Groups[1].Value;
+                if (!result.RequiredVariables.Contains(variableName))
+                    result.RequiredVariables.Add(variableName);
             }
-            catch (Exception ex)
+            
+            // التحقق من صحة الحلقات
+            var loopPattern = @"\{\{#each\s+(\w+)\}\}(.*?)\{\{/each\}\}";
+            if (!IsValidPattern(template, loopPattern))
             {
                 result.IsValid = false;
-                result.Errors.Add($"خطأ في التحقق من صحة القالب: {ex.Message}");
+                result.Errors.Add("خطأ في صيغة الحلقات");
+            }
+            
+            // التحقق من صحة الشروط
+            var conditionPattern = @"\{\{#if\s+(\w+)\}\}(.*?)\{\{/if\}\}";
+            if (!IsValidPattern(template, conditionPattern))
+            {
+                result.IsValid = false;
+                result.Errors.Add("خطأ في صيغة الشروط");
             }
             
             return result;
@@ -299,15 +277,8 @@ namespace GeneratorCode.Core.TemplateEngine
         
         private static bool IsValidPattern(string template, string pattern)
         {
-            try
-            {
-                var matches = Regex.Matches(template, pattern, RegexOptions.Singleline);
-                return true; // إذا لم يحدث خطأ، فالنمط صحيح
-            }
-            catch
-            {
-                return false;
-            }
+            var matches = Regex.Matches(template, pattern, RegexOptions.Singleline);
+            return true; // إذا لم يحدث خطأ، فالنمط صحيح
         }
 
         public string RenderTemplate(string template, object data)
@@ -317,25 +288,16 @@ namespace GeneratorCode.Core.TemplateEngine
 
             var result = template;
 
-            try
-            {
-                // معالجة المتغيرات البسيطة {{variable}}
-                result = ProcessSimpleVariables(result, data);
+            // معالجة المتغيرات البسيطة {{variable}}
+            result = ProcessSimpleVariables(result, data);
 
-                // معالجة الحلقات {{#each items}} ... {{/each}}
-                result = ProcessLoops(result, data);
+            // معالجة الحلقات {{#each items}} ... {{/each}}
+            result = ProcessLoops(result, data);
 
-                // معالجة الشروط {{#if condition}} ... {{/if}}
-                result = ProcessConditions(result, data);
+            // معالجة الشروط {{#if condition}} ... {{/if}}
+            result = ProcessConditions(result, data);
 
-                return result;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"خطأ في معالجة القالب: {ex.Message}");
-                Console.WriteLine($"البيانات المستخدمة: {System.Text.Json.JsonSerializer.Serialize(data)}");
-                throw;
-            }
+            return result;
         }
 
         private string ProcessSimpleVariables(string template, object data)
@@ -345,17 +307,9 @@ namespace GeneratorCode.Core.TemplateEngine
             var pattern = @"\{\{([^{}]+)\}\}";
             return Regex.Replace(template, pattern, match =>
             {
-                try
-                {
-                    var propertyPath = match.Groups[1].Value.Trim();
-                    var value = GetPropertyValue(data, propertyPath);
-                    return value?.ToString() ?? string.Empty;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"خطأ في معالجة المتغير {match.Value}: {ex.Message}");
-                    return match.Value; // إرجاع النص الأصلي في حالة الخطأ
-                }
+                var propertyPath = match.Groups[1].Value.Trim();
+                var value = GetPropertyValue(data, propertyPath);
+                return value?.ToString() ?? string.Empty;
             });
         }
 
@@ -366,33 +320,25 @@ namespace GeneratorCode.Core.TemplateEngine
             var pattern = @"\{\{#each\s+([^{}]+)\}\}(.*?)\{\{/each\}\}";
             return Regex.Replace(template, pattern, match =>
             {
-                try
+                var propertyPath = match.Groups[1].Value.Trim();
+                var content = match.Groups[2].Value;
+                var items = GetPropertyValue(data, propertyPath) as IEnumerable<object>;
+                
+                if (items == null)
                 {
-                    var propertyPath = match.Groups[1].Value.Trim();
-                    var content = match.Groups[2].Value;
-                    var items = GetPropertyValue(data, propertyPath) as IEnumerable<object>;
-                    
-                    if (items == null)
-                    {
-                        Console.WriteLine($"تحذير: المصفوفة {propertyPath} غير موجودة أو فارغة");
-                        return string.Empty;
-                    }
+                    Console.WriteLine($"تحذير: المصفوفة {propertyPath} غير موجودة أو فارغة");
+                    return string.Empty;
+                }
 
-                    var result = new List<string>();
-                    foreach (var item in items)
-                    {
-                        if (item != null)
-                        {
-                            result.Add(RenderTemplate(content, item));
-                        }
-                    }
-                    return string.Join(Environment.NewLine, result);
-                }
-                catch (Exception ex)
+                var result = new List<string>();
+                foreach (var item in items)
                 {
-                    Console.WriteLine($"خطأ في معالجة الحلقة {match.Value}: {ex.Message}");
-                    return match.Value; // إرجاع النص الأصلي في حالة الخطأ
+                    if (item != null)
+                    {
+                        result.Add(RenderTemplate(content, item));
+                    }
                 }
+                return string.Join(Environment.NewLine, result);
             }, RegexOptions.Singleline);
         }
 
@@ -403,22 +349,14 @@ namespace GeneratorCode.Core.TemplateEngine
             var pattern = @"\{\{#if\s+([^{}]+)\}\}(.*?)(?:\{\{else\}\}(.*?))?\{\{/if\}\}";
             return Regex.Replace(template, pattern, match =>
             {
-                try
-                {
-                    var condition = match.Groups[1].Value.Trim();
-                    var trueContent = match.Groups[2].Value;
-                    var falseContent = match.Groups[3].Success ? match.Groups[3].Value : string.Empty;
+                var condition = match.Groups[1].Value.Trim();
+                var trueContent = match.Groups[2].Value;
+                var falseContent = match.Groups[3].Success ? match.Groups[3].Value : string.Empty;
 
-                    var value = GetPropertyValue(data, condition);
-                    var isTrue = value != null && (value is bool boolValue ? boolValue : true);
+                var value = GetPropertyValue(data, condition);
+                var isTrue = value != null && (value is bool boolValue ? boolValue : true);
 
-                    return isTrue ? RenderTemplate(trueContent, data) : RenderTemplate(falseContent, data);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"خطأ في معالجة الشرط {match.Value}: {ex.Message}");
-                    return match.Value; // إرجاع النص الأصلي في حالة الخطأ
-                }
+                return isTrue ? RenderTemplate(trueContent, data) : RenderTemplate(falseContent, data);
             }, RegexOptions.Singleline);
         }
 
@@ -426,45 +364,38 @@ namespace GeneratorCode.Core.TemplateEngine
         {
             if (obj == null || string.IsNullOrEmpty(path)) return null;
 
-            try
+            var properties = path.Split('.');
+            var value = obj;
+
+            foreach (var prop in properties)
             {
-                var properties = path.Split('.');
-                var value = obj;
+                if (value == null) return null;
 
-                foreach (var prop in properties)
+                // التعامل مع الخصائص العادية
+                var property = value.GetType().GetProperty(prop);
+                if (property != null)
                 {
-                    if (value == null) return null;
-
-                    // التعامل مع الخصائص العادية
-                    var property = value.GetType().GetProperty(prop);
-                    if (property != null)
-                    {
-                        value = property.GetValue(value);
-                        continue;
-                    }
-
-                    // التعامل مع القواميس
-                    if (value is IDictionary<string, object> dict)
-                    {
-                        if (dict.ContainsKey(prop))
-                        {
-                            value = dict[prop];
-                            continue;
-                        }
-                    }
-
-                    // إذا لم نجد الخاصية
-                    Console.WriteLine($"تحذير: الخاصية {prop} غير موجودة في الكائن");
-                    return null;
+                    value = property.GetValue(value);
+                    continue;
                 }
 
-                return value;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"خطأ في الوصول للخاصية {path}: {ex.Message}");
+                // التعامل مع القواميس
+                if (value is IDictionary<string, object> dict)
+                {
+                    if (dict.ContainsKey(prop))
+                    {
+                        value = dict[prop];
+                        continue;
+                    }
+                }
+
+                // إذا لم نجد الخاصية
+                Console.WriteLine($"تحذير: الخاصية {prop} غير موجودة في الكائن");
                 return null;
             }
+
+            return value;
+
         }
     }
 } 

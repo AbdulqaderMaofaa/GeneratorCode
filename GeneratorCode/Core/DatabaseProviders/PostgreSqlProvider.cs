@@ -238,17 +238,10 @@ namespace GeneratorCode.Core.DatabaseProviders
 
         public bool TestConnection(string connectionString)
         {
-            try
+            using (var connection = new NpgsqlConnection(connectionString))
             {
-                using (var connection = new NpgsqlConnection(connectionString))
-                {
-                    connection.Open();
-                    return true;
-                }
-            }
-            catch
-            {
-                return false;
+                connection.Open();
+                return true;
             }
         }
 
