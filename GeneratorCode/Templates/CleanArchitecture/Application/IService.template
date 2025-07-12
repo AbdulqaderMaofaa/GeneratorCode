@@ -1,0 +1,18 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using {{namespace}}.Application.DTOs;
+
+namespace {{namespace}}.Application.Interfaces
+{
+    public interface I{{entityName}}Service
+    {
+        Task<{{entityName}}DTO> GetByIdAsync(int id);
+        Task<List<{{entityName}}DTO>> GetAllAsync();
+        Task<{{entityName}}DTO> CreateAsync(Create{{entityName}}DTO dto);
+        Task UpdateAsync(Update{{entityName}}DTO dto);
+        Task DeleteAsync(int id);
+        {{#each customMethods}}
+        Task<{{returnType}}> {{name}}Async({{parameters}});
+        {{/each}}
+    }
+} 

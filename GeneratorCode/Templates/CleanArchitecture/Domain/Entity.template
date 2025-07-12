@@ -1,0 +1,17 @@
+using System;
+using System.Collections.Generic;
+using {{namespace}}.Domain.Common;
+
+namespace {{namespace}}.Domain.Entities
+{
+    public class {{entityName}} : BaseEntity
+    {
+        {{#each properties}}
+        public {{type}} {{name}} { get; set; }
+        {{/each}}
+
+        {{#each relationships}}
+        public virtual {{type}} {{name}} { get; set; }
+        {{/each}}
+    }
+} 

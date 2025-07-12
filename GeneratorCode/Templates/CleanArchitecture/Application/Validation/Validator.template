@@ -1,0 +1,27 @@
+using FluentValidation;
+using {{namespace}}.Application.DTOs;
+
+namespace {{namespace}}.Application.Validators
+{
+    public class Create{{entityName}}Validator : AbstractValidator<Create{{entityName}}DTO>
+    {
+        public Create{{entityName}}Validator()
+        {
+            {{#each validationRules}}
+            {{ruleDefinition}}
+            {{/each}}
+        }
+    }
+
+    public class Update{{entityName}}Validator : AbstractValidator<Update{{entityName}}DTO>
+    {
+        public Update{{entityName}}Validator()
+        {
+            Include(new Create{{entityName}}Validator());
+            
+            RuleFor(x => x.Id)
+                .NotEmpty()
+                .GreaterThan(0);
+        }
+    }
+} 

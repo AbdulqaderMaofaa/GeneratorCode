@@ -1,0 +1,66 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{{srcFolderGuid}}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "{{namespace}}.Domain", "{{namespace}}\src\{{namespace}}.Domain\{{namespace}}.Domain.csproj", "{{domainProjectGuid}}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "{{namespace}}.Application", "{{namespace}}\src\{{namespace}}.Application\{{namespace}}.Application.csproj", "{{applicationProjectGuid}}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "{{namespace}}.Infrastructure", "{{namespace}}\src\{{namespace}}.Infrastructure\{{namespace}}.Infrastructure.csproj", "{{infrastructureProjectGuid}}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "{{namespace}}.API", "{{namespace}}\src\{{namespace}}.API\{{namespace}}.API.csproj", "{{apiProjectGuid}}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{{testsFolderGuid}}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "{{namespace}}.UnitTests", "{{namespace}}\tests\{{namespace}}.UnitTests\{{namespace}}.UnitTests.csproj", "{{unitTestsProjectGuid}}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "{{namespace}}.IntegrationTests", "{{namespace}}\tests\{{namespace}}.IntegrationTests\{{namespace}}.IntegrationTests.csproj", "{{integrationTestsProjectGuid}}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{{domainProjectGuid}}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{{domainProjectGuid}}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{{domainProjectGuid}}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{{domainProjectGuid}}.Release|Any CPU.Build.0 = Release|Any CPU
+		{{applicationProjectGuid}}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{{applicationProjectGuid}}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{{applicationProjectGuid}}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{{applicationProjectGuid}}.Release|Any CPU.Build.0 = Release|Any CPU
+		{{infrastructureProjectGuid}}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{{infrastructureProjectGuid}}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{{infrastructureProjectGuid}}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{{infrastructureProjectGuid}}.Release|Any CPU.Build.0 = Release|Any CPU
+		{{apiProjectGuid}}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{{apiProjectGuid}}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{{apiProjectGuid}}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{{apiProjectGuid}}.Release|Any CPU.Build.0 = Release|Any CPU
+		{{unitTestsProjectGuid}}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{{unitTestsProjectGuid}}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{{unitTestsProjectGuid}}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{{unitTestsProjectGuid}}.Release|Any CPU.Build.0 = Release|Any CPU
+		{{integrationTestsProjectGuid}}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{{integrationTestsProjectGuid}}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{{integrationTestsProjectGuid}}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{{integrationTestsProjectGuid}}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{{domainProjectGuid}} = {{srcFolderGuid}}
+		{{applicationProjectGuid}} = {{srcFolderGuid}}
+		{{infrastructureProjectGuid}} = {{srcFolderGuid}}
+		{{apiProjectGuid}} = {{srcFolderGuid}}
+		{{unitTestsProjectGuid}} = {{testsFolderGuid}}
+		{{integrationTestsProjectGuid}} = {{testsFolderGuid}}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {{solutionGuid}}
+	EndGlobalSection
+EndGlobal
