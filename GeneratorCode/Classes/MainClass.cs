@@ -38,21 +38,9 @@ public abstract class MainClass
         {
             conn.Open();
         }
-        try
-        {
-            if (_Com.ExecuteNonQuery() > 0)
-                Result = true;
-            try
-            {
-                Flage = int.TryParse(_Com.Parameters[outname].Value.ToString(), out Re);
-            }
-            catch (Exception ex)
-            { }
-        }
-        catch (Exception ex)
-        {
-            Result = false;
-        }
+        if (_Com.ExecuteNonQuery() > 0)
+            Result = true;
+        Flage = int.TryParse(_Com.Parameters[outname].Value.ToString(), out Re);
         conn.Close();
         if (!Result) return -1;
         if (!Flage || Re == 0) return 0;
@@ -73,16 +61,9 @@ public abstract class MainClass
         {
             conn.Open();
         }
-        try
+        if (_Com.ExecuteNonQuery() > 0)
         {
-            if (_Com.ExecuteNonQuery() > 0)
-            {
-                Result = true;
-            }
-        }
-        catch (Exception ex)
-        {
-            Result = false;
+            Result = true;
         }
         return Result;
     }

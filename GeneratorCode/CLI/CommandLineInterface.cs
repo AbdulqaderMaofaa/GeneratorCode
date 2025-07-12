@@ -69,52 +69,45 @@ namespace GeneratorCode.CLI
             bool async,
             bool tests)
         {
-            try
+            var context = new CodeGenerationContext
             {
-                var context = new CodeGenerationContext
+                ConnectionString = BuildConnectionString(server, database, dbType),
+                DatabaseType = dbType,
+                Namespace = @namespace,
+                ArchitecturePattern = pattern,
+                OutputPath = output,
+                TargetLanguage = ProgrammingLanguage.CSharp,
+                
+                DIOptions = new DIOptions
                 {
-                    ConnectionString = BuildConnectionString(server, database, dbType),
-                    DatabaseType = dbType,
-                    Namespace = @namespace,
-                    ArchitecturePattern = pattern,
-                    OutputPath = output,
-                    TargetLanguage = ProgrammingLanguage.CSharp,
-                    
-                    DIOptions = new DIOptions
-                    {
-                        EnableDI = enableDi,
-                        PreferredContainer = DIContainerType.MicrosoftDI,
-                        GenerateServiceExtensions = true
-                    },
-                    
-                    Options = new GenerationOptions
-                    {
-                        GenerateControllers = true,
-                        GenerateServices = true,
-                        GenerateRepositories = true,
-                        GenerateModels = true,
-                        GenerateDTOs = true,
-                        GenerateValidators = true,
-                        GenerateUnitTests = tests,
-                        EnableDependencyInjection = enableDi,
-                        EnableAsyncOperations = async
-                    }
-                };
+                    EnableDI = enableDi,
+                    PreferredContainer = DIContainerType.MicrosoftDI,
+                    GenerateServiceExtensions = true
+                },
+                
+                Options = new GenerationOptions
+                {
+                    GenerateControllers = true,
+                    GenerateServices = true,
+                    GenerateRepositories = true,
+                    GenerateModels = true,
+                    GenerateDTOs = true,
+                    GenerateValidators = true,
+                    GenerateUnitTests = tests,
+                    EnableDependencyInjection = enableDi,
+                    EnableAsyncOperations = async
+                }
+            };
 
-                var result = await _codeGenerationService.GenerateCodeAsync(context);
-                if (result.Success)
-                {
-                    Console.WriteLine("✅ تم توليد الكود بنجاح");
-                    Console.WriteLine($"المسار: {output}");
-                }
-                else
-                {
-                    Console.WriteLine($"❌ فشل في توليد الكود: {result.Message}");
-                }
-            }
-            catch (Exception ex)
+            var result = await _codeGenerationService.GenerateCodeAsync(context);
+            if (result.Success)
             {
-                Console.WriteLine($"❌ خطأ: {ex.Message}");
+                Console.WriteLine("✅ تم توليد الكود بنجاح");
+                Console.WriteLine($"المسار: {output}");
+            }
+            else
+            {
+                Console.WriteLine($"❌ فشل في توليد الكود: {result.Message}");
             }
         }
 

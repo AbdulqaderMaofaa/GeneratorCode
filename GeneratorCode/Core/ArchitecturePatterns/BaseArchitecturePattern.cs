@@ -10,7 +10,7 @@ namespace GeneratorCode.Core.ArchitecturePatterns
         public abstract string Name { get; }
         public virtual string Description => $"{Name} pattern implementation";
         public abstract bool SupportsDatabaseType(DatabaseType dbType);
-        public abstract CodeGenerationResult Generate(CodeGenerationContext context);
+        public abstract Task<CodeGenerationResult> Generate(CodeGenerationContext context);
         public abstract List<PreviewFile> GeneratePreview(TableInfo table, CodeGenerationContext context);
 
         public virtual List<string> GetRequiredLayers()

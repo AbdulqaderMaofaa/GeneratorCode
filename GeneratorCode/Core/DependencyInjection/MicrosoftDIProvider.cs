@@ -19,9 +19,7 @@ namespace GeneratorCode.Core.DependencyInjection
         {
             var result = new DIConfigurationResult { Success = true };
             
-            try
-            {
-                // توليد Service Extensions
+            // توليد Service Extensions
                 var serviceExtensions = GenerateServiceExtensions(context);
                 result.ConfigurationFiles.Add(new GeneratedFile
                 {
@@ -73,13 +71,6 @@ namespace GeneratorCode.Core.DependencyInjection
                 });
                 
                 result.Message = "تم توليد تكوين Microsoft DI بنجاح مع جميع ملفات التكوين";
-            }
-            catch (Exception ex)
-            {
-                result.Success = false;
-                result.Message = $"خطأ في توليد تكوين DI: {ex.Message}";
-                result.Errors.Add(ex.Message);
-            }
             
             return result;
         }

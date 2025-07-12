@@ -301,17 +301,10 @@ namespace GeneratorCode.Core.DatabaseProviders
         
         public bool TestConnection(string connectionString)
         {
-            try
+            using (var connection = new SqlConnection(connectionString))
             {
-                using (var connection = new SqlConnection(connectionString))
-                {
-                    connection.Open();
-                    return true;
-                }
-            }
-            catch
-            {
-                return false;
+                connection.Open();
+                return true;
             }
         }
 

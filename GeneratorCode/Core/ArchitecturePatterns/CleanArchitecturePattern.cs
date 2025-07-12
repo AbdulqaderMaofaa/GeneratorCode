@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GeneratorCode.Core.Interfaces;
 using GeneratorCode.Core.Models;
+using GeneratorCode.Core.DependencyInjection;
 
 namespace GeneratorCode.Core.ArchitecturePatterns
 {
@@ -13,73 +14,318 @@ namespace GeneratorCode.Core.ArchitecturePatterns
     /// </summary>
     public class CleanArchitecturePattern : BaseArchitecturePattern
     {
+        private readonly ITemplateEngine _templateEngine;
+
+        public CleanArchitecturePattern(ITemplateEngine templateEngine)
+        {
+            _templateEngine = templateEngine ?? throw new ArgumentNullException(nameof(templateEngine));
+        }
+
         public override string Name => "Clean Architecture";
-        
+
         public override string Description => "نمط معماري يركز على فصل الاهتمامات وجعل التطبيق مستقلاً عن التفاصيل الخارجية";
-        
-        public override CodeGenerationResult Generate(CodeGenerationContext context)
+
+        public override async Task<CodeGenerationResult> Generate(CodeGenerationContext context)
         {
             var result = new CodeGenerationResult();
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-            
+
             try
             {
-                // إنشاء الطبقات المختلفة
-                var layers = GetRequiredLayers();
-                foreach (var layer in layers)
+                // Determine the base path (check if it already ends with namespace)
+                string namespacePath;
+                if (!context.OutputPath.EndsWith(context.Namespace))
                 {
-                    switch (layer)
-                    {
-                        case "Domain":
-                            GenerateDomainLayer(context, result);
-                            break;
-                        case "Application":
-                            GenerateApplicationLayer(context, result);
-                            break;
-                        case "Infrastructure":
-                            GenerateInfrastructureLayer(context, result);
-                            break;
-                        case "Presentation":
-                            GeneratePresentationLayer(context, result);
-                            break;
-                    }
+                    namespacePath = Path.Combine(context.OutputPath, context.Namespace);
                 }
+                else
+                {
+                    namespacePath = context.OutputPath;
+                }
+
+                // Create base directory if it doesn't exist
+                if (!Directory.Exists(namespacePath))
+                {
+                    Directory.CreateDirectory(namespacePath);
+                }
+
+                // Create src and tests directories
+                var srcPath = Path.Combine(namespacePath, "src");
+                var testsPath = Path.Combine(namespacePath, "tests");
                 
+                // Only create directories if they don't exist
+                if (!Directory.Exists(srcPath))
+                {
+                    Directory.CreateDirectory(srcPath);
+                }
+                if (!Directory.Exists(testsPath))
+                {
+                    Directory.CreateDirectory(testsPath);
+                }
+
+                // Create project directories inside src folder with full names
+                var domainPath = Path.Combine(srcPath, $"{context.Namespace}.Domain");
+                var applicationPath = Path.Combine(srcPath, $"{context.Namespace}.Application");
+                var infrastructurePath = Path.Combine(srcPath, $"{context.Namespace}.Infrastructure");
+                var apiPath = Path.Combine(srcPath, $"{context.Namespace}.API");
+                var unitTestsPath = Path.Combine(testsPath, $"{context.Namespace}.UnitTests");
+                var integrationTestsPath = Path.Combine(testsPath, $"{context.Namespace}.IntegrationTests");
+
+                // Create project directories only if they don't exist
+                CreateDirectoryIfNotExists(domainPath);
+                CreateDirectoryIfNotExists(applicationPath);
+                CreateDirectoryIfNotExists(infrastructurePath);
+                CreateDirectoryIfNotExists(apiPath);
+                CreateDirectoryIfNotExists(unitTestsPath);
+                CreateDirectoryIfNotExists(integrationTestsPath);
+
+                // Create subdirectories for each project
+                CreateProjectStructure(domainPath);
+                CreateProjectStructure(applicationPath);
+                CreateProjectStructure(infrastructurePath);
+                CreateProjectStructure(apiPath);
+                CreateTestProjectStructure(unitTestsPath);
+                CreateTestProjectStructure(integrationTestsPath);
+
+                // Generate project files first
+                var packagesGenerator = new PackagesGenerator();
+                
+                // Generate project files
+                var domainProjectFile = packagesGenerator.GenerateProjectFile(context, null, "Domain");
+                var applicationProjectFile = packagesGenerator.GenerateProjectFile(context, null, "Application");
+                var infrastructureProjectFile = packagesGenerator.GenerateProjectFile(context, null, "Infrastructure");
+                var apiProjectFile = packagesGenerator.GenerateProjectFile(context, null, "API");
+                var unitTestsProjectFile = packagesGenerator.GenerateProjectFile(context, null, "UnitTests");
+                var integrationTestsProjectFile = packagesGenerator.GenerateProjectFile(context, null, "IntegrationTests");
+
+                // Add project files with correct relative paths
+                result.GeneratedFiles.Add(new GeneratedFile
+                {
+                    FileName = $"{context.Namespace}.Domain.csproj",
+                    RelativePath = $"src/{context.Namespace}.Domain/{context.Namespace}.Domain.csproj",
+                    FullPath = Path.Combine(domainPath, $"{context.Namespace}.Domain.csproj"),
+                    Content = domainProjectFile,
+                    FileType = "csproj",
+                    Layer = "Domain"
+                });
+
+                result.GeneratedFiles.Add(new GeneratedFile
+                {
+                    FileName = $"{context.Namespace}.Application.csproj",
+                    RelativePath = $"src/{context.Namespace}.Application/{context.Namespace}.Application.csproj",
+                    FullPath = Path.Combine(applicationPath, $"{context.Namespace}.Application.csproj"),
+                    Content = applicationProjectFile,
+                    FileType = "csproj",
+                    Layer = "Application"
+                });
+
+                result.GeneratedFiles.Add(new GeneratedFile
+                {
+                    FileName = $"{context.Namespace}.Infrastructure.csproj",
+                    RelativePath = $"src/{context.Namespace}.Infrastructure/{context.Namespace}.Infrastructure.csproj",
+                    FullPath = Path.Combine(infrastructurePath, $"{context.Namespace}.Infrastructure.csproj"),
+                    Content = infrastructureProjectFile,
+                    FileType = "csproj",
+                    Layer = "Infrastructure"
+                });
+
+                result.GeneratedFiles.Add(new GeneratedFile
+                {
+                    FileName = $"{context.Namespace}.API.csproj",
+                    RelativePath = $"src/{context.Namespace}.API/{context.Namespace}.API.csproj",
+                    FullPath = Path.Combine(apiPath, $"{context.Namespace}.API.csproj"),
+                    Content = apiProjectFile,
+                    FileType = "csproj",
+                    Layer = "API"
+                });
+
+                result.GeneratedFiles.Add(new GeneratedFile
+                {
+                    FileName = $"{context.Namespace}.UnitTests.csproj",
+                    RelativePath = $"tests/{context.Namespace}.UnitTests/{context.Namespace}.UnitTests.csproj",
+                    FullPath = Path.Combine(unitTestsPath, $"{context.Namespace}.UnitTests.csproj"),
+                    Content = unitTestsProjectFile,
+                    FileType = "csproj",
+                    Layer = "UnitTests"
+                });
+
+                result.GeneratedFiles.Add(new GeneratedFile
+                {
+                    FileName = $"{context.Namespace}.IntegrationTests.csproj",
+                    RelativePath = $"tests/{context.Namespace}.IntegrationTests/{context.Namespace}.IntegrationTests.csproj",
+                    FullPath = Path.Combine(integrationTestsPath, $"{context.Namespace}.IntegrationTests.csproj"),
+                    Content = integrationTestsProjectFile,
+                    FileType = "csproj",
+                    Layer = "IntegrationTests"
+                });
+
+                // Generate Domain Layer
+                GenerateDomainLayer(context, result, domainPath);
+                
+                // Generate Application Layer
+                GenerateApplicationLayer(context, result, applicationPath);
+                
+                // Generate Infrastructure Layer
+                GenerateInfrastructureLayer(context, result, infrastructurePath);
+                
+                // Generate API Layer
+                GeneratePresentationLayer(context, result, apiPath);
+
+                // Generate Test Projects
+                GenerateTestProjects(context, result, unitTestsPath, integrationTestsPath);
+
+                // Generate global.json
+                var globalJsonContent = @"{
+  ""sdk"": {
+    ""version"": ""6.0.100"",
+    ""rollForward"": ""latestFeature""
+  }
+}";
+                result.GeneratedFiles.Add(new GeneratedFile
+                {
+                    FileName = "global.json",
+                    RelativePath = "global.json",
+                    FullPath = Path.Combine(namespacePath, "global.json"),
+                    Content = globalJsonContent,
+                    FileType = "json",
+                    Layer = "Root"
+                });
+
+                // Generate solution file last
+                var templatePath = "CleanArchitecture/Solution.template";
+                var template = await _templateEngine.LoadTemplateAsync(templatePath);
+                
+                // Create template data with all necessary GUIDs
+                var templateData = new Dictionary<string, object>
+                {
+                    { "namespace", context.Namespace },
+                    { "solutionGuid", Guid.NewGuid().ToString("B").ToUpper() },
+                    { "srcFolderGuid", Guid.NewGuid().ToString("B").ToUpper() },
+                    { "testsFolderGuid", Guid.NewGuid().ToString("B").ToUpper() },
+                    { "domainProjectGuid", Guid.NewGuid().ToString("B").ToUpper() },
+                    { "applicationProjectGuid", Guid.NewGuid().ToString("B").ToUpper() },
+                    { "infrastructureProjectGuid", Guid.NewGuid().ToString("B").ToUpper() },
+                    { "apiProjectGuid", Guid.NewGuid().ToString("B").ToUpper() },
+                    { "unitTestsProjectGuid", Guid.NewGuid().ToString("B").ToUpper() },
+                    { "integrationTestsProjectGuid", Guid.NewGuid().ToString("B").ToUpper() }
+                };
+                
+                var solutionContent = _templateEngine.RenderTemplate(template, templateData);
+                result.GeneratedFiles.Add(new GeneratedFile
+                {
+                    FileName = $"{context.Namespace}.sln",
+                    RelativePath = $"{context.Namespace}.sln",
+                    FullPath = Path.Combine(namespacePath, $"{context.Namespace}.sln"),
+                    Content = solutionContent,
+                    FileType = "sln",
+                    Layer = "Root"
+                });
+
                 result.Success = true;
                 result.Message = "تم توليد كود Clean Architecture بنجاح";
             }
             catch (Exception ex)
             {
                 result.Success = false;
-                result.Message = $"خطأ في توليد الكود: {ex.Message}";
-                result.Errors.Add(ex.Message);
+                result.Message = $"حدث خطأ أثناء توليد الكود: {ex.Message}";
+                result.Errors.Add(ex.ToString());
             }
-            finally
-            {
-                stopwatch.Stop();
-                result.GenerationTime = stopwatch.Elapsed;
-            }
-            
+
+            stopwatch.Stop();
+            result.GenerationTime = stopwatch.Elapsed;
+
             return result;
         }
-        
+
+        private void CreateDirectoryIfNotExists(string path)
+        {
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+        }
+
+        private void CreateProjectStructure(string projectPath)
+        {
+            // Create common folders for each project
+            Directory.CreateDirectory(Path.Combine(projectPath, "Interfaces"));
+            Directory.CreateDirectory(Path.Combine(projectPath, "Models"));
+            Directory.CreateDirectory(Path.Combine(projectPath, "Services"));
+            Directory.CreateDirectory(Path.Combine(projectPath, "Extensions"));
+            Directory.CreateDirectory(Path.Combine(projectPath, "Exceptions"));
+            Directory.CreateDirectory(Path.Combine(projectPath, "Constants"));
+
+            // Create specific folders based on project type
+            if (projectPath.EndsWith(".Domain"))
+            {
+                Directory.CreateDirectory(Path.Combine(projectPath, "Entities"));
+                Directory.CreateDirectory(Path.Combine(projectPath, "ValueObjects"));
+                Directory.CreateDirectory(Path.Combine(projectPath, "Events"));
+                Directory.CreateDirectory(Path.Combine(projectPath, "Repositories"));
+            }
+            else if (projectPath.EndsWith(".Application"))
+            {
+                Directory.CreateDirectory(Path.Combine(projectPath, "DTOs"));
+                Directory.CreateDirectory(Path.Combine(projectPath, "Mappings"));
+                Directory.CreateDirectory(Path.Combine(projectPath, "Validators"));
+                Directory.CreateDirectory(Path.Combine(projectPath, "Features"));
+                Directory.CreateDirectory(Path.Combine(projectPath, "Common"));
+                Directory.CreateDirectory(Path.Combine(projectPath, "Behaviors"));
+            }
+            else if (projectPath.EndsWith(".Infrastructure"))
+            {
+                Directory.CreateDirectory(Path.Combine(projectPath, "Data"));
+                Directory.CreateDirectory(Path.Combine(projectPath, "Repositories"));
+                Directory.CreateDirectory(Path.Combine(projectPath, "Services"));
+                Directory.CreateDirectory(Path.Combine(projectPath, "Persistence"));
+                Directory.CreateDirectory(Path.Combine(projectPath, "Identity"));
+            }
+            else if (projectPath.EndsWith(".API"))
+            {
+                Directory.CreateDirectory(Path.Combine(projectPath, "Controllers"));
+                Directory.CreateDirectory(Path.Combine(projectPath, "Filters"));
+                Directory.CreateDirectory(Path.Combine(projectPath, "Middleware"));
+                Directory.CreateDirectory(Path.Combine(projectPath, "ViewModels"));
+            }
+        }
+
+        private void CreateTestProjectStructure(string testProjectPath)
+        {
+            Directory.CreateDirectory(Path.Combine(testProjectPath, "Common"));
+            Directory.CreateDirectory(Path.Combine(testProjectPath, "Fixtures"));
+            Directory.CreateDirectory(Path.Combine(testProjectPath, "Helpers"));
+            Directory.CreateDirectory(Path.Combine(testProjectPath, "Mocks"));
+            
+            if (testProjectPath.EndsWith(".UnitTests"))
+            {
+                Directory.CreateDirectory(Path.Combine(testProjectPath, "Domain"));
+                Directory.CreateDirectory(Path.Combine(testProjectPath, "Application"));
+                Directory.CreateDirectory(Path.Combine(testProjectPath, "Infrastructure"));
+            }
+            else if (testProjectPath.EndsWith(".IntegrationTests"))
+            {
+                Directory.CreateDirectory(Path.Combine(testProjectPath, "API"));
+                Directory.CreateDirectory(Path.Combine(testProjectPath, "Persistence"));
+            }
+        }
+
         public override bool SupportsDatabaseType(DatabaseType databaseType)
         {
             // Clean Architecture يدعم جميع قواعد البيانات
             return true;
         }
-        
+
         public override List<string> GetRequiredLayers()
         {
             return new List<string>
             {
                 "Domain",
-                "Application", 
+                "Application",
                 "Infrastructure",
                 "Presentation"
             };
         }
-        
+
         public override List<string> GetRequiredDependencies()
         {
             return new List<string>
@@ -90,35 +336,35 @@ namespace GeneratorCode.Core.ArchitecturePatterns
                 "Microsoft.Extensions.DependencyInjection"
             };
         }
-        
-        private void GenerateDomainLayer(CodeGenerationContext context, CodeGenerationResult result)
+
+        private void GenerateDomainLayer(CodeGenerationContext context, CodeGenerationResult result, string basePath)
         {
             // توليد Entity
             var entityContent = GenerateEntity(context);
             result.GeneratedFiles.Add(new GeneratedFile
             {
                 FileName = $"{context.EntityName}.cs",
-                RelativePath = $"Domain/Entities/{context.EntityName}.cs",
-                FullPath = Path.Combine(context.OutputPath, "Domain", "Entities", $"{context.EntityName}.cs"),
+                RelativePath = $"src/{context.Namespace}.Domain/Entities/{context.EntityName}.cs",
+                FullPath = Path.Combine(basePath, "Entities", $"{context.EntityName}.cs"),
                 Content = entityContent,
                 FileType = "cs",
                 Layer = "Domain"
             });
-            
+
             // توليد Repository Interface
             var repositoryInterfaceContent = GenerateRepositoryInterface(context);
             result.GeneratedFiles.Add(new GeneratedFile
             {
                 FileName = $"I{context.EntityName}Repository.cs",
-                RelativePath = $"Domain/Repositories/I{context.EntityName}Repository.cs",
-                FullPath = Path.Combine(context.OutputPath, "Domain", "Repositories", $"I{context.EntityName}Repository.cs"),
+                RelativePath = $"src/{context.Namespace}.Domain/Repositories/I{context.EntityName}Repository.cs",
+                FullPath = Path.Combine(basePath, "Repositories", $"I{context.EntityName}Repository.cs"),
                 Content = repositoryInterfaceContent,
                 FileType = "cs",
                 Layer = "Domain"
             });
         }
-        
-        private void GenerateApplicationLayer(CodeGenerationContext context, CodeGenerationResult result)
+
+        private void GenerateApplicationLayer(CodeGenerationContext context, CodeGenerationResult result, string basePath)
         {
             // توليد Commands و Queries
             GenerateCommands(context, result);
@@ -126,53 +372,53 @@ namespace GeneratorCode.Core.ArchitecturePatterns
             GenerateValidators(context, result);
             GenerateMappers(context, result);
         }
-        
-        private void GenerateInfrastructureLayer(CodeGenerationContext context, CodeGenerationResult result)
+
+        private void GenerateInfrastructureLayer(CodeGenerationContext context, CodeGenerationResult result, string basePath)
         {
             // توليد Repository Implementation
             var repositoryContent = GenerateRepositoryImplementation(context);
             result.GeneratedFiles.Add(new GeneratedFile
             {
                 FileName = $"{context.EntityName}Repository.cs",
-                RelativePath = $"Infrastructure/Repositories/{context.EntityName}Repository.cs",
-                FullPath = Path.Combine(context.OutputPath, "Infrastructure", "Repositories", $"{context.EntityName}Repository.cs"),
+                RelativePath = $"src/{context.Namespace}.Infrastructure/Repositories/{context.EntityName}Repository.cs",
+                FullPath = Path.Combine(basePath, "Repositories", $"{context.EntityName}Repository.cs"),
                 Content = repositoryContent,
                 FileType = "cs",
                 Layer = "Infrastructure"
             });
-            
+
             // توليد DbContext Configuration
             var dbContextContent = GenerateDbContextConfiguration(context);
             result.GeneratedFiles.Add(new GeneratedFile
             {
                 FileName = $"{context.EntityName}Configuration.cs",
-                RelativePath = $"Infrastructure/Data/Configurations/{context.EntityName}Configuration.cs",
-                FullPath = Path.Combine(context.OutputPath, "Infrastructure", "Data", "Configurations", $"{context.EntityName}Configuration.cs"),
+                RelativePath = $"src/{context.Namespace}.Infrastructure/Data/Configurations/{context.EntityName}Configuration.cs",
+                FullPath = Path.Combine(basePath, "Data", "Configurations", $"{context.EntityName}Configuration.cs"),
                 Content = dbContextContent,
                 FileType = "cs",
                 Layer = "Infrastructure"
             });
         }
-        
-        private void GeneratePresentationLayer(CodeGenerationContext context, CodeGenerationResult result)
+
+        private void GeneratePresentationLayer(CodeGenerationContext context, CodeGenerationResult result, string basePath)
         {
             // توليد Controller
             var controllerContent = GenerateController(context);
             result.GeneratedFiles.Add(new GeneratedFile
             {
                 FileName = $"{context.EntityName}Controller.cs",
-                RelativePath = $"Presentation/Controllers/{context.EntityName}Controller.cs",
-                FullPath = Path.Combine(context.OutputPath, "Presentation", "Controllers", $"{context.EntityName}Controller.cs"),
+                RelativePath = $"src/{context.Namespace}.API/Controllers/{context.EntityName}Controller.cs",
+                FullPath = Path.Combine(basePath, "Controllers", $"{context.EntityName}Controller.cs"),
                 Content = controllerContent,
                 FileType = "cs",
                 Layer = "Presentation"
             });
         }
-        
+
         private string GenerateEntity(CodeGenerationContext context)
         {
             var sb = new StringBuilder();
-            
+
             sb.AppendLine("using System;");
             sb.AppendLine("using System.Collections.Generic;");
             sb.AppendLine();
@@ -180,7 +426,7 @@ namespace GeneratorCode.Core.ArchitecturePatterns
             sb.AppendLine("{");
             sb.AppendLine($"    public class {context.EntityName}");
             sb.AppendLine("    {");
-            
+
             // إضافة الخصائص من معلومات الجدول
             if (context.TableInfo?.Columns != null)
             {
@@ -189,17 +435,17 @@ namespace GeneratorCode.Core.ArchitecturePatterns
                     sb.AppendLine($"        public {column.CSharpType} {column.Name} {{ get; set; }}");
                 }
             }
-            
+
             sb.AppendLine("    }");
             sb.AppendLine("}");
-            
+
             return sb.ToString();
         }
-        
+
         private string GenerateRepositoryInterface(CodeGenerationContext context)
         {
             var sb = new StringBuilder();
-            
+
             sb.AppendLine("using System;");
             sb.AppendLine("using System.Collections.Generic;");
             sb.AppendLine("using System.Threading.Tasks;");
@@ -216,14 +462,14 @@ namespace GeneratorCode.Core.ArchitecturePatterns
             sb.AppendLine($"        Task DeleteAsync(int id);");
             sb.AppendLine("    }");
             sb.AppendLine("}");
-            
+
             return sb.ToString();
         }
-        
+
         private string GenerateRepositoryImplementation(CodeGenerationContext context)
         {
             var sb = new StringBuilder();
-            
+
             sb.AppendLine("using System;");
             sb.AppendLine("using System.Collections.Generic;");
             sb.AppendLine("using System.Threading.Tasks;");
@@ -276,14 +522,14 @@ namespace GeneratorCode.Core.ArchitecturePatterns
             sb.AppendLine("        }");
             sb.AppendLine("    }");
             sb.AppendLine("}");
-            
+
             return sb.ToString();
         }
-        
+
         private string GenerateDbContextConfiguration(CodeGenerationContext context)
         {
             var sb = new StringBuilder();
-            
+
             sb.AppendLine("using Microsoft.EntityFrameworkCore;");
             sb.AppendLine("using Microsoft.EntityFrameworkCore.Metadata.Builders;");
             sb.AppendLine($"using {context.Namespace}.Domain.Entities;");
@@ -296,7 +542,7 @@ namespace GeneratorCode.Core.ArchitecturePatterns
             sb.AppendLine("        {");
             sb.AppendLine($"            builder.ToTable(\"{context.TableName}\");");
             sb.AppendLine();
-            
+
             // إضافة تكوين الأعمدة
             if (context.TableInfo?.Columns != null)
             {
@@ -306,35 +552,35 @@ namespace GeneratorCode.Core.ArchitecturePatterns
                     {
                         sb.AppendLine($"            builder.HasKey(x => x.{column.Name});");
                     }
-                    
+
                     sb.AppendLine($"            builder.Property(x => x.{column.Name})");
                     sb.AppendLine($"                .HasColumnName(\"{column.Name}\")");
-                    
+
                     if (column.MaxLength.HasValue)
                     {
                         sb.AppendLine($"                .HasMaxLength({column.MaxLength.Value})");
                     }
-                    
+
                     if (!column.IsNullable)
                     {
                         sb.AppendLine("                .IsRequired()");
                     }
-                    
+
                     sb.AppendLine("                ;");
                 }
             }
-            
+
             sb.AppendLine("        }");
             sb.AppendLine("    }");
             sb.AppendLine("}");
-            
+
             return sb.ToString();
         }
-        
+
         private string GenerateController(CodeGenerationContext context)
         {
             var sb = new StringBuilder();
-            
+
             sb.AppendLine("using System.Collections.Generic;");
             sb.AppendLine("using System.Threading.Tasks;");
             sb.AppendLine("using Microsoft.AspNetCore.Mvc;");
@@ -389,28 +635,147 @@ namespace GeneratorCode.Core.ArchitecturePatterns
             sb.AppendLine("        }");
             sb.AppendLine("    }");
             sb.AppendLine("}");
-            
+
             return sb.ToString();
         }
-        
+
         private void GenerateCommands(CodeGenerationContext context, CodeGenerationResult result)
         {
             // سيتم إضافة توليد Commands لاحقاً
         }
-        
+
         private void GenerateQueries(CodeGenerationContext context, CodeGenerationResult result)
         {
             // سيتم إضافة توليد Queries لاحقاً
         }
-        
+
         private void GenerateValidators(CodeGenerationContext context, CodeGenerationResult result)
         {
             // سيتم إضافة توليد Validators لاحقاً
         }
-        
+
         private void GenerateMappers(CodeGenerationContext context, CodeGenerationResult result)
         {
             // سيتم إضافة توليد Mappers لاحقاً
+        }
+
+        private void GenerateTestProjects(CodeGenerationContext context, CodeGenerationResult result, string unitTestsPath, string integrationTestsPath)
+        {
+            // Generate Unit Tests
+            var unitTestContent = GenerateUnitTests(context);
+            result.GeneratedFiles.Add(new GeneratedFile
+            {
+                FileName = $"{context.EntityName}Tests.cs",
+                RelativePath = $"tests/{context.Namespace}.UnitTests/{context.EntityName}Tests.cs",
+                FullPath = Path.Combine(unitTestsPath, $"{context.EntityName}Tests.cs"),
+                Content = unitTestContent,
+                FileType = "cs",
+                Layer = "UnitTests"
+            });
+
+            // Generate Integration Tests
+            var integrationTestContent = GenerateIntegrationTests(context);
+            result.GeneratedFiles.Add(new GeneratedFile
+            {
+                FileName = $"{context.EntityName}IntegrationTests.cs",
+                RelativePath = $"tests/{context.Namespace}.IntegrationTests/{context.EntityName}IntegrationTests.cs",
+                FullPath = Path.Combine(integrationTestsPath, $"{context.EntityName}IntegrationTests.cs"),
+                Content = integrationTestContent,
+                FileType = "cs",
+                Layer = "IntegrationTests"
+            });
+        }
+
+        private string GenerateUnitTests(CodeGenerationContext context)
+        {
+            var sb = new StringBuilder();
+            
+            sb.AppendLine("using System;");
+            sb.AppendLine("using System.Threading.Tasks;");
+            sb.AppendLine("using Xunit;");
+            sb.AppendLine("using Moq;");
+            sb.AppendLine($"using {context.Namespace}.Domain.Entities;");
+            sb.AppendLine($"using {context.Namespace}.Domain.Repositories;");
+            sb.AppendLine($"using {context.Namespace}.Application.Services;");
+            sb.AppendLine();
+            
+            sb.AppendLine($"namespace {context.Namespace}.UnitTests");
+            sb.AppendLine("{");
+            sb.AppendLine($"    public class {context.EntityName}Tests");
+            sb.AppendLine("    {");
+            sb.AppendLine($"        private readonly Mock<I{context.EntityName}Repository> _mockRepository;");
+            sb.AppendLine($"        private readonly I{context.EntityName}Service _service;");
+            sb.AppendLine();
+            
+            sb.AppendLine($"        public {context.EntityName}Tests()");
+            sb.AppendLine("        {");
+            sb.AppendLine($"            _mockRepository = new Mock<I{context.EntityName}Repository>();");
+            sb.AppendLine($"            _service = new {context.EntityName}Service(_mockRepository.Object);");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            
+            sb.AppendLine("        [Fact]");
+            sb.AppendLine("        public async Task GetById_ShouldReturnEntity_WhenEntityExists()");
+            sb.AppendLine("        {");
+            sb.AppendLine("            // Arrange");
+            sb.AppendLine($"            var entity = new {context.EntityName}();");
+            sb.AppendLine("            _mockRepository.Setup(repo => repo.GetByIdAsync(It.IsAny<int>()))");
+            sb.AppendLine("                .ReturnsAsync(entity);");
+            sb.AppendLine();
+            sb.AppendLine("            // Act");
+            sb.AppendLine("            var result = await _service.GetByIdAsync(1);");
+            sb.AppendLine();
+            sb.AppendLine("            // Assert");
+            sb.AppendLine("            Assert.NotNull(result);");
+            sb.AppendLine("        }");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            
+            return sb.ToString();
+        }
+
+        private string GenerateIntegrationTests(CodeGenerationContext context)
+        {
+            var sb = new StringBuilder();
+            
+            sb.AppendLine("using System;");
+            sb.AppendLine("using System.Net;");
+            sb.AppendLine("using System.Net.Http;");
+            sb.AppendLine("using System.Threading.Tasks;");
+            sb.AppendLine("using Microsoft.AspNetCore.Mvc.Testing;");
+            sb.AppendLine("using Xunit;");
+            sb.AppendLine($"using {context.Namespace}.API;");
+            sb.AppendLine();
+            
+            sb.AppendLine($"namespace {context.Namespace}.IntegrationTests");
+            sb.AppendLine("{");
+            sb.AppendLine($"    public class {context.EntityName}IntegrationTests : IClassFixture<WebApplicationFactory<Program>>");
+            sb.AppendLine("    {");
+            sb.AppendLine("        private readonly WebApplicationFactory<Program> _factory;");
+            sb.AppendLine();
+            
+            sb.AppendLine($"        public {context.EntityName}IntegrationTests(WebApplicationFactory<Program> factory)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            _factory = factory;");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            
+            sb.AppendLine("        [Fact]");
+            sb.AppendLine("        public async Task GetAll_ReturnsSuccessStatusCode()");
+            sb.AppendLine("        {");
+            sb.AppendLine("            // Arrange");
+            sb.AppendLine("            var client = _factory.CreateClient();");
+            sb.AppendLine();
+            sb.AppendLine("            // Act");
+            sb.AppendLine($"            var response = await client.GetAsync(\"/api/{context.EntityName}\");");
+            sb.AppendLine();
+            sb.AppendLine("            // Assert");
+            sb.AppendLine("            Assert.Equal(HttpStatusCode.OK, response.StatusCode);");
+            sb.AppendLine("        }");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            
+            return sb.ToString();
         }
 
         public override List<PreviewFile> GeneratePreview(TableInfo table, CodeGenerationContext context)
@@ -467,6 +832,11 @@ namespace GeneratorCode.Core.ArchitecturePatterns
             var dbContextContent = GenerateDbContext(context);
             var dbContextPath = Path.Combine(directoryPath, "Data", $"{context.Namespace}DbContext.cs");
             await CreateFileAsync(dbContextPath, dbContextContent);
+
+            // توليد DI Registration
+            var diContent = GenerateDIRegistration(context);
+            var diPath = Path.Combine(directoryPath, "DependencyInjection", "DependencyInjection.cs");
+            await CreateFileAsync(diPath, diContent);
         }
 
         public override async Task GenerateApplicationLayerAsync(CodeGenerationContext context, string directoryPath)
@@ -498,6 +868,11 @@ namespace GeneratorCode.Core.ArchitecturePatterns
             var mapperContent = GenerateAutoMapperProfile(context);
             var mapperPath = Path.Combine(directoryPath, "Mappings", $"{context.EntityName}Profile.cs");
             await CreateFileAsync(mapperPath, mapperContent);
+
+            // توليد CQRS
+            var commandsPath = Path.Combine(directoryPath, "Commands", context.EntityName);
+            var queriesPath = Path.Combine(directoryPath, "Queries", context.EntityName);
+            await GenerateCommandsAndQueries(context, commandsPath, queriesPath);
         }
 
         public override async Task GenerateDomainLayerAsync(CodeGenerationContext context, string directoryPath)
@@ -521,6 +896,11 @@ namespace GeneratorCode.Core.ArchitecturePatterns
             var exceptionContent = GenerateDomainException(context);
             var exceptionPath = Path.Combine(directoryPath, "Exceptions", $"{context.EntityName}Exception.cs");
             await CreateFileAsync(exceptionPath, exceptionContent);
+
+            // توليد Value Objects
+            var voContent = GenerateValueObjects(context);
+            var voPath = Path.Combine(directoryPath, "ValueObjects", $"{context.EntityName}ValueObjects.cs");
+            await CreateFileAsync(voPath, voContent);
         }
 
         public override async Task GeneratePresentationLayerAsync(CodeGenerationContext context, string directoryPath)
@@ -529,6 +909,21 @@ namespace GeneratorCode.Core.ArchitecturePatterns
             var controllerContent = GenerateController(context);
             var controllerPath = Path.Combine(directoryPath, "Controllers", $"{context.EntityName}Controller.cs");
             await CreateFileAsync(controllerPath, controllerContent);
+
+            // توليد Program.cs
+            var programContent = GenerateProgram(context);
+            var programPath = Path.Combine(directoryPath, "Program.cs");
+            await CreateFileAsync(programPath, programContent);
+
+            // توليد appsettings.json
+            var settingsContent = GenerateAppSettings(context);
+            var settingsPath = Path.Combine(directoryPath, "appsettings.json");
+            await CreateFileAsync(settingsPath, settingsContent);
+
+            // توليد Startup.cs
+            var startupContent = GenerateStartup(context);
+            var startupPath = Path.Combine(directoryPath, "Startup.cs");
+            await CreateFileAsync(startupPath, startupContent);
 
             if (context.Options.GeneratePresentationLayer)
             {
@@ -550,11 +945,192 @@ namespace GeneratorCode.Core.ArchitecturePatterns
 
         private async Task CreateFileAsync(string path, string content)
         {
+            if (string.IsNullOrEmpty(content))
+                return;
+
             var directory = Path.GetDirectoryName(path);
             if (!Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
 
             await File.WriteAllTextAsync(path, content);
+        }
+
+        private string GenerateDIRegistration(CodeGenerationContext context)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("using Microsoft.Extensions.DependencyInjection;");
+            sb.AppendLine($"using {context.Namespace}.Application.Interfaces;");
+            sb.AppendLine($"using {context.Namespace}.Application.Services;");
+            sb.AppendLine($"using {context.Namespace}.Domain.Repositories;");
+            sb.AppendLine($"using {context.Namespace}.Infrastructure.Repositories;");
+            sb.AppendLine();
+            sb.AppendLine("namespace Microsoft.Extensions.DependencyInjection");
+            sb.AppendLine("{");
+            sb.AppendLine("    public static class DependencyInjection");
+            sb.AppendLine("    {");
+            sb.AppendLine("        public static IServiceCollection AddInfrastructure(this IServiceCollection services)");
+            sb.AppendLine("        {");
+            sb.AppendLine($"            services.AddScoped<I{context.EntityName}Repository, {context.EntityName}Repository>();");
+            sb.AppendLine("            return services;");
+            sb.AppendLine("        }");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            return sb.ToString();
+        }
+
+        private async Task GenerateCommandsAndQueries(CodeGenerationContext context, string commandsPath, string queriesPath)
+        {
+            // Generate Commands
+            var createCommandContent = GenerateCreateCommand(context);
+            await CreateFileAsync(Path.Combine(commandsPath, $"Create{context.EntityName}Command.cs"), createCommandContent);
+
+            var updateCommandContent = GenerateUpdateCommand(context);
+            await CreateFileAsync(Path.Combine(commandsPath, $"Update{context.EntityName}Command.cs"), updateCommandContent);
+
+            var deleteCommandContent = GenerateDeleteCommand(context);
+            await CreateFileAsync(Path.Combine(commandsPath, $"Delete{context.EntityName}Command.cs"), deleteCommandContent);
+
+            // Generate Queries
+            var getByIdQueryContent = GenerateGetByIdQuery(context);
+            await CreateFileAsync(Path.Combine(queriesPath, $"Get{context.EntityName}ByIdQuery.cs"), getByIdQueryContent);
+
+            var getAllQueryContent = GenerateGetAllQuery(context);
+            await CreateFileAsync(Path.Combine(queriesPath, $"GetAll{context.EntityName}Query.cs"), getAllQueryContent);
+        }
+
+        private string GenerateProgram(CodeGenerationContext context)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("using Microsoft.AspNetCore.Builder;");
+            sb.AppendLine("using Microsoft.Extensions.DependencyInjection;");
+            sb.AppendLine("using Microsoft.Extensions.Hosting;");
+            sb.AppendLine();
+            sb.AppendLine("var builder = WebApplication.CreateBuilder(args);");
+            sb.AppendLine();
+            sb.AppendLine("// Add services to the container");
+            sb.AppendLine("builder.Services.AddControllers();");
+            sb.AppendLine("builder.Services.AddEndpointsApiExplorer();");
+            sb.AppendLine("builder.Services.AddSwaggerGen();");
+            sb.AppendLine("builder.Services.AddInfrastructure();");
+            sb.AppendLine();
+            sb.AppendLine("var app = builder.Build();");
+            sb.AppendLine();
+            sb.AppendLine("// Configure the HTTP request pipeline");
+            sb.AppendLine("if (app.Environment.IsDevelopment())");
+            sb.AppendLine("{");
+            sb.AppendLine("    app.UseSwagger();");
+            sb.AppendLine("    app.UseSwaggerUI();");
+            sb.AppendLine("}");
+            sb.AppendLine();
+            sb.AppendLine("app.UseHttpsRedirection();");
+            sb.AppendLine("app.UseAuthorization();");
+            sb.AppendLine("app.MapControllers();");
+            sb.AppendLine();
+            sb.AppendLine("app.Run();");
+            return sb.ToString();
+        }
+
+        private string GenerateAppSettings(CodeGenerationContext context)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("{");
+            sb.AppendLine("  \"ConnectionStrings\": {");
+            sb.AppendLine("    \"DefaultConnection\": \"YOUR_CONNECTION_STRING\"");
+            sb.AppendLine("  },");
+            sb.AppendLine("  \"Logging\": {");
+            sb.AppendLine("    \"LogLevel\": {");
+            sb.AppendLine("      \"Default\": \"Information\",");
+            sb.AppendLine("      \"Microsoft.AspNetCore\": \"Warning\"");
+            sb.AppendLine("    }");
+            sb.AppendLine("  },");
+            sb.AppendLine("  \"AllowedHosts\": \"*\"");
+            sb.AppendLine("}");
+            return sb.ToString();
+        }
+
+        private string GenerateStartup(CodeGenerationContext context)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("using Microsoft.AspNetCore.Builder;");
+            sb.AppendLine("using Microsoft.AspNetCore.Hosting;");
+            sb.AppendLine("using Microsoft.Extensions.Configuration;");
+            sb.AppendLine("using Microsoft.Extensions.DependencyInjection;");
+            sb.AppendLine("using Microsoft.Extensions.Hosting;");
+            sb.AppendLine();
+            sb.AppendLine($"namespace {context.Namespace}.API");
+            sb.AppendLine("{");
+            sb.AppendLine("    public class Startup");
+            sb.AppendLine("    {");
+            sb.AppendLine("        public Startup(IConfiguration configuration)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            Configuration = configuration;");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public IConfiguration Configuration { get; }");
+            sb.AppendLine();
+            sb.AppendLine("        public void ConfigureServices(IServiceCollection services)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            services.AddControllers();");
+            sb.AppendLine("            services.AddEndpointsApiExplorer();");
+            sb.AppendLine("            services.AddSwaggerGen();");
+            sb.AppendLine("            services.AddInfrastructure();");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            if (env.IsDevelopment())");
+            sb.AppendLine("            {");
+            sb.AppendLine("                app.UseSwagger();");
+            sb.AppendLine("                app.UseSwaggerUI();");
+            sb.AppendLine("            }");
+            sb.AppendLine();
+            sb.AppendLine("            app.UseHttpsRedirection();");
+            sb.AppendLine("            app.UseRouting();");
+            sb.AppendLine("            app.UseAuthorization();");
+            sb.AppendLine("            app.UseEndpoints(endpoints =>");
+            sb.AppendLine("            {");
+            sb.AppendLine("                endpoints.MapControllers();");
+            sb.AppendLine("            });");
+            sb.AppendLine("        }");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            return sb.ToString();
+        }
+
+        private string GenerateValueObjects(CodeGenerationContext context)
+        {
+            // Add implementation for generating value objects
+            return string.Empty;
+        }
+
+        private string GenerateCreateCommand(CodeGenerationContext context)
+        {
+            // Add implementation for generating create command
+            return string.Empty;
+        }
+
+        private string GenerateUpdateCommand(CodeGenerationContext context)
+        {
+            // Add implementation for generating update command
+            return string.Empty;
+        }
+
+        private string GenerateDeleteCommand(CodeGenerationContext context)
+        {
+            // Add implementation for generating delete command
+            return string.Empty;
+        }
+
+        private string GenerateGetByIdQuery(CodeGenerationContext context)
+        {
+            // Add implementation for generating get by id query
+            return string.Empty;
+        }
+
+        private string GenerateGetAllQuery(CodeGenerationContext context)
+        {
+            // Add implementation for generating get all query
+            return string.Empty;
         }
 
         private string GenerateDbContext(CodeGenerationContext context)
@@ -593,7 +1169,7 @@ namespace GeneratorCode.Core.ArchitecturePatterns
             sb.AppendLine("{");
             sb.AppendLine($"    public class {context.EntityName}DTO");
             sb.AppendLine("    {");
-            
+
             if (context.TableInfo?.Columns != null)
             {
                 foreach (var column in context.TableInfo.Columns)
@@ -601,7 +1177,7 @@ namespace GeneratorCode.Core.ArchitecturePatterns
                     sb.AppendLine($"        public {column.CSharpType} {column.Name} {{ get; set; }}");
                 }
             }
-            
+
             sb.AppendLine("    }");
             sb.AppendLine("}");
             return sb.ToString();
@@ -698,7 +1274,7 @@ namespace GeneratorCode.Core.ArchitecturePatterns
             sb.AppendLine("    {");
             sb.AppendLine($"        public {context.EntityName}Validator()");
             sb.AppendLine("        {");
-            
+
             if (context.TableInfo?.Columns != null)
             {
                 foreach (var column in context.TableInfo.Columns)
@@ -713,7 +1289,7 @@ namespace GeneratorCode.Core.ArchitecturePatterns
                     }
                 }
             }
-            
+
             sb.AppendLine("        }");
             sb.AppendLine("    }");
             sb.AppendLine("}");
@@ -789,7 +1365,7 @@ namespace GeneratorCode.Core.ArchitecturePatterns
             sb.AppendLine("{");
             sb.AppendLine($"    public class {context.EntityName}ViewModel");
             sb.AppendLine("    {");
-            
+
             if (context.TableInfo?.Columns != null)
             {
                 foreach (var column in context.TableInfo.Columns)
@@ -806,7 +1382,7 @@ namespace GeneratorCode.Core.ArchitecturePatterns
                     sb.AppendLine();
                 }
             }
-            
+
             sb.AppendLine("    }");
             sb.AppendLine("}");
             return sb.ToString();
@@ -850,7 +1426,7 @@ namespace GeneratorCode.Core.ArchitecturePatterns
             sb.AppendLine("<table class=\"table\">");
             sb.AppendLine("    <thead>");
             sb.AppendLine("        <tr>");
-            
+
             if (context.TableInfo?.Columns != null)
             {
                 foreach (var column in context.TableInfo.Columns)
@@ -858,14 +1434,14 @@ namespace GeneratorCode.Core.ArchitecturePatterns
                     sb.AppendLine($"            <th>{column.Name}</th>");
                 }
             }
-            
+
             sb.AppendLine("            <th>Actions</th>");
             sb.AppendLine("        </tr>");
             sb.AppendLine("    </thead>");
             sb.AppendLine("    <tbody>");
             sb.AppendLine("    @foreach (var item in Model) {");
             sb.AppendLine("        <tr>");
-            
+
             if (context.TableInfo?.Columns != null)
             {
                 foreach (var column in context.TableInfo.Columns)
@@ -873,7 +1449,7 @@ namespace GeneratorCode.Core.ArchitecturePatterns
                     sb.AppendLine($"            <td>@item.{column.Name}</td>");
                 }
             }
-            
+
             sb.AppendLine("            <td>");
             sb.AppendLine("                <a asp-action=\"Edit\" asp-route-id=\"@item.Id\" class=\"btn btn-sm btn-warning\">Edit</a> |");
             sb.AppendLine("                <a asp-action=\"Details\" asp-route-id=\"@item.Id\" class=\"btn btn-sm btn-info\">Details</a> |");
@@ -891,7 +1467,7 @@ namespace GeneratorCode.Core.ArchitecturePatterns
             sb.AppendLine("    <div class=\"col-md-6\">");
             sb.AppendLine("        <form asp-action=\"" + viewName + "\">");
             sb.AppendLine("            <div asp-validation-summary=\"ModelOnly\" class=\"text-danger\"></div>");
-            
+
             if (context.TableInfo?.Columns != null)
             {
                 foreach (var column in context.TableInfo.Columns)
@@ -906,7 +1482,7 @@ namespace GeneratorCode.Core.ArchitecturePatterns
                     }
                 }
             }
-            
+
             sb.AppendLine("            <div class=\"form-group\">");
             sb.AppendLine($"                <input type=\"submit\" value=\"{viewName}\" class=\"btn btn-primary\" />");
             sb.AppendLine("                <a asp-action=\"Index\" class=\"btn btn-secondary\">Back to List</a>");
@@ -920,7 +1496,7 @@ namespace GeneratorCode.Core.ArchitecturePatterns
         {
             sb.AppendLine("<div>");
             sb.AppendLine("    <dl class=\"row\">");
-            
+
             if (context.TableInfo?.Columns != null)
             {
                 foreach (var column in context.TableInfo.Columns)
@@ -933,7 +1509,7 @@ namespace GeneratorCode.Core.ArchitecturePatterns
                     sb.AppendLine("        </dd>");
                 }
             }
-            
+
             sb.AppendLine("    </dl>");
             sb.AppendLine("</div>");
             sb.AppendLine("<div>");
@@ -947,7 +1523,7 @@ namespace GeneratorCode.Core.ArchitecturePatterns
             sb.AppendLine("<h3>Are you sure you want to delete this?</h3>");
             sb.AppendLine("<div>");
             sb.AppendLine("    <dl class=\"row\">");
-            
+
             if (context.TableInfo?.Columns != null)
             {
                 foreach (var column in context.TableInfo.Columns)
@@ -960,7 +1536,7 @@ namespace GeneratorCode.Core.ArchitecturePatterns
                     sb.AppendLine("        </dd>");
                 }
             }
-            
+
             sb.AppendLine("    </dl>");
             sb.AppendLine("    <form asp-action=\"Delete\">");
             sb.AppendLine("        <input type=\"hidden\" asp-for=\"Id\" />");
@@ -970,4 +1546,4 @@ namespace GeneratorCode.Core.ArchitecturePatterns
             sb.AppendLine("</div>");
         }
     }
-} 
+}

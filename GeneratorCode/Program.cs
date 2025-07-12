@@ -20,56 +20,41 @@ namespace GeneratorCode
         [STAThread]
         static async Task<int> Main(string[] args)
         {
-            try
-            {
-                Application.SetHighDpiMode(HighDpiMode.SystemAware);
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
-                
-                // التحقق من وجود ملف الإعدادات وإنشائه إذا لم يكن موجوداً
-             
-                
-                // إظهار رسالة ترحيب
-                //ShowWelcomeMessage();
-                
-                // تهيئة الخدمات
-                var patternFactory = new ArchitecturePatternFactory();
-                var databaseFactory = new DatabaseProviderFactory();
-                var diProviderFactory = new DIProviderFactory();
-                var templateEngine = new SimpleTemplateEngine();
-                
-                var codeGenerationService = new CodeGenerationService(
-                    patternFactory,
-                    databaseFactory,
-                    diProviderFactory,
-                    templateEngine
-                );
+            Application.SetHighDpiMode(HighDpiMode.SystemAware);
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            
+            // التحقق من وجود ملف الإعدادات وإنشائه إذا لم يكن موجوداً
+         
+            
+            // إظهار رسالة ترحيب
+            //ShowWelcomeMessage();
+            
+            // تهيئة الخدمات
+            var patternFactory = new ArchitecturePatternFactory();
+            var databaseFactory = new DatabaseProviderFactory();
+            var diProviderFactory = new DIProviderFactory();
+            var templateEngine = new SimpleTemplateEngine();
+            
+            var codeGenerationService = new CodeGenerationService(
+                patternFactory,
+                databaseFactory,
+                diProviderFactory,
+                templateEngine
+            );
 
-                // التحقق من وجود معاملات سطر الأوامر
-                if (args.Length > 0)
-                {
-                    // تشغيل واجهة سطر الأوامر
-                    var cli = new CommandLineInterface(codeGenerationService);
-                    return await cli.BuildRootCommand().InvokeAsync(args);
-                }
-                else
-                {
-                    // تشغيل واجهة المستخدم الرسومية
-                    Application.Run(new FrmConnection());
-                    return 0;
-                }
-            }
-            catch (Exception ex)
+            // التحقق من وجود معاملات سطر الأوامر
+            if (args.Length > 0)
             {
-                MessageBox.Show(
-                    $"حدث خطأ أثناء بدء تشغيل البرنامج: {ex.Message}",
-                    "خطأ",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.RightAlign
-                );
-                return 1;
+                // تشغيل واجهة سطر الأوامر
+                var cli = new CommandLineInterface(codeGenerationService);
+                return await cli.BuildRootCommand().InvokeAsync(args);
+            }
+            else
+            {
+                // تشغيل واجهة المستخدم الرسومية
+                Application.Run(new FrmConnection());
+                return 0;
             }
         }
         

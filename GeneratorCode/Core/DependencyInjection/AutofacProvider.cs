@@ -18,9 +18,7 @@ namespace GeneratorCode.Core.DependencyInjection
         {
             var result = new DIConfigurationResult { Success = true };
             
-            try
-            {
-                // توليد Autofac Module
+            // توليد Autofac Module
                 var autofacModule = GenerateAutofacModule(context);
                 result.ConfigurationFiles.Add(new GeneratedFile
                 {
@@ -45,13 +43,6 @@ namespace GeneratorCode.Core.DependencyInjection
                 });
                 
                 result.Message = "تم توليد تكوين Autofac بنجاح";
-            }
-            catch (Exception ex)
-            {
-                result.Success = false;
-                result.Message = $"خطأ في توليد تكوين Autofac: {ex.Message}";
-                result.Errors.Add(ex.Message);
-            }
             
             return result;
         }

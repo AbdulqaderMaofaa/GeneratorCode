@@ -6,6 +6,7 @@ using System.Linq;
 using GeneratorCode.Core.Factories;
 using GeneratorCode.Core.Interfaces;
 using GeneratorCode.Core.Models;
+using GeneratorCode.Core.DependencyInjection;
 
 namespace GeneratorCode.Core.Services
 {
@@ -38,52 +39,20 @@ namespace GeneratorCode.Core.Services
         /// <returns>نتيجة التوليد</returns>
         public async Task<CodeGenerationResult> GenerateCodeAsync(CodeGenerationContext context)
         {
+            // التحقق من صحة السياق
+            var validationResult = ValidateContext(context);
+            if (!validationResult.Success)
+                return validationResult;
+
+            var result = new CodeGenerationResult();
+            var pattern = _patternFactory.CreatePattern(context.ArchitecturePattern);
+            
             try
             {
-                // التحقق من صحة السياق
-                var validationResult = ValidateContext(context);
-                if (!validationResult.Success)
-                    return validationResult;
-                
-                // الحصول على النمط المعماري
-                var pattern = _patternFactory.CreatePattern(context.ArchitecturePattern);
-                if (pattern == null)
-                {
-                    return new CodeGenerationResult
-                    {
-                        Success = false,
-                        Message = $"النمط المعماري غير مدعوم: {context.ArchitecturePattern}"
-                    };
-                }
-                
-                // التحقق من دعم قاعدة البيانات
-                if (!pattern.SupportsDatabaseType(context.DatabaseType))
-                {
-                    return new CodeGenerationResult
-                    {
-                        Success = false,
-                        Message = $"النمط المعماري {pattern.Name} لا يدعم قاعدة البيانات {context.DatabaseType}"
-                    };
-                }
-                
-                // الحصول على موفر قاعدة البيانات
-                var databaseProvider = _databaseFactory.CreateProvider(context.DatabaseType);
-                if (databaseProvider == null)
-                {
-                    return new CodeGenerationResult
-                    {
-                        Success = false,
-                        Message = $"موفر قاعدة البيانات غير مدعوم: {context.DatabaseType}"
-                    };
-                }
-                
-                // تحميل معلومات الجدول إذا لم تكن متوفرة
-                context.TableInfo ??= LoadTableInfo(databaseProvider, context);
-                
-                // توليد الكود باستخدام النمط المعماري
-                var result = pattern.Generate(context);
-                
-                // توليد DI Configuration إذا كان مفعل
+                // Generate the code using the selected pattern
+                result = await pattern.Generate(context);
+
+                // Generate DI Configuration if enabled
                 if (result.Success && context.DIOptions.EnableDI)
                 {
                     var diProvider = _diProviderFactory.CreateProvider(context.DIOptions.PreferredContainer);
@@ -106,23 +75,21 @@ namespace GeneratorCode.Core.Services
                         result.Warnings.Add($"موفر DI غير مدعوم: {context.DIOptions.PreferredContainer}");
                     }
                 }
-                
-                // حفظ الملفات المولدة
+
+                // Save all generated files
                 if (result.Success)
                 {
                     await SaveGeneratedFilesAsync(result);
                 }
-                
+
                 return result;
             }
             catch (Exception ex)
             {
-                return new CodeGenerationResult
-                {
-                    Success = false,
-                    Message = $"خطأ في توليد الكود: {ex.Message}",
-                    Errors = { ex.Message }
-                };
+                result.Success = false;
+                result.Message = $"Error generating code: {ex.Message}";
+                result.Errors.Add(ex.ToString());
+                return result;
             }
         }
         
@@ -152,15 +119,8 @@ namespace GeneratorCode.Core.Services
         /// <returns>true إذا نجح الاتصال</returns>
         public bool TestDatabaseConnection(DatabaseType databaseType, string connectionString)
         {
-            try
-            {
-                var provider = _databaseFactory.CreateProvider(databaseType);
-                return provider?.TestConnection(connectionString) ?? false;
-            }
-            catch
-            {
-                return false;
-            }
+            var provider = _databaseFactory.CreateProvider(databaseType);
+            return provider?.TestConnection(connectionString) ?? false;
         }
 
         /// <summary>
@@ -171,15 +131,8 @@ namespace GeneratorCode.Core.Services
         /// <returns>قائمة الجداول</returns>
         public List<TableInfo> GetTables(DatabaseType databaseType, string connectionString)
         {
-            try
-            {
-                var provider = _databaseFactory.CreateProvider(databaseType);
-                return provider?.GetTables(connectionString) ?? new List<TableInfo>();
-            }
-            catch
-            {
-                return new List<TableInfo>();
-            }
+            var provider = _databaseFactory.CreateProvider(databaseType);
+            return provider?.GetTables(connectionString) ?? new List<TableInfo>();
         }
 
         /// <summary>
@@ -204,63 +157,48 @@ namespace GeneratorCode.Core.Services
 
         public List<ColumnInfo> GetTableColumns(DatabaseType databaseType, string connectionString, string tableName)
         {
-            try
-            {
-                var provider = _databaseFactory.CreateProvider(databaseType);
-                return provider?.GetColumns(connectionString, tableName) ?? new List<ColumnInfo>();
-            }
-            catch
-            {
-                return new List<ColumnInfo>();
-            }
+            var provider = _databaseFactory.CreateProvider(databaseType);
+            return provider?.GetColumns(connectionString, tableName) ?? new List<ColumnInfo>();
         }
 
         public PreviewResult GeneratePreview(TableInfo table, CodeGenerationContext context)
         {
             var result = new PreviewResult();
             
-            try
-            {
-                // التحقق من المدخلات
-                if (table == null)
-                {
-                    result.Success = false;
-                    result.Error = "معلومات الجدول مطلوبة";
-                    return result;
-                }
-
-                if (context == null)
-                {
-                    result.Success = false;
-                    result.Error = "سياق توليد الكود مطلوب";
-                    return result;
-                }
-
-                if (string.IsNullOrEmpty(context.ArchitecturePattern))
-                {
-                    result.Success = false;
-                    result.Error = "النمط المعماري مطلوب";
-                    return result;
-                }
-
-                // إنشاء النمط المعماري
-                var pattern = _patternFactory.CreatePattern(context.ArchitecturePattern);
-                if (pattern == null)
-                {
-                    result.Success = false;
-                    result.Error = $"النمط المعماري '{context.ArchitecturePattern}' غير مدعوم";
-                    return result;
-                }
-
-                // توليد المعاينة
-                result.Files = pattern.GeneratePreview(table, context);
-                result.Success = true;
-            }
-            catch (Exception ex)
+            // التحقق من المدخلات
+            if (table == null)
             {
                 result.Success = false;
-                result.Error = $"حدث خطأ أثناء توليد المعاينة: {ex.Message}";
+                result.Error = "معلومات الجدول مطلوبة";
+                return result;
             }
+
+            if (context == null)
+            {
+                result.Success = false;
+                result.Error = "سياق توليد الكود مطلوب";
+                return result;
+            }
+
+            if (string.IsNullOrEmpty(context.ArchitecturePattern))
+            {
+                result.Success = false;
+                result.Error = "النمط المعماري مطلوب";
+                return result;
+            }
+
+            // إنشاء النمط المعماري
+            var pattern = _patternFactory.CreatePattern(context.ArchitecturePattern);
+            if (pattern == null)
+            {
+                result.Success = false;
+                result.Error = $"النمط المعماري '{context.ArchitecturePattern}' غير مدعوم";
+                return result;
+            }
+
+            // توليد المعاينة
+            result.Files = pattern.GeneratePreview(table, context);
+            result.Success = true;
             
             return result;
         }
@@ -333,21 +271,14 @@ namespace GeneratorCode.Core.Services
         {
             foreach (var file in result.GeneratedFiles)
             {
-                try
+                var directory = System.IO.Path.GetDirectoryName(file.FullPath);
+                if (!System.IO.Directory.Exists(directory))
                 {
-                    var directory = System.IO.Path.GetDirectoryName(file.FullPath);
-                    if (!System.IO.Directory.Exists(directory))
-                    {
-                        System.IO.Directory.CreateDirectory(directory);
-                    }
-                    
-                    await System.IO.File.WriteAllTextAsync(file.FullPath, file.Content);
-                    file.SizeInBytes = System.Text.Encoding.UTF8.GetByteCount(file.Content);
+                    System.IO.Directory.CreateDirectory(directory);
                 }
-                catch (Exception ex)
-                {
-                    result.Errors.Add($"خطأ في حفظ الملف {file.FileName}: {ex.Message}");
-                }
+                
+                await System.IO.File.WriteAllTextAsync(file.FullPath, file.Content);
+                file.SizeInBytes = System.Text.Encoding.UTF8.GetByteCount(file.Content);
             }
             
             result.TotalSizeInBytes = result.GeneratedFiles.Sum(f => f.SizeInBytes);
@@ -393,38 +324,267 @@ namespace GeneratorCode.Core.Services
             await File.WriteAllTextAsync(filePath, content);
         }
 
+        public async Task GenerateSolutionFile(CodeGenerationContext context, string projectPath)
+        {
+            try
+            {
+                // Create namespace directory only if projectPath doesn't end with namespace
+                string namespacePath;
+                if (!projectPath.EndsWith(context.Namespace))
+                {
+                    namespacePath = Path.Combine(projectPath, context.Namespace);
+                    if (!Directory.Exists(namespacePath))
+                    {
+                        Directory.CreateDirectory(namespacePath);
+                    }
+                }
+                else
+                {
+                    namespacePath = projectPath;
+                }
+
+                // Create src directory if it doesn't exist
+                var srcPath = Path.Combine(namespacePath, "src");
+                if (!Directory.Exists(srcPath))
+                {
+                    Directory.CreateDirectory(srcPath);
+                }
+
+                // Create tests directory if it doesn't exist
+                var testsPath = Path.Combine(namespacePath, "tests");
+                if (!Directory.Exists(testsPath))
+                {
+                    Directory.CreateDirectory(testsPath);
+                }
+
+                var patternDir = GetTemplateDirectory(context.ArchitecturePattern);
+                var templatePath = $"{patternDir}/Solution.template";
+                var template = await _templateEngine.LoadTemplateAsync(templatePath);
+                
+                // Create template data with all necessary GUIDs
+                var templateData = new Dictionary<string, object>
+                {
+                    { "namespace", context.Namespace },
+                    { "solutionGuid", Guid.NewGuid().ToString("B").ToUpper() },
+                    { "srcFolderGuid", Guid.NewGuid().ToString("B").ToUpper() },
+                    { "testsFolderGuid", Guid.NewGuid().ToString("B").ToUpper() },
+                    { "domainProjectGuid", Guid.NewGuid().ToString("B").ToUpper() },
+                    { "applicationProjectGuid", Guid.NewGuid().ToString("B").ToUpper() },
+                    { "infrastructureProjectGuid", Guid.NewGuid().ToString("B").ToUpper() },
+                    { "apiProjectGuid", Guid.NewGuid().ToString("B").ToUpper() },
+                    { "unitTestsProjectGuid", Guid.NewGuid().ToString("B").ToUpper() },
+                    { "integrationTestsProjectGuid", Guid.NewGuid().ToString("B").ToUpper() }
+                };
+                
+                var content = _templateEngine.RenderTemplate(template, templateData);
+                var slnPath = Path.Combine(namespacePath, $"{context.Namespace}.sln");
+                await File.WriteAllTextAsync(slnPath, content);
+
+                // Generate global.json in the namespace directory
+                var globalJsonContent = @"{
+  ""sdk"": {
+    ""version"": ""6.0.100"",
+    ""rollForward"": ""latestFeature""
+  }
+}";
+                await File.WriteAllTextAsync(Path.Combine(namespacePath, "global.json"), globalJsonContent);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error generating solution file: {ex.Message}", ex);
+            }
+        }
+
         public async Task GenerateInfrastructureLayer(CodeGenerationContext context, string directoryPath)
         {
-            var pattern = _patternFactory.CreatePattern(context.ArchitecturePattern);
-            await pattern.GenerateInfrastructureLayerAsync(context, directoryPath);
+            try
+            {
+                // Check if directoryPath already ends with namespace
+                string namespacePath;
+                if (!directoryPath.EndsWith(context.Namespace))
+                {
+                    namespacePath = Path.Combine(directoryPath, context.Namespace);
+                    if (!Directory.Exists(namespacePath))
+                    {
+                        Directory.CreateDirectory(namespacePath);
+                    }
+                }
+                else
+                {
+                    namespacePath = directoryPath;
+                }
+
+                // Create src directory if it doesn't exist
+                var srcPath = Path.Combine(namespacePath, "src");
+                if (!Directory.Exists(srcPath))
+                {
+                    Directory.CreateDirectory(srcPath);
+                }
+
+                // Create Infrastructure project directory
+                var infrastructurePath = Path.Combine(srcPath, $"{context.Namespace}.Infrastructure");
+                if (!Directory.Exists(infrastructurePath))
+                {
+                    Directory.CreateDirectory(infrastructurePath);
+                }
+
+                var pattern = _patternFactory.CreatePattern(context.ArchitecturePattern);
+                await pattern.GenerateInfrastructureLayerAsync(context, infrastructurePath);
+
+                // Generate project file for Infrastructure layer
+                var packagesGenerator = new PackagesGenerator();
+                var projectFile = packagesGenerator.GenerateProjectFile(context, null, "Infrastructure");
+                var projectPath = Path.Combine(infrastructurePath, $"{context.Namespace}.Infrastructure.csproj");
+                await File.WriteAllTextAsync(projectPath, projectFile);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error generating infrastructure layer: {ex.Message}", ex);
+            }
         }
 
         public async Task GenerateApplicationLayer(CodeGenerationContext context, string directoryPath)
         {
-            var pattern = _patternFactory.CreatePattern(context.ArchitecturePattern);
-            await pattern.GenerateApplicationLayerAsync(context, directoryPath);
+            try
+            {
+                // Check if directoryPath already ends with namespace
+                string namespacePath;
+                if (!directoryPath.EndsWith(context.Namespace))
+                {
+                    namespacePath = Path.Combine(directoryPath, context.Namespace);
+                    if (!Directory.Exists(namespacePath))
+                    {
+                        Directory.CreateDirectory(namespacePath);
+                    }
+                }
+                else
+                {
+                    namespacePath = directoryPath;
+                }
+
+                // Create src directory if it doesn't exist
+                var srcPath = Path.Combine(namespacePath, "src");
+                if (!Directory.Exists(srcPath))
+                {
+                    Directory.CreateDirectory(srcPath);
+                }
+
+                // Create Application project directory
+                var applicationPath = Path.Combine(srcPath, $"{context.Namespace}.Application");
+                if (!Directory.Exists(applicationPath))
+                {
+                    Directory.CreateDirectory(applicationPath);
+                }
+
+                var pattern = _patternFactory.CreatePattern(context.ArchitecturePattern);
+                await pattern.GenerateApplicationLayerAsync(context, applicationPath);
+
+                // Generate project file for Application layer
+                var packagesGenerator = new PackagesGenerator();
+                var projectFile = packagesGenerator.GenerateProjectFile(context, null, "Application");
+                var projectPath = Path.Combine(applicationPath, $"{context.Namespace}.Application.csproj");
+                await File.WriteAllTextAsync(projectPath, projectFile);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error generating application layer: {ex.Message}", ex);
+            }
         }
 
         public async Task GenerateDomainLayer(CodeGenerationContext context, string directoryPath)
         {
-            var pattern = _patternFactory.CreatePattern(context.ArchitecturePattern);
-            await pattern.GenerateDomainLayerAsync(context, directoryPath);
+            try
+            {
+                // Check if directoryPath already ends with namespace
+                string namespacePath;
+                if (!directoryPath.EndsWith(context.Namespace))
+                {
+                    namespacePath = Path.Combine(directoryPath, context.Namespace);
+                    if (!Directory.Exists(namespacePath))
+                    {
+                        Directory.CreateDirectory(namespacePath);
+                    }
+                }
+                else
+                {
+                    namespacePath = directoryPath;
+                }
+
+                // Create src directory if it doesn't exist
+                var srcPath = Path.Combine(namespacePath, "src");
+                if (!Directory.Exists(srcPath))
+                {
+                    Directory.CreateDirectory(srcPath);
+                }
+
+                // Create Domain project directory
+                var domainPath = Path.Combine(srcPath, $"{context.Namespace}.Domain");
+                if (!Directory.Exists(domainPath))
+                {
+                    Directory.CreateDirectory(domainPath);
+                }
+
+                var pattern = _patternFactory.CreatePattern(context.ArchitecturePattern);
+                await pattern.GenerateDomainLayerAsync(context, domainPath);
+
+                // Generate project file for Domain layer
+                var packagesGenerator = new PackagesGenerator();
+                var projectFile = packagesGenerator.GenerateProjectFile(context, null, "Domain");
+                var projectPath = Path.Combine(domainPath, $"{context.Namespace}.Domain.csproj");
+                await File.WriteAllTextAsync(projectPath, projectFile);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error generating domain layer: {ex.Message}", ex);
+            }
         }
 
         public async Task GeneratePresentationLayer(CodeGenerationContext context, string directoryPath)
         {
-            var pattern = _patternFactory.CreatePattern(context.ArchitecturePattern);
-            await pattern.GeneratePresentationLayerAsync(context, directoryPath);
-        }
+            try
+            {
+                // Check if directoryPath already ends with namespace
+                string namespacePath;
+                if (!directoryPath.EndsWith(context.Namespace))
+                {
+                    namespacePath = Path.Combine(directoryPath, context.Namespace);
+                    if (!Directory.Exists(namespacePath))
+                    {
+                        Directory.CreateDirectory(namespacePath);
+                    }
+                }
+                else
+                {
+                    namespacePath = directoryPath;
+                }
 
-        public async Task GenerateSolutionFile(CodeGenerationContext context, string projectPath)
-        {
-            var patternDir = GetTemplateDirectory(context.ArchitecturePattern);
-            var templatePath = $"{patternDir}/Solution.template";
-            var template = await _templateEngine.LoadTemplateAsync(templatePath);
-            var content = _templateEngine.RenderTemplate(template, context);
-            var slnPath = Path.Combine(projectPath, $"{context.Namespace}.sln");
-            await File.WriteAllTextAsync(slnPath, content);
+                // Create src directory if it doesn't exist
+                var srcPath = Path.Combine(namespacePath, "src");
+                if (!Directory.Exists(srcPath))
+                {
+                    Directory.CreateDirectory(srcPath);
+                }
+
+                // Create API project directory
+                var apiPath = Path.Combine(srcPath, $"{context.Namespace}.API");
+                if (!Directory.Exists(apiPath))
+                {
+                    Directory.CreateDirectory(apiPath);
+                }
+
+                var pattern = _patternFactory.CreatePattern(context.ArchitecturePattern);
+                await pattern.GeneratePresentationLayerAsync(context, apiPath);
+
+                // Generate project file for API layer
+                var packagesGenerator = new PackagesGenerator();
+                var projectFile = packagesGenerator.GenerateProjectFile(context, null, "API");
+                var projectPath = Path.Combine(apiPath, $"{context.Namespace}.API.csproj");
+                await File.WriteAllTextAsync(projectPath, projectFile);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error generating presentation layer: {ex.Message}", ex);
+            }
         }
     }
 } 

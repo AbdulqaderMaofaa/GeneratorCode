@@ -128,53 +128,39 @@ namespace GeneratorCode.Forms
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            try
+            // إعدادات عامة
+            _settings.EnableDI = chkEnableDI.Checked;
+            _settings.EnableValidation = chkEnableValidation.Checked;
+            _settings.EnableTesting = chkEnableTesting.Checked;
+            _settings.DefaultNamespace = txtDefaultNamespace.Text;
+            _settings.DefaultOutputPath = txtOutputPath.Text;
+
+            // إعدادات PostgreSQL
+            if (grpPostgres.Visible)
             {
-                // إعدادات عامة
-                _settings.EnableDI = chkEnableDI.Checked;
-                _settings.EnableValidation = chkEnableValidation.Checked;
-                _settings.EnableTesting = chkEnableTesting.Checked;
-                _settings.DefaultNamespace = txtDefaultNamespace.Text;
-                _settings.DefaultOutputPath = txtOutputPath.Text;
-
-                // إعدادات PostgreSQL
-                if (grpPostgres.Visible)
-                {
-                    _settings.PostgreSqlDefaultUsername = txtPostgresUsername.Text;
-                    _settings.PostgreSqlDefaultPassword = txtPostgresPassword.Text;
-                    _settings.PostgreSqlDefaultPort = txtPostgresPort.Text;
-                }
-
-                // إعدادات SQL Server
-                if (grpSqlServer.Visible)
-                {
-                    _settings.SqlServerDefaultUsername = txtSqlServerUsername.Text;
-                    _settings.SqlServerDefaultPassword = txtSqlServerPassword.Text;
-                }
-
-                // إعدادات MySQL
-                if (grpMySql.Visible)
-                {
-                    _settings.MySqlDefaultUsername = txtMySqlUsername.Text;
-                    _settings.MySqlDefaultPassword = txtMySqlPassword.Text;
-                }
-
-                _settings.Save();
-                SettingsUpdated?.Invoke();  // إطلاق الحدث عند تحديث الإعدادات
-                DialogResult = DialogResult.OK;
-                Hide();  // إخفاء النموذج بدلاً من إغلاقه
+                _settings.PostgreSqlDefaultUsername = txtPostgresUsername.Text;
+                _settings.PostgreSqlDefaultPassword = txtPostgresPassword.Text;
+                _settings.PostgreSqlDefaultPort = txtPostgresPort.Text;
             }
-            catch (Exception ex)
+
+            // إعدادات SQL Server
+            if (grpSqlServer.Visible)
             {
-                MessageBox.Show(
-                    $"حدث خطأ أثناء حفظ الإعدادات: {ex.Message}",
-                    "خطأ",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.RightAlign
-                );
+                _settings.SqlServerDefaultUsername = txtSqlServerUsername.Text;
+                _settings.SqlServerDefaultPassword = txtSqlServerPassword.Text;
             }
+
+            // إعدادات MySQL
+            if (grpMySql.Visible)
+            {
+                _settings.MySqlDefaultUsername = txtMySqlUsername.Text;
+                _settings.MySqlDefaultPassword = txtMySqlPassword.Text;
+            }
+
+            _settings.Save();
+            SettingsUpdated?.Invoke();  // إطلاق الحدث عند تحديث الإعدادات
+            DialogResult = DialogResult.OK;
+            Hide();  // إخفاء النموذج بدلاً من إغلاقه
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
