@@ -1,6 +1,5 @@
-using System;
 using System.Collections.Generic;
-using GeneratorCode.Core.Interfaces;
+using System.Threading.Tasks;
 using GeneratorCode.Core.Models;
 
 namespace GeneratorCode.Core.ArchitecturePatterns
@@ -10,8 +9,9 @@ namespace GeneratorCode.Core.ArchitecturePatterns
         public override string Name => "Domain-Driven Design";
         public override string Description => "نمط التصميم الموجه بالنطاق";
         
-        public override CodeGenerationResult Generate(CodeGenerationContext context)
+        public override async Task<CodeGenerationResult> Generate(CodeGenerationContext context)
         {
+            await Task.CompletedTask;
             return new CodeGenerationResult { Success = true, Message = "قيد التطوير" };
         }
         

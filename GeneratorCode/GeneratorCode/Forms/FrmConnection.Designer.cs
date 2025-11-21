@@ -58,6 +58,7 @@ namespace GeneratorCode.Forms
             btnTestConnection = new System.Windows.Forms.Button();
             btnConnect = new System.Windows.Forms.Button();
             btnCancel = new System.Windows.Forms.Button();
+            btnViewLogs = new System.Windows.Forms.Button();
             
             // Status Controls
             lblStatus = new System.Windows.Forms.Label();
@@ -293,6 +294,7 @@ namespace GeneratorCode.Forms
             grpActions.Controls.Add(btnTestConnection);
             grpActions.Controls.Add(btnConnect);
             grpActions.Controls.Add(btnCancel);
+            grpActions.Controls.Add(btnViewLogs);
             grpActions.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
             grpActions.ForeColor = System.Drawing.Color.DarkRed;
             grpActions.Location = new System.Drawing.Point(20, 470);
@@ -348,6 +350,21 @@ namespace GeneratorCode.Forms
             btnCancel.TabIndex = 2;
             btnCancel.Text = "❌ إلغاء";
             btnCancel.UseVisualStyleBackColor = false;
+
+            // 
+            // btnViewLogs
+            // 
+            btnViewLogs.BackColor = System.Drawing.Color.FromArgb(155, 89, 182);
+            btnViewLogs.FlatAppearance.BorderSize = 0;
+            btnViewLogs.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnViewLogs.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            btnViewLogs.ForeColor = System.Drawing.Color.White;
+            btnViewLogs.Location = new System.Drawing.Point(20, 30);
+            btnViewLogs.Name = "btnViewLogs";
+            btnViewLogs.Size = new System.Drawing.Size(160, 40);
+            btnViewLogs.TabIndex = 3;
+            btnViewLogs.Text = "📋 عرض السجلات";
+            btnViewLogs.UseVisualStyleBackColor = false;
 
             // 
             // panelStatus
@@ -461,6 +478,7 @@ namespace GeneratorCode.Forms
         private System.Windows.Forms.Button btnTestConnection;
         private System.Windows.Forms.Button btnConnect;
         private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnViewLogs;
         
         // Status Panel
         private System.Windows.Forms.Panel panelStatus;

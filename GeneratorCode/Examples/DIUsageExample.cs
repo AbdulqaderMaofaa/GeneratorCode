@@ -1,10 +1,11 @@
+using GeneratorCode.Core.Factories;
+using GeneratorCode.Core.Logging;
+using GeneratorCode.Core.Models;
+using GeneratorCode.Core.Services;
+using GeneratorCode.Core.TemplateEngine;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
-using GeneratorCode.Core.Services;
-using GeneratorCode.Core.Models;
-using GeneratorCode.Core.Factories;
-using GeneratorCode.Core.DependencyInjection;
-using GeneratorCode.Core.TemplateEngine;
 
 namespace GeneratorCode.Examples
 {
@@ -52,12 +53,12 @@ namespace GeneratorCode.Examples
                     EnableLogging = true
                 }
             };
-            
+            var logger = LoggerFactory.Default;
             // إنشاء الخدمات
-            var patternFactory = new ArchitecturePatternFactory();
+            var templateEngine = new SimpleTemplateEngine(logger);
+            var patternFactory = new ArchitecturePatternFactory(templateEngine);
             var databaseFactory = new DatabaseProviderFactory();
             var diProviderFactory = new DIProviderFactory();
-            var templateEngine = new SimpleTemplateEngine();
             
             var codeGenerationService = new CodeGenerationService(
                 patternFactory,
@@ -128,11 +129,11 @@ namespace GeneratorCode.Examples
                     EnableAutoRegistration = false
                 }
             };
-            
-            var patternFactory = new ArchitecturePatternFactory();
+            var logger = LoggerFactory.Default;
+            var templateEngine = new SimpleTemplateEngine(logger);
+            var patternFactory = new ArchitecturePatternFactory(templateEngine);
             var databaseFactory = new DatabaseProviderFactory();
             var diProviderFactory = new DIProviderFactory();
-            var templateEngine = new SimpleTemplateEngine();
             
             var codeGenerationService = new CodeGenerationService(
                 patternFactory,

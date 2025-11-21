@@ -1,5 +1,3 @@
-using System;
-
 namespace GeneratorCode.Core.Models
 {
     public class ColumnInfo

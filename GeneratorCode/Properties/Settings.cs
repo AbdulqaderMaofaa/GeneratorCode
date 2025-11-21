@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Text.Json;
-using System.Reflection;
 
 namespace GeneratorCode.Properties
 {
@@ -34,16 +33,20 @@ namespace GeneratorCode.Properties
 
         // إعدادات PostgreSQL
         public string PostgreSqlDefaultUsername { get; set; } = "postgres";
-        public string PostgreSqlDefaultPassword { get; set; } = "4oh70*w8QT";
+        public string PostgreSqlDefaultPassword { get; set; } = "";
         public string PostgreSqlDefaultPort { get; set; } = "5432";
         
         // إعدادات SQL Server
         public string SqlServerDefaultUsername { get; set; } = "sa";
-        public string SqlServerDefaultPassword { get; set; } = "CX_cxAdm0n";
+        public string SqlServerDefaultPassword { get; set; } = "";
         
         // إعدادات MySQL
         public string MySqlDefaultUsername { get; set; } = "";
         public string MySqlDefaultPassword { get; set; } = "";
+
+        // إعدادات LogViewer
+        public string LogViewerDefaultViewMode { get; set; } = "Formatted"; // Formatted or Table
+        public string LogViewerFormattedTemplate { get; set; } = "";
 
         private static Settings Load()
         {

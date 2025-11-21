@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Data;
 using GeneratorCode.Core.Models;
 
 namespace GeneratorCode.Core.Interfaces

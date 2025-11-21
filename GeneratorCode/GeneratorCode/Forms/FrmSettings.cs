@@ -2,6 +2,7 @@ using System;
 using System.Windows.Forms;
 using GeneratorCode.Properties;
 using System.IO;
+using GeneratorCode.GeneratorCode.Helpers;
 
 namespace GeneratorCode.Forms
 {
@@ -114,16 +115,16 @@ namespace GeneratorCode.Forms
 
             // إعدادات PostgreSQL
             txtPostgresUsername.Text = _settings.PostgreSqlDefaultUsername;
-            txtPostgresPassword.Text = _settings.PostgreSqlDefaultPassword;
+            txtPostgresPassword.Text = Core.Helpers.PasswordEncryption.Decrypt(_settings.PostgreSqlDefaultPassword);
             txtPostgresPort.Text = _settings.PostgreSqlDefaultPort;
 
             // إعدادات SQL Server
             txtSqlServerUsername.Text = _settings.SqlServerDefaultUsername;
-            txtSqlServerPassword.Text = _settings.SqlServerDefaultPassword;
+            txtSqlServerPassword.Text = Core.Helpers.PasswordEncryption.Decrypt(_settings.SqlServerDefaultPassword);
 
             // إعدادات MySQL
             txtMySqlUsername.Text = _settings.MySqlDefaultUsername;
-            txtMySqlPassword.Text = _settings.MySqlDefaultPassword;
+            txtMySqlPassword.Text = Core.Helpers.PasswordEncryption.Decrypt(_settings.MySqlDefaultPassword);
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -139,7 +140,7 @@ namespace GeneratorCode.Forms
             if (grpPostgres.Visible)
             {
                 _settings.PostgreSqlDefaultUsername = txtPostgresUsername.Text;
-                _settings.PostgreSqlDefaultPassword = txtPostgresPassword.Text;
+                _settings.PostgreSqlDefaultPassword = Core.Helpers.PasswordEncryption.Encrypt(txtPostgresPassword.Text);
                 _settings.PostgreSqlDefaultPort = txtPostgresPort.Text;
             }
 
@@ -147,14 +148,14 @@ namespace GeneratorCode.Forms
             if (grpSqlServer.Visible)
             {
                 _settings.SqlServerDefaultUsername = txtSqlServerUsername.Text;
-                _settings.SqlServerDefaultPassword = txtSqlServerPassword.Text;
+                _settings.SqlServerDefaultPassword = Core.Helpers.PasswordEncryption.Encrypt(txtSqlServerPassword.Text);
             }
 
             // إعدادات MySQL
             if (grpMySql.Visible)
             {
                 _settings.MySqlDefaultUsername = txtMySqlUsername.Text;
-                _settings.MySqlDefaultPassword = txtMySqlPassword.Text;
+                _settings.MySqlDefaultPassword = Core.Helpers.PasswordEncryption.Encrypt(txtMySqlPassword.Text);
             }
 
             _settings.Save();
@@ -167,6 +168,11 @@ namespace GeneratorCode.Forms
         {
             DialogResult = DialogResult.Cancel;
             Hide();  // إخفاء النموذج بدلاً من إغلاقه
+        }
+
+        private void btnViewLogs_Click(object sender, EventArgs e)
+        {
+        LogViewerHelper.ShowLogViewer(this);
         }
 
         private void btnBrowse_Click(object sender, EventArgs e)

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using GeneratorCode.Core.Interfaces;
 using GeneratorCode.Core.Models;
 
 namespace GeneratorCode.Core.ArchitecturePatterns
@@ -17,7 +16,7 @@ namespace GeneratorCode.Core.ArchitecturePatterns
         
         public override string Description => "نمط معماري بسيط يتكون من Models و DAL و Business Logic";
         
-        public override async Task<CodeGenerationResult> Generate(CodeGenerationContext context)
+        public override Task<CodeGenerationResult> Generate(CodeGenerationContext context)
         {
             var result = new CodeGenerationResult();
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
@@ -72,7 +71,7 @@ namespace GeneratorCode.Core.ArchitecturePatterns
             stopwatch.Stop();
             result.GenerationTime = stopwatch.Elapsed;
 
-            return result;
+            return Task.FromResult(result);
         }
         
         public override bool SupportsDatabaseType(DatabaseType databaseType)
@@ -123,17 +122,19 @@ namespace GeneratorCode.Core.ArchitecturePatterns
                         sb.AppendLine("        [Key]");
                     }
                     
-                    if (!column.IsNullable && column.CSharpType == "string")
+                    var csharpType = column.CSharpType ?? "object";
+                    
+                    if (!column.IsNullable && csharpType == "string")
                     {
                         sb.AppendLine("        [Required]");
                     }
                     
-                    if (column.MaxLength.HasValue && column.CSharpType == "string")
+                    if (column.MaxLength.HasValue && csharpType == "string")
                     {
                         sb.AppendLine($"        [StringLength({column.MaxLength.Value})]");
                     }
                     
-                    sb.AppendLine($"        public {column.CSharpType} {column.Name} {{ get; set; }}");
+                    sb.AppendLine($"        public {csharpType} {column.Name} {{ get; set; }}");
                     sb.AppendLine();
                 }
             }
@@ -239,7 +240,8 @@ namespace GeneratorCode.Core.ArchitecturePatterns
             {
                 foreach (var column in context.TableInfo.Columns)
                 {
-                    sb.AppendLine($"                {column.Name} = reader[\"{column.Name}\"] as {column.CSharpType},");
+                    var csharpType = column.CSharpType ?? "object";
+                    sb.AppendLine($"                {column.Name} = reader[\"{column.Name}\"] as {csharpType},");
                 }
             }
             

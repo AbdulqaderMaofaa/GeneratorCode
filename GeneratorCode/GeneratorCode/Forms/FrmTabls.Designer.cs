@@ -38,6 +38,7 @@ namespace GeneratorCode.Forms
             gridColumns = new System.Windows.Forms.DataGridView();
             tabArchitecture = new System.Windows.Forms.TabPage();
             grpArchitecture = new System.Windows.Forms.GroupBox();
+            chkInfrastructureLayer = new System.Windows.Forms.CheckBox();
             chkApplicationLayer = new System.Windows.Forms.CheckBox();
             chkDomainLayer = new System.Windows.Forms.CheckBox();
             chkPresentationLayer = new System.Windows.Forms.CheckBox();
@@ -82,10 +83,10 @@ namespace GeneratorCode.Forms
             grpActions = new System.Windows.Forms.GroupBox();
             btnPreview = new System.Windows.Forms.Button();
             btnGenerate = new System.Windows.Forms.Button();
+            btnViewLogs = new System.Windows.Forms.Button();
             grpProgress = new System.Windows.Forms.GroupBox();
             progressBar = new System.Windows.Forms.ProgressBar();
             lblStatus = new System.Windows.Forms.Label();
-            chkInfrastructureLayer = new System.Windows.Forms.CheckBox();
             tabControl.SuspendLayout();
             tabTables.SuspendLayout();
             grpTablesInfo.SuspendLayout();
@@ -115,13 +116,13 @@ namespace GeneratorCode.Forms
             tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             tabControl.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             tabControl.Location = new System.Drawing.Point(0, 0);
-            tabControl.Multiline = false;
             tabControl.Name = "tabControl";
             tabControl.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             tabControl.RightToLeftLayout = true;
             tabControl.SelectedIndex = 0;
             tabControl.Size = new System.Drawing.Size(1200, 800);
             tabControl.TabIndex = 0;
+            tabControl.SelectedIndexChanged += TabControl_SelectedIndexChanged;
             // 
             // tabTables
             // 
@@ -149,6 +150,9 @@ namespace GeneratorCode.Forms
             grpTablesInfo.TabIndex = 0;
             grpTablesInfo.TabStop = false;
             grpTablesInfo.Text = "🗂️ الجداول المتاحة";
+            lstTables.SelectedIndexChanged += LstTables_SelectedIndexChanged;
+
+
             // 
             // lblTablesSelection
             // 
@@ -172,6 +176,8 @@ namespace GeneratorCode.Forms
             chkGenerateAllTables.TabIndex = 1;
             chkGenerateAllTables.Text = "توليد جميع الجداول";
             chkGenerateAllTables.UseVisualStyleBackColor = true;
+            chkGenerateAllTables.CheckedChanged += ChkGenerateAllTables_CheckedChanged;
+
             // 
             // lstTables
             // 
@@ -228,6 +234,9 @@ namespace GeneratorCode.Forms
             tabArchitecture.Size = new System.Drawing.Size(1192, 764);
             tabArchitecture.TabIndex = 1;
             tabArchitecture.Text = "النمط المعماري";
+           
+            // أحداث اللغة
+            cmbLanguage.SelectedIndexChanged += CmbLanguage_SelectedIndexChanged;
             // 
             // grpArchitecture
             // 
@@ -245,6 +254,18 @@ namespace GeneratorCode.Forms
             grpArchitecture.TabIndex = 4;
             grpArchitecture.TabStop = false;
             grpArchitecture.Text = "🏛️ طبقات النمط المعماري";
+            // 
+            // chkInfrastructureLayer
+            // 
+            chkInfrastructureLayer.AutoSize = true;
+            chkInfrastructureLayer.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            chkInfrastructureLayer.ForeColor = System.Drawing.Color.Black;
+            chkInfrastructureLayer.Location = new System.Drawing.Point(873, 88);
+            chkInfrastructureLayer.Name = "chkInfrastructureLayer";
+            chkInfrastructureLayer.Size = new System.Drawing.Size(280, 24);
+            chkInfrastructureLayer.TabIndex = 1;
+            chkInfrastructureLayer.Text = "طبقة البنية التحتية  Infrastructure Layer";
+            chkInfrastructureLayer.UseVisualStyleBackColor = true;
             // 
             // chkApplicationLayer
             // 
@@ -302,6 +323,8 @@ namespace GeneratorCode.Forms
             cmbArchitecture.Name = "cmbArchitecture";
             cmbArchitecture.Size = new System.Drawing.Size(400, 31);
             cmbArchitecture.TabIndex = 1;
+            cmbArchitecture.SelectedIndexChanged += CmbArchitecture_SelectedIndexChanged;
+            
             // 
             // lblProgrammingLanguage
             // 
@@ -692,6 +715,7 @@ namespace GeneratorCode.Forms
             btnBrowse.TabIndex = 4;
             btnBrowse.Text = "📁 استعراض";
             btnBrowse.UseVisualStyleBackColor = false;
+            btnBrowse.Click += BtnBrowse_Click;
             // 
             // btnSettings
             // 
@@ -706,6 +730,7 @@ namespace GeneratorCode.Forms
             btnSettings.TabIndex = 5;
             btnSettings.Text = "⚙️ إعدادات";
             btnSettings.UseVisualStyleBackColor = false;
+            btnSettings.Click += BtnSettings_Click;
             // 
             // grpDatabaseInfo
             // 
@@ -760,6 +785,7 @@ namespace GeneratorCode.Forms
             // 
             grpActions.Controls.Add(btnPreview);
             grpActions.Controls.Add(btnGenerate);
+            grpActions.Controls.Add(btnViewLogs);
             grpActions.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             grpActions.ForeColor = System.Drawing.Color.DarkBlue;
             grpActions.Location = new System.Drawing.Point(13, 13);
@@ -784,6 +810,7 @@ namespace GeneratorCode.Forms
             btnPreview.TabIndex = 0;
             btnPreview.Text = "👁️ معاينة الكود";
             btnPreview.UseVisualStyleBackColor = false;
+            btnPreview.Click += BtnPreview_Click;
             // 
             // btnGenerate
             // 
@@ -798,6 +825,22 @@ namespace GeneratorCode.Forms
             btnGenerate.TabIndex = 1;
             btnGenerate.Text = "🚀 توليد الكود";
             btnGenerate.UseVisualStyleBackColor = false;
+            btnGenerate.Click += BtnGenerate_Click;
+            // 
+            // btnViewLogs
+            // 
+            btnViewLogs.BackColor = System.Drawing.Color.FromArgb(155, 89, 182);
+            btnViewLogs.FlatAppearance.BorderSize = 0;
+            btnViewLogs.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnViewLogs.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            btnViewLogs.ForeColor = System.Drawing.Color.White;
+            btnViewLogs.Location = new System.Drawing.Point(503, 36);
+            btnViewLogs.Name = "btnViewLogs";
+            btnViewLogs.Size = new System.Drawing.Size(200, 50);
+            btnViewLogs.TabIndex = 2;
+            btnViewLogs.Text = "📋 عرض السجلات";
+            btnViewLogs.UseVisualStyleBackColor = false;
+            btnViewLogs.Click += BtnViewLogs_Click;
             // 
             // grpProgress
             // 
@@ -831,18 +874,6 @@ namespace GeneratorCode.Forms
             lblStatus.Size = new System.Drawing.Size(42, 23);
             lblStatus.TabIndex = 1;
             lblStatus.Text = "جاهز";
-            // 
-            // chkInfrastructureLayer
-            // 
-            chkInfrastructureLayer.AutoSize = true;
-            chkInfrastructureLayer.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            chkInfrastructureLayer.ForeColor = System.Drawing.Color.Black;
-            chkInfrastructureLayer.Location = new System.Drawing.Point(873, 88);
-            chkInfrastructureLayer.Name = "chkInfrastructureLayer";
-            chkInfrastructureLayer.Size = new System.Drawing.Size(280, 24);
-            chkInfrastructureLayer.TabIndex = 1;
-            chkInfrastructureLayer.Text = "طبقة البنية التحتية  Infrastructure Layer";
-            chkInfrastructureLayer.UseVisualStyleBackColor = true;
             // 
             // FrmTabls
             // 
@@ -958,6 +989,7 @@ namespace GeneratorCode.Forms
         private System.Windows.Forms.GroupBox grpProgress;
         private System.Windows.Forms.Button btnGenerate;
         private System.Windows.Forms.Button btnPreview;
+        private System.Windows.Forms.Button btnViewLogs;
         private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.Label lblStatus;
         private System.Windows.Forms.CheckBox chkInfrastructureLayer;

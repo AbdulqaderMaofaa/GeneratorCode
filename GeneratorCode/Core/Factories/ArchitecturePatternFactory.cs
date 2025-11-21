@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GeneratorCode.Core.Interfaces;
 using GeneratorCode.Core.ArchitecturePatterns;
+using GeneratorCode.Core.Logging;
 
 namespace GeneratorCode.Core.Factories
 {
@@ -12,11 +13,13 @@ namespace GeneratorCode.Core.Factories
     public class ArchitecturePatternFactory : IArchitecturePatternFactory
     {
         private readonly Dictionary<string, Func<IArchitecturePattern>> _patterns;
-        
-        public ArchitecturePatternFactory()
+        private readonly ITemplateEngine _templateEngine;
+        private readonly ILogger _logger;
+        public ArchitecturePatternFactory(ITemplateEngine templateEngine = null)
         {
+            _templateEngine = templateEngine;
             _patterns = new Dictionary<string, Func<IArchitecturePattern>>(StringComparer.OrdinalIgnoreCase);
-            
+            _logger= LoggerFactory.Default;
             // تسجيل الأنماط المعمارية المدعومة
             RegisterDefaultPatterns();
         }
@@ -26,7 +29,17 @@ namespace GeneratorCode.Core.Factories
         /// </summary>
         private void RegisterDefaultPatterns()
         {
-            _patterns["CleanArchitecture"] = () => new CleanArchitecturePattern();
+            // CleanArchitecture يحتاج ITemplateEngine
+            if (_templateEngine != null)
+            {
+                _patterns["CleanArchitecture"] = () => new CleanArchitecturePattern(_templateEngine);
+            }
+            else
+            {
+                // Fallback: إنشاء SimpleTemplateEngine افتراضي إذا لم يتم توفيره
+                _patterns["CleanArchitecture"] = () => new CleanArchitecturePattern(new Core.TemplateEngine.SimpleTemplateEngine(_logger));
+            }
+            
             _patterns["LayeredArchitecture"] = () => new LayeredArchitecturePattern();
             _patterns["MicroservicesArchitecture"] = () => new MicroservicesArchitecturePattern();
             _patterns["DDD"] = () => new DomainDrivenDesignPattern();

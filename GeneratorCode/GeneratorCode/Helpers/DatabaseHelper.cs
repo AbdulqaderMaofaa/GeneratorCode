@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using Npgsql;
+using GeneratorCode.Core.Models;
 
 namespace GeneratorCode.GeneratorCode.Helpers
 {
@@ -124,51 +124,15 @@ namespace GeneratorCode.GeneratorCode.Helpers
 
         public static string BuildConnectionString(string dbType, string server, string username, string password, string database = "")
         {
-            switch (dbType)
-            {
-                case "SQL Server":
-                    var sqlBuilder = new SqlConnectionStringBuilder
-                    {
-                        DataSource = server,
-                        UserID = username,
-                        Password = password,
-                        IntegratedSecurity = false
-                    };
-                    if (!string.IsNullOrEmpty(database))
-                    {
-                        sqlBuilder.InitialCatalog = database;
-                    }
-                    return sqlBuilder.ConnectionString;
-
-                case "MySQL":
-                    var mysqlBuilder = new MySqlConnectionStringBuilder
-                    {
-                        Server = server,
-                        UserID = username,
-                        Password = password
-                    };
-                    if (!string.IsNullOrEmpty(database))
-                    {
-                        mysqlBuilder.Database = database;
-                    }
-                    return mysqlBuilder.ConnectionString;
-
-                case "PostgreSQL":
-                    var npgsqlBuilder = new NpgsqlConnectionStringBuilder
-                    {
-                        Host = server,
-                        Username = username,
-                        Password = password
-                    };
-                    if (!string.IsNullOrEmpty(database))
-                    {
-                        npgsqlBuilder.Database = database;
-                    }
-                    return npgsqlBuilder.ConnectionString;
-
-                default:
-                    throw new ArgumentException("نوع قاعدة البيانات غير مدعوم");
-            }
+            // استخدام الفئة الموحدة لبناء Connection String
+            var databaseType = DatabaseTypeExtensions.ParseDatabaseType(dbType);
+            return Core.Helpers.ConnectionStringBuilder.Build(
+                databaseType,
+                server,
+                database,
+                username,
+                password
+            );
         }
     }
 } 

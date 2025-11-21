@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using GeneratorCode.Core.Models;
 
@@ -77,7 +75,8 @@ namespace GeneratorCode.Core.DependencyInjection
                     break;
                     
                 case "API":
-                    sb.AppendLine("    <PackageReference Include=\"Microsoft.AspNetCore.OpenApi\" Version=\"6.0.0\" />");
+                    // Microsoft.AspNetCore.OpenApi is only available in .NET 7.0+, not in .NET 6.0
+                    // Swashbuckle.AspNetCore is sufficient for OpenAPI/Swagger in .NET 6.0
                     sb.AppendLine("    <PackageReference Include=\"Swashbuckle.AspNetCore\" Version=\"6.2.3\" />");
                     sb.AppendLine("    <PackageReference Include=\"Microsoft.AspNetCore.Mvc.NewtonsoftJson\" Version=\"6.0.0\" />");
                     // Add references to all other projects
