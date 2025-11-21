@@ -36,6 +36,7 @@ namespace GeneratorCode.Forms
             btnBrowse = new System.Windows.Forms.Button();
             btnSave = new System.Windows.Forms.Button();
             btnCancel = new System.Windows.Forms.Button();
+            btnViewLogs = new System.Windows.Forms.Button();
             lblNamespace = new System.Windows.Forms.Label();
             lblOutputPath = new System.Windows.Forms.Label();
             grpPostgres = new System.Windows.Forms.GroupBox();
@@ -141,6 +142,22 @@ namespace GeneratorCode.Forms
             btnCancel.Text = "إلغاء";
             btnCancel.UseVisualStyleBackColor = true;
             btnCancel.Click += btnCancel_Click;
+            // 
+            // btnViewLogs
+            // 
+            btnViewLogs.BackColor = System.Drawing.Color.FromArgb(155, 89, 182);
+            btnViewLogs.FlatAppearance.BorderSize = 0;
+            btnViewLogs.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnViewLogs.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            btnViewLogs.ForeColor = System.Drawing.Color.White;
+            btnViewLogs.Location = new System.Drawing.Point(16, 785);
+            btnViewLogs.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            btnViewLogs.Name = "btnViewLogs";
+            btnViewLogs.Size = new System.Drawing.Size(120, 35);
+            btnViewLogs.TabIndex = 8;
+            btnViewLogs.Text = "📋 عرض السجلات";
+            btnViewLogs.UseVisualStyleBackColor = false;
+            btnViewLogs.Click += btnViewLogs_Click;
             // 
             // lblNamespace
             // 
@@ -379,6 +396,7 @@ namespace GeneratorCode.Forms
         private System.Windows.Forms.Button btnBrowse;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnViewLogs;
         private System.Windows.Forms.Label lblNamespace;
         private System.Windows.Forms.Label lblOutputPath;
         private System.Windows.Forms.GroupBox grpPostgres;

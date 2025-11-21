@@ -1,9 +1,5 @@
 using System;
 using System.CommandLine;
-using System.CommandLine.Binding;
-using System.CommandLine.Invocation;
-using System.CommandLine.NamingConventionBinder;
-using System.CommandLine.Parsing;
 using System.Threading.Tasks;
 using GeneratorCode.Core.Models;
 using GeneratorCode.Core.Services;
@@ -113,13 +109,13 @@ namespace GeneratorCode.CLI
 
         private string BuildConnectionString(string server, string database, DatabaseType dbType)
         {
-            return dbType switch
-            {
-                DatabaseType.SqlServer => $"Server={server};Database={database};Trusted_Connection=True;",
-                DatabaseType.MySql => $"Server={server};Database={database};Uid=root;Pwd=;",
-                DatabaseType.PostgreSql => $"Host={server};Database={database};Username=postgres;Password=;",
-                _ => throw new ArgumentException($"نوع قاعدة البيانات غير مدعوم: {dbType}")
-            };
+            // استخدام الفئة الموحدة لبناء Connection String
+            return Core.Helpers.ConnectionStringBuilder.Build(
+                dbType,
+                server,
+                database,
+                useIntegratedSecurity: dbType == DatabaseType.SqlServer
+            );
         }
     }
 } 

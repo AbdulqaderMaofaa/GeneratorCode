@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Reflection;
 using GeneratorCode.Core.Interfaces;
 using GeneratorCode.Core.Models;
+using GeneratorCode.Core.Logging;
 
 namespace GeneratorCode.Core.TemplateEngine
 {
@@ -15,9 +16,13 @@ namespace GeneratorCode.Core.TemplateEngine
     public class SimpleTemplateEngine : ITemplateEngine
     {
         private readonly string _templatesPath;
+        private readonly ILogger _logger;
         
-        public SimpleTemplateEngine(string templatesPath = null)
+        public SimpleTemplateEngine(ILogger logger,string templatesPath = null )
         {
+            // تعيين _logger أولاً قبل استخدامه
+            _logger = logger ?? LoggerFactory.Default;
+            
             if (string.IsNullOrEmpty(templatesPath))
             {
                 var assemblyLocation = Assembly.GetExecutingAssembly().Location;
@@ -31,7 +36,13 @@ namespace GeneratorCode.Core.TemplateEngine
                 }
                 else
                 {
-                    throw new DirectoryNotFoundException("لم يتم العثور على مجلد المشروع");
+                    // استخدام مسار بديل: مجلد التطبيق الحالي
+                    var appDataPath = Path.Combine(
+                        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                        "GeneratorCode",
+                        "Templates"
+                    );
+                    _templatesPath = appDataPath;
                 }
             }
             else
@@ -39,61 +50,145 @@ namespace GeneratorCode.Core.TemplateEngine
                 _templatesPath = templatesPath;
             }
 
-            if (!Directory.Exists(_templatesPath))
+            // إنشاء المجلد إذا لم يكن موجوداً
+            try
             {
-                Directory.CreateDirectory(_templatesPath);
+                if (!Directory.Exists(_templatesPath))
+                {
+                    Directory.CreateDirectory(_templatesPath);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Failed to create templates directory at {_templatesPath}", ex, "SimpleTemplateEngine");
+                throw new InvalidOperationException(
+                    $"فشل في إنشاء مجلد القوالب في المسار: {_templatesPath}. الخطأ: {ex.Message}", ex);
             }
         }
 
         private static string FindProjectDirectory(string startDirectory)
         {
+            if (string.IsNullOrEmpty(startDirectory) || !Directory.Exists(startDirectory))
+                return null;
+                
             var currentDirectory = startDirectory;
-            while (currentDirectory != null)
+            var maxDepth = 10; // حد أقصى للبحث لتجنب الحلقات اللانهائية
+            var depth = 0;
+            
+            while (currentDirectory != null && depth < maxDepth)
             {
-                // البحث عن ملف .csproj
-                if (Directory.GetFiles(currentDirectory, "*.csproj").Length > 0)
+                try
                 {
-                    return currentDirectory;
+                    // البحث عن ملف .csproj
+                    var csprojFiles = Directory.GetFiles(currentDirectory, "*.csproj");
+                    if (csprojFiles.Length > 0)
+                    {
+                        return currentDirectory;
+                    }
+                    
+                    var parent = Directory.GetParent(currentDirectory);
+                    currentDirectory = parent?.FullName;
+                    depth++;
                 }
-                currentDirectory = Directory.GetParent(currentDirectory)?.FullName;
+                catch (Exception)
+                {
+                    // في حالة حدوث خطأ، التوقف عن البحث
+                    break;
+                }
             }
             return null;
         }
         
         public async Task<string> LoadTemplateAsync(string templatePath)
         {
-            var fullPath = Path.Combine(_templatesPath, templatePath);
-            if (!File.Exists(fullPath))
+            if (string.IsNullOrEmpty(templatePath))
+                throw new ArgumentException("Template path cannot be null or empty", nameof(templatePath));
+                
+            try
             {
-                throw new FileNotFoundException($"Template not found: {templatePath}. Searched in: {fullPath}");
+                var fullPath = NormalizePath(templatePath);
+                if (!File.Exists(fullPath))
+                {
+                    _logger.LogWarning($"Template not found: {templatePath}. Searched in: {fullPath}", null, "SimpleTemplateEngine.LoadTemplateAsync");
+                    throw new FileNotFoundException(
+                        $"Template not found: {templatePath}. Searched in: {fullPath}");
+                }
+                _logger.LogDebug($"Loading template: {templatePath}", "SimpleTemplateEngine.LoadTemplateAsync");
+                return await File.ReadAllTextAsync(fullPath);
             }
-            return await File.ReadAllTextAsync(fullPath);
+            catch (Exception ex) when (ex is not FileNotFoundException)
+            {
+                _logger.LogError($"Error loading template '{templatePath}'", ex, "SimpleTemplateEngine.LoadTemplateAsync");
+                throw new InvalidOperationException(
+                    $"Error loading template '{templatePath}': {ex.Message}", ex);
+            }
         }
         
         public string LoadTemplate(string templatePath)
         {
-            var fullPath = NormalizePath(templatePath);
-            
-            if (!File.Exists(fullPath))
-            {
-                throw new FileNotFoundException(
-                    $"Template not found: {templatePath}. Searched in: {fullPath}");
-            }
+            if (string.IsNullOrEmpty(templatePath))
+                throw new ArgumentException("Template path cannot be null or empty", nameof(templatePath));
                 
-            return File.ReadAllText(fullPath);
+            try
+            {
+                var fullPath = NormalizePath(templatePath);
+                
+                if (!File.Exists(fullPath))
+                {
+                    _logger.LogWarning($"Template not found: {templatePath}. Searched in: {fullPath}", null, "SimpleTemplateEngine.LoadTemplate");
+                    throw new FileNotFoundException(
+                        $"Template not found: {templatePath}. Searched in: {fullPath}");
+                }
+                
+                _logger.LogDebug($"Loading template: {templatePath}", "SimpleTemplateEngine.LoadTemplate");
+                return File.ReadAllText(fullPath);
+            }
+            catch (Exception ex) when (ex is not FileNotFoundException)
+            {
+                _logger.LogError($"Error loading template '{templatePath}'", ex, "SimpleTemplateEngine.LoadTemplate");
+                throw new InvalidOperationException(
+                    $"Error loading template '{templatePath}': {ex.Message}", ex);
+            }
         }
         
         private string NormalizePath(string templatePath)
         {
-            // تنظيف المسار من أي أحرف غير صالحة
-            var cleanPath = string.Join("", templatePath.Split(Path.GetInvalidPathChars()));
-            
-            // التأكد من استخدام الفاصل المناسب للنظام
-            cleanPath = cleanPath.Replace('/', Path.DirectorySeparatorChar)
-                               .Replace('\\', Path.DirectorySeparatorChar);
-            
-            // دمج المسار مع المسار الأساسي
-            return Path.GetFullPath(Path.Combine(_templatesPath, cleanPath));
+            if (string.IsNullOrEmpty(templatePath))
+                throw new ArgumentException("Template path cannot be null or empty", nameof(templatePath));
+                
+            try
+            {
+                // تنظيف المسار من أي أحرف غير صالحة
+                var invalidChars = Path.GetInvalidPathChars();
+                var cleanPath = string.Join("", templatePath.Split(invalidChars, StringSplitOptions.RemoveEmptyEntries));
+                
+                if (string.IsNullOrEmpty(cleanPath))
+                    throw new ArgumentException("Template path contains only invalid characters", nameof(templatePath));
+                
+                // التأكد من استخدام الفاصل المناسب للنظام
+                cleanPath = cleanPath.Replace('/', Path.DirectorySeparatorChar)
+                                   .Replace('\\', Path.DirectorySeparatorChar);
+                
+                // دمج المسار مع المسار الأساسي
+                var fullPath = Path.Combine(_templatesPath, cleanPath);
+                
+                // التأكد من أن المسار النهائي داخل مجلد القوالب (أمان)
+                var normalizedFullPath = Path.GetFullPath(fullPath);
+                var normalizedTemplatesPath = Path.GetFullPath(_templatesPath);
+                
+                if (!normalizedFullPath.StartsWith(normalizedTemplatesPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new UnauthorizedAccessException(
+                        $"Template path '{templatePath}' is outside the templates directory");
+                }
+                
+                return normalizedFullPath;
+            }
+            catch (Exception ex) when (!(ex is ArgumentException || ex is UnauthorizedAccessException))
+            {
+                throw new InvalidOperationException(
+                    $"Error normalizing template path '{templatePath}': {ex.Message}", ex);
+            }
         }
         
         public string ProcessTemplate(string template, Dictionary<string, object> data)

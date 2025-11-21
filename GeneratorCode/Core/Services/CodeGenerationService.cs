@@ -7,6 +7,7 @@ using GeneratorCode.Core.Factories;
 using GeneratorCode.Core.Interfaces;
 using GeneratorCode.Core.Models;
 using GeneratorCode.Core.DependencyInjection;
+using GeneratorCode.Core.Logging;
 
 namespace GeneratorCode.Core.Services
 {
@@ -19,17 +20,20 @@ namespace GeneratorCode.Core.Services
         private readonly IDatabaseProviderFactory _databaseFactory;
         private readonly IDIProviderFactory _diProviderFactory;
         private readonly ITemplateEngine _templateEngine;
+        private readonly ILogger _logger;
         
         public CodeGenerationService(
             IArchitecturePatternFactory patternFactory,
             IDatabaseProviderFactory databaseFactory,
             IDIProviderFactory diProviderFactory,
-            ITemplateEngine templateEngine)
+            ITemplateEngine templateEngine,
+            ILogger? logger = null)
         {
             _patternFactory = patternFactory ?? throw new ArgumentNullException(nameof(patternFactory));
             _databaseFactory = databaseFactory ?? throw new ArgumentNullException(nameof(databaseFactory));
             _diProviderFactory = diProviderFactory ?? throw new ArgumentNullException(nameof(diProviderFactory));
             _templateEngine = templateEngine ?? throw new ArgumentNullException(nameof(templateEngine));
+            _logger = logger ?? LoggerFactory.Default;
         }
         
         /// <summary>
@@ -39,10 +43,18 @@ namespace GeneratorCode.Core.Services
         /// <returns>نتيجة التوليد</returns>
         public async Task<CodeGenerationResult> GenerateCodeAsync(CodeGenerationContext context)
         {
+            _logger.LogInfo($"Starting code generation for table: {context?.TableName}, pattern: {context?.ArchitecturePattern}", 
+                "CodeGenerationService.GenerateCodeAsync",
+                new Dictionary<string, object> { { "EntityName", context?.EntityName ?? "N/A" }, { "Namespace", context?.Namespace ?? "N/A" } });
+
             // التحقق من صحة السياق
             var validationResult = ValidateContext(context);
             if (!validationResult.Success)
+            {
+                _logger.LogWarning($"Code generation validation failed: {validationResult.Message}", 
+                    null, "CodeGenerationService.GenerateCodeAsync");
                 return validationResult;
+            }
 
             var result = new CodeGenerationResult();
             var pattern = _patternFactory.CreatePattern(context.ArchitecturePattern);
@@ -63,16 +75,22 @@ namespace GeneratorCode.Core.Services
                         {
                             result.GeneratedFiles.AddRange(diResult.ConfigurationFiles);
                             result.Message += $" مع تكوين {diProvider.Name}";
+                            _logger.LogInfo($"DI configuration generated successfully using {diProvider.Name}", 
+                                "CodeGenerationService.GenerateCodeAsync");
                         }
                         else
                         {
                             result.Errors.AddRange(diResult.Errors);
                             result.Warnings.AddRange(diResult.Warnings);
+                            _logger.LogWarning($"DI configuration generation had issues: {string.Join(", ", diResult.Errors)}", 
+                                null, "CodeGenerationService.GenerateCodeAsync");
                         }
                     }
                     else
                     {
                         result.Warnings.Add($"موفر DI غير مدعوم: {context.DIOptions.PreferredContainer}");
+                        _logger.LogWarning($"Unsupported DI provider: {context.DIOptions.PreferredContainer}", 
+                            null, "CodeGenerationService.GenerateCodeAsync");
                     }
                 }
 
@@ -80,6 +98,14 @@ namespace GeneratorCode.Core.Services
                 if (result.Success)
                 {
                     await SaveGeneratedFilesAsync(result);
+                    _logger.LogInfo($"Code generation completed successfully. Generated {result.GeneratedFiles.Count} files, Total size: {result.TotalSizeInBytes} bytes", 
+                        "CodeGenerationService.GenerateCodeAsync");
+                }
+                else
+                {
+                    _logger.LogError($"Code generation failed: {result.Message}", null, 
+                        "CodeGenerationService.GenerateCodeAsync",
+                        new Dictionary<string, object> { { "Errors", string.Join("; ", result.Errors) } });
                 }
 
                 return result;
@@ -89,6 +115,8 @@ namespace GeneratorCode.Core.Services
                 result.Success = false;
                 result.Message = $"Error generating code: {ex.Message}";
                 result.Errors.Add(ex.ToString());
+                _logger.LogError("Error generating code", ex, "CodeGenerationService.GenerateCodeAsync",
+                    new Dictionary<string, object> { { "TableName", context?.TableName ?? "N/A" }, { "Pattern", context?.ArchitecturePattern ?? "N/A" } });
                 return result;
             }
         }
@@ -119,8 +147,26 @@ namespace GeneratorCode.Core.Services
         /// <returns>true إذا نجح الاتصال</returns>
         public bool TestDatabaseConnection(DatabaseType databaseType, string connectionString)
         {
-            var provider = _databaseFactory.CreateProvider(databaseType);
-            return provider?.TestConnection(connectionString) ?? false;
+            try
+            {
+                _logger.LogDebug($"Testing database connection for {databaseType}", "CodeGenerationService.TestDatabaseConnection");
+                var provider = _databaseFactory.CreateProvider(databaseType);
+                var result = provider?.TestConnection(connectionString) ?? false;
+                if (result)
+                {
+                    _logger.LogInfo($"Database connection test successful for {databaseType}", "CodeGenerationService.TestDatabaseConnection");
+                }
+                else
+                {
+                    _logger.LogWarning($"Database connection test failed for {databaseType}", null, "CodeGenerationService.TestDatabaseConnection");
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error testing database connection for {databaseType}", ex, "CodeGenerationService.TestDatabaseConnection");
+                return false;
+            }
         }
 
         /// <summary>
@@ -131,8 +177,19 @@ namespace GeneratorCode.Core.Services
         /// <returns>قائمة الجداول</returns>
         public List<TableInfo> GetTables(DatabaseType databaseType, string connectionString)
         {
-            var provider = _databaseFactory.CreateProvider(databaseType);
-            return provider?.GetTables(connectionString) ?? new List<TableInfo>();
+            try
+            {
+                _logger.LogDebug($"Getting tables from {databaseType}", "CodeGenerationService.GetTables");
+                var provider = _databaseFactory.CreateProvider(databaseType);
+                var tables = provider?.GetTables(connectionString) ?? new List<TableInfo>();
+                _logger.LogInfo($"Retrieved {tables.Count} tables from {databaseType}", "CodeGenerationService.GetTables");
+                return tables;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error getting tables from {databaseType}", ex, "CodeGenerationService.GetTables");
+                return new List<TableInfo>();
+            }
         }
 
         /// <summary>
@@ -157,8 +214,24 @@ namespace GeneratorCode.Core.Services
 
         public List<ColumnInfo> GetTableColumns(DatabaseType databaseType, string connectionString, string tableName)
         {
-            var provider = _databaseFactory.CreateProvider(databaseType);
-            return provider?.GetColumns(connectionString, tableName) ?? new List<ColumnInfo>();
+            try
+            {
+                _logger.LogDebug($"Getting columns for table {tableName} from {databaseType}", "CodeGenerationService.GetTableColumns");
+                var provider = _databaseFactory.CreateProvider(databaseType);
+                if (provider == null)
+                {
+                    _logger.LogWarning($"Database provider not found for {databaseType}", null, "CodeGenerationService.GetTableColumns");
+                    return new List<ColumnInfo>();
+                }
+                var columns = provider.GetColumns(connectionString, tableName) ?? new List<ColumnInfo>();
+                _logger.LogInfo($"Retrieved {columns.Count} columns for table {tableName}", "CodeGenerationService.GetTableColumns");
+                return columns;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error getting columns for table {tableName}", ex, "CodeGenerationService.GetTableColumns");
+                return new List<ColumnInfo>();
+            }
         }
 
         public PreviewResult GeneratePreview(TableInfo table, CodeGenerationContext context)
@@ -292,7 +365,12 @@ namespace GeneratorCode.Core.Services
 
         public async Task GenerateStartupFile(CodeGenerationContext context, string filePath)
         {
-            var patternDir = GetTemplateDirectory(context.ArchitecturePattern);
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+            if (string.IsNullOrEmpty(filePath))
+                throw new ArgumentException("File path cannot be null or empty", nameof(filePath));
+                
+            var patternDir = GetTemplateDirectory(context.ArchitecturePattern ?? string.Empty);
             var templatePath = $"{patternDir}/Infrastructure/Startup.template";
             var template = await _templateEngine.LoadTemplateAsync(templatePath);
             var content = _templateEngine.RenderTemplate(template, context);
@@ -301,7 +379,12 @@ namespace GeneratorCode.Core.Services
 
         public async Task GenerateProgramFile(CodeGenerationContext context, string filePath)
         {
-            var patternDir = GetTemplateDirectory(context.ArchitecturePattern);
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+            if (string.IsNullOrEmpty(filePath))
+                throw new ArgumentException("File path cannot be null or empty", nameof(filePath));
+                
+            var patternDir = GetTemplateDirectory(context.ArchitecturePattern ?? string.Empty);
             var templatePath = $"{patternDir}/Infrastructure/Program.template";
             var template = await _templateEngine.LoadTemplateAsync(templatePath);
             var content = _templateEngine.RenderTemplate(template, context);
@@ -310,6 +393,9 @@ namespace GeneratorCode.Core.Services
 
         public async Task GenerateGitignore(string filePath)
         {
+            if (string.IsNullOrEmpty(filePath))
+                throw new ArgumentException("File path cannot be null or empty", nameof(filePath));
+                
             var template = await _templateEngine.LoadTemplateAsync("CleanArchitecture/.gitignore.template");
             var content = _templateEngine.RenderTemplate(template, null);
             await File.WriteAllTextAsync(filePath, content);
@@ -317,7 +403,12 @@ namespace GeneratorCode.Core.Services
 
         public async Task GenerateReadme(CodeGenerationContext context, string filePath)
         {
-            var patternDir = GetTemplateDirectory(context.ArchitecturePattern);
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+            if (string.IsNullOrEmpty(filePath))
+                throw new ArgumentException("File path cannot be null or empty", nameof(filePath));
+                
+            var patternDir = GetTemplateDirectory(context.ArchitecturePattern ?? string.Empty);
             var templatePath = $"{patternDir}/README.template.md";
             var template = await _templateEngine.LoadTemplateAsync(templatePath);
             var content = _templateEngine.RenderTemplate(template, context);
@@ -326,11 +417,16 @@ namespace GeneratorCode.Core.Services
 
         public async Task GenerateSolutionFile(CodeGenerationContext context, string projectPath)
         {
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+            if (string.IsNullOrEmpty(projectPath))
+                throw new ArgumentException("Project path cannot be null or empty", nameof(projectPath));
+                
             try
             {
                 // Create namespace directory only if projectPath doesn't end with namespace
                 string namespacePath;
-                if (!projectPath.EndsWith(context.Namespace))
+                if (!string.IsNullOrEmpty(context.Namespace) && !projectPath.EndsWith(context.Namespace))
                 {
                     namespacePath = Path.Combine(projectPath, context.Namespace);
                     if (!Directory.Exists(namespacePath))
@@ -381,27 +477,35 @@ namespace GeneratorCode.Core.Services
                 await File.WriteAllTextAsync(slnPath, content);
 
                 // Generate global.json in the namespace directory
+                // Using rollForward: latestMajor without specific version allows using any compatible SDK version
                 var globalJsonContent = @"{
   ""sdk"": {
-    ""version"": ""6.0.100"",
-    ""rollForward"": ""latestFeature""
+    ""rollForward"": ""latestMajor"",
+    ""allowPrerelease"": false
   }
 }";
                 await File.WriteAllTextAsync(Path.Combine(namespacePath, "global.json"), globalJsonContent);
             }
             catch (Exception ex)
             {
+                _logger.LogError("Error generating solution file", ex, "CodeGenerationService.GenerateSolutionFile",
+                    new Dictionary<string, object> { { "ProjectPath", projectPath }, { "Namespace", context.Namespace } });
                 throw new Exception($"Error generating solution file: {ex.Message}", ex);
             }
         }
 
         public async Task GenerateInfrastructureLayer(CodeGenerationContext context, string directoryPath)
         {
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+            if (string.IsNullOrEmpty(directoryPath))
+                throw new ArgumentException("Directory path cannot be null or empty", nameof(directoryPath));
+                
             try
             {
                 // Check if directoryPath already ends with namespace
                 string namespacePath;
-                if (!directoryPath.EndsWith(context.Namespace))
+                if (!string.IsNullOrEmpty(context.Namespace) && !directoryPath.EndsWith(context.Namespace))
                 {
                     namespacePath = Path.Combine(directoryPath, context.Namespace);
                     if (!Directory.Exists(namespacePath))
@@ -439,17 +543,24 @@ namespace GeneratorCode.Core.Services
             }
             catch (Exception ex)
             {
+                _logger.LogError("Error generating infrastructure layer", ex, "CodeGenerationService.GenerateInfrastructureLayer",
+                    new Dictionary<string, object> { { "DirectoryPath", directoryPath }, { "Namespace", context.Namespace } });
                 throw new Exception($"Error generating infrastructure layer: {ex.Message}", ex);
             }
         }
 
         public async Task GenerateApplicationLayer(CodeGenerationContext context, string directoryPath)
         {
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+            if (string.IsNullOrEmpty(directoryPath))
+                throw new ArgumentException("Directory path cannot be null or empty", nameof(directoryPath));
+                
             try
             {
                 // Check if directoryPath already ends with namespace
                 string namespacePath;
-                if (!directoryPath.EndsWith(context.Namespace))
+                if (!string.IsNullOrEmpty(context.Namespace) && !directoryPath.EndsWith(context.Namespace))
                 {
                     namespacePath = Path.Combine(directoryPath, context.Namespace);
                     if (!Directory.Exists(namespacePath))
@@ -487,17 +598,24 @@ namespace GeneratorCode.Core.Services
             }
             catch (Exception ex)
             {
+                _logger.LogError("Error generating application layer", ex, "CodeGenerationService.GenerateApplicationLayer",
+                    new Dictionary<string, object> { { "DirectoryPath", directoryPath }, { "Namespace", context.Namespace } });
                 throw new Exception($"Error generating application layer: {ex.Message}", ex);
             }
         }
 
         public async Task GenerateDomainLayer(CodeGenerationContext context, string directoryPath)
         {
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+            if (string.IsNullOrEmpty(directoryPath))
+                throw new ArgumentException("Directory path cannot be null or empty", nameof(directoryPath));
+                
             try
             {
                 // Check if directoryPath already ends with namespace
                 string namespacePath;
-                if (!directoryPath.EndsWith(context.Namespace))
+                if (!string.IsNullOrEmpty(context.Namespace) && !directoryPath.EndsWith(context.Namespace))
                 {
                     namespacePath = Path.Combine(directoryPath, context.Namespace);
                     if (!Directory.Exists(namespacePath))
@@ -535,17 +653,24 @@ namespace GeneratorCode.Core.Services
             }
             catch (Exception ex)
             {
+                _logger.LogError("Error generating domain layer", ex, "CodeGenerationService.GenerateDomainLayer",
+                    new Dictionary<string, object> { { "DirectoryPath", directoryPath }, { "Namespace", context.Namespace } });
                 throw new Exception($"Error generating domain layer: {ex.Message}", ex);
             }
         }
 
         public async Task GeneratePresentationLayer(CodeGenerationContext context, string directoryPath)
         {
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+            if (string.IsNullOrEmpty(directoryPath))
+                throw new ArgumentException("Directory path cannot be null or empty", nameof(directoryPath));
+                
             try
             {
                 // Check if directoryPath already ends with namespace
                 string namespacePath;
-                if (!directoryPath.EndsWith(context.Namespace))
+                if (!string.IsNullOrEmpty(context.Namespace) && !directoryPath.EndsWith(context.Namespace))
                 {
                     namespacePath = Path.Combine(directoryPath, context.Namespace);
                     if (!Directory.Exists(namespacePath))
@@ -583,6 +708,8 @@ namespace GeneratorCode.Core.Services
             }
             catch (Exception ex)
             {
+                _logger.LogError("Error generating presentation layer", ex, "CodeGenerationService.GeneratePresentationLayer",
+                    new Dictionary<string, object> { { "DirectoryPath", directoryPath }, { "Namespace", context.Namespace } });
                 throw new Exception($"Error generating presentation layer: {ex.Message}", ex);
             }
         }

@@ -6,10 +6,10 @@
   "DefaultNamespace": "",
   "DefaultOutputPath": "",
   "PostgreSqlDefaultUsername": "postgres",
-  "PostgreSqlDefaultPassword": "4oh70*w8QT",
+  "PostgreSqlDefaultPassword": "",
   "PostgreSqlDefaultPort": "5432",
   "SqlServerDefaultUsername": "sa",
-  "SqlServerDefaultPassword": "CX_cxAdm0n",
+  "SqlServerDefaultPassword": "",
   "MySqlDefaultUsername": "",
   "MySqlDefaultPassword": ""
 }

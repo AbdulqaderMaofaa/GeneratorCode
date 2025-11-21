@@ -1,12 +1,13 @@
-using System;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using GeneratorCode.Core.Factories;
+using GeneratorCode.Core.Logging;
 using GeneratorCode.Core.Models;
 using GeneratorCode.Core.Services;
-using GeneratorCode.Core.Factories;
 using GeneratorCode.Core.TemplateEngine;
-using System.Linq;
 using GeneratorCode.Forms;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace GeneratorCode.Examples
 {
@@ -194,10 +195,11 @@ namespace GeneratorCode.Examples
         
         private static CodeGenerationService CreateCodeGenerationService()
         {
-            var patternFactory = new ArchitecturePatternFactory();
+            var logger = LoggerFactory.Default;
+            var templateEngine = new SimpleTemplateEngine(logger);
+            var patternFactory = new ArchitecturePatternFactory(templateEngine);
             var databaseFactory = new DatabaseProviderFactory();
             var diProviderFactory = new DIProviderFactory();
-            var templateEngine = new SimpleTemplateEngine();
             
             return new CodeGenerationService(
                 patternFactory,
