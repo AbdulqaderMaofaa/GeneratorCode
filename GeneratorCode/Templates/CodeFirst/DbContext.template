@@ -1,0 +1,25 @@
+using Microsoft.EntityFrameworkCore;
+using {{Namespace}}.Entities;
+using {{Namespace}}.Configurations;
+
+namespace {{Namespace}}.Data
+{
+    public class {{ProjectName}}DbContext : DbContext
+    {
+        public {{ProjectName}}DbContext(DbContextOptions<{{ProjectName}}DbContext> options)
+            : base(options) { }
+
+        {{#Entities}}
+        public DbSet<{{EntityName}}> {{TableName}}s { get; set; }
+        {{/Entities}}
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            {{#Entities}}
+            modelBuilder.ApplyConfiguration(new {{EntityName}}Configuration());
+            {{/Entities}}
+        }
+    }
+}

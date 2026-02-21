@@ -73,6 +73,7 @@ namespace GeneratorCode.Forms
             // 
             // pnlFilters
             // 
+            pnlFilters.Controls.Add(btnClearFilters);
             pnlFilters.Controls.Add(btnRefresh);
             pnlFilters.Controls.Add(txtSourceFilter);
             pnlFilters.Controls.Add(lblSourceFilter);
@@ -167,12 +168,23 @@ namespace GeneratorCode.Forms
             // 
             // btnRefresh
             // 
+            Helpers.AppTheme.StyleButton(btnRefresh, Helpers.AppTheme.Primary);
             btnRefresh.Location = new System.Drawing.Point(700, 12);
             btnRefresh.Name = "btnRefresh";
             btnRefresh.Size = new System.Drawing.Size(100, 30);
             btnRefresh.TabIndex = 8;
             btnRefresh.Text = "تحديث";
-            btnRefresh.UseVisualStyleBackColor = true;
+
+            // 
+            // btnClearFilters
+            // 
+            btnClearFilters = new System.Windows.Forms.Button();
+            Helpers.AppTheme.StyleButton(btnClearFilters, Helpers.AppTheme.Gray);
+            btnClearFilters.Location = new System.Drawing.Point(810, 12);
+            btnClearFilters.Name = "btnClearFilters";
+            btnClearFilters.Size = new System.Drawing.Size(110, 30);
+            btnClearFilters.TabIndex = 9;
+            btnClearFilters.Text = "مسح الفلاتر";
 
             // 
             // pnlViewMode
@@ -191,7 +203,7 @@ namespace GeneratorCode.Forms
             // lblViewMode
             // 
             lblViewMode.AutoSize = true;
-            lblViewMode.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            lblViewMode.Font = Helpers.AppTheme.DefaultFontBold;
             lblViewMode.Location = new System.Drawing.Point(10, 15);
             lblViewMode.Name = "lblViewMode";
             lblViewMode.Size = new System.Drawing.Size(70, 15);
@@ -279,36 +291,38 @@ namespace GeneratorCode.Forms
             // 
             // btnViewDetails
             // 
+            Helpers.AppTheme.StyleButton(btnViewDetails, Helpers.AppTheme.Primary);
             btnViewDetails.Location = new System.Drawing.Point(900, 10);
             btnViewDetails.Name = "btnViewDetails";
             btnViewDetails.Size = new System.Drawing.Size(100, 30);
             btnViewDetails.TabIndex = 1;
             btnViewDetails.Text = "عرض التفاصيل";
-            btnViewDetails.UseVisualStyleBackColor = true;
 
             // 
             // btnExport
             // 
+            Helpers.AppTheme.StyleButton(btnExport, Helpers.AppTheme.Success);
             btnExport.Location = new System.Drawing.Point(1010, 10);
             btnExport.Name = "btnExport";
             btnExport.Size = new System.Drawing.Size(80, 30);
             btnExport.TabIndex = 2;
             btnExport.Text = "تصدير";
-            btnExport.UseVisualStyleBackColor = true;
 
             // 
             // btnClose
             // 
+            Helpers.AppTheme.StyleButton(btnClose, Helpers.AppTheme.Danger);
             btnClose.Location = new System.Drawing.Point(1100, 10);
             btnClose.Name = "btnClose";
             btnClose.Size = new System.Drawing.Size(80, 30);
             btnClose.TabIndex = 3;
             btnClose.Text = "إغلاق";
-            btnClose.UseVisualStyleBackColor = true;
 
             // 
             // FrmLogViewer
             // 
+            this.BackColor = Helpers.AppTheme.FormBackground;
+            this.Font = Helpers.AppTheme.DefaultFont;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1200, 650);
@@ -371,15 +385,10 @@ namespace GeneratorCode.Forms
 
         private void SetupDataGridView()
         {
+            Helpers.AppTheme.StyleDataGridView(dgvTableView);
             dgvTableView.AutoGenerateColumns = false;
-            dgvTableView.AllowUserToAddRows = false;
-            dgvTableView.AllowUserToDeleteRows = false;
-            dgvTableView.ReadOnly = true;
-            dgvTableView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             dgvTableView.MultiSelect = false;
-            dgvTableView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
 
-            // إضافة الأعمدة
             dgvTableView.Columns.Add(new System.Windows.Forms.DataGridViewTextBoxColumn
             {
                 Name = "Timestamp",
@@ -419,19 +428,11 @@ namespace GeneratorCode.Forms
                 DataPropertyName = "HasException",
                 Width = 100
             });
-
-            // تنسيق الرؤوس
-            dgvTableView.ColumnHeadersDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(52, 152, 219);
-            dgvTableView.ColumnHeadersDefaultCellStyle.ForeColor = System.Drawing.Color.White;
-            dgvTableView.ColumnHeadersDefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
         }
 
         private void SetupRichTextBox()
         {
-            rtbFormattedView.ReadOnly = true;
-            rtbFormattedView.Font = new System.Drawing.Font("Consolas", 9F);
-            rtbFormattedView.BackColor = System.Drawing.Color.FromArgb(30, 30, 30);
-            rtbFormattedView.ForeColor = System.Drawing.Color.White;
+            Helpers.AppTheme.StyleRichTextBoxConsole(rtbFormattedView);
         }
 
         #endregion
@@ -449,6 +450,7 @@ namespace GeneratorCode.Forms
         private System.Windows.Forms.Label lblSourceFilter;
         private System.Windows.Forms.TextBox txtSourceFilter;
         private System.Windows.Forms.Button btnRefresh;
+        private System.Windows.Forms.Button btnClearFilters;
         private System.Windows.Forms.Label lblViewMode;
         private System.Windows.Forms.RadioButton rdoFormattedView;
         private System.Windows.Forms.RadioButton rdoTableView;

@@ -8,72 +8,20 @@ namespace GeneratorCode.Core.DependencyInjection
 {
     public class PackagesGenerator
     {
-        private readonly Dictionary<string, string> _packageVersions;
+        private readonly PackageVersionResolver _resolver;
+        private readonly string _targetFramework;
 
-        public PackagesGenerator()
+        public PackagesGenerator() : this("net8.0") { }
+
+        public PackagesGenerator(string targetFramework)
         {
-            _packageVersions = LoadPackageVersions();
-        }
-
-        private static Dictionary<string, string> LoadPackageVersions()
-        {
-            var defaults = GetDefaultPackageVersions();
-
-            try
-            {
-                var configPath = Path.Combine(
-                    System.AppDomain.CurrentDomain.BaseDirectory, "Resources", "package-versions.json");
-
-                if (File.Exists(configPath))
-                {
-                    var json = File.ReadAllText(configPath);
-                    var loaded = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
-                    if (loaded != null)
-                    {
-                        foreach (var kvp in loaded)
-                            defaults[kvp.Key] = kvp.Value;
-                    }
-                }
-            }
-            catch { }
-
-            return defaults;
-        }
-
-        private static Dictionary<string, string> GetDefaultPackageVersions()
-        {
-            return new Dictionary<string, string>
-            {
-                ["AutoMapper"] = "13.0.1",
-                ["FluentValidation"] = "11.9.0",
-                ["MediatR"] = "12.2.0",
-                ["Microsoft.EntityFrameworkCore"] = "8.0.0",
-                ["Microsoft.EntityFrameworkCore.Tools"] = "8.0.0",
-                ["Microsoft.EntityFrameworkCore.SqlServer"] = "8.0.0",
-                ["Pomelo.EntityFrameworkCore.MySql"] = "8.0.0",
-                ["Npgsql.EntityFrameworkCore.PostgreSQL"] = "8.0.0",
-                ["Swashbuckle.AspNetCore"] = "6.5.0",
-                ["Microsoft.AspNetCore.Mvc.NewtonsoftJson"] = "8.0.0",
-                ["Microsoft.NET.Test.Sdk"] = "17.9.0",
-                ["xunit"] = "2.7.0",
-                ["xunit.runner.visualstudio"] = "2.5.7",
-                ["Moq"] = "4.20.70",
-                ["Microsoft.AspNetCore.Mvc.Testing"] = "8.0.0",
-                ["Microsoft.Extensions.DependencyInjection"] = "8.0.0",
-                ["Microsoft.Extensions.Configuration"] = "8.0.0",
-                ["Autofac"] = "8.0.0",
-                ["Autofac.Extensions.DependencyInjection"] = "9.0.0",
-                ["AutoMapper.Extensions.Microsoft.DependencyInjection"] = "12.0.1",
-                ["MediatR.Extensions.Microsoft.DependencyInjection"] = "11.1.0",
-                ["FluentValidation.DependencyInjectionExtensions"] = "11.9.0",
-                ["Oracle.EntityFrameworkCore"] = "8.23.50",
-                ["Microsoft.EntityFrameworkCore.Sqlite"] = "8.0.0"
-            };
+            _targetFramework = targetFramework ?? "net8.0";
+            _resolver = new PackageVersionResolver();
         }
 
         private string V(string packageName)
         {
-            return _packageVersions.TryGetValue(packageName, out var version) ? version : "8.0.0";
+            return _resolver.GetVersion(_targetFramework, packageName);
         }
 
         public string GenerateProjectFile(CodeGenerationContext context, List<string> diPackages = null, string projectType = "Application")

@@ -1,6 +1,7 @@
 using GeneratorCode.GeneratorCode.Helpers;
 using GeneratorCode.Core.Models;
 using GeneratorCode.Core.Logging;
+using GeneratorCode.Helpers;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -32,6 +33,7 @@ namespace GeneratorCode.Forms
             _logger.LogDebug("Initializing FrmConnection", "FrmConnection");
             
             InitializeComponent();
+            ApplyTheme();
             _settings = Settings.Default;
             _dbHelper = new DatabaseHelper();
             SetupInitialState();
@@ -51,6 +53,7 @@ namespace GeneratorCode.Forms
             // أحداث الأزرار
             btnTestConnection.Click += BtnTestConnection_Click;
             btnConnect.Click += BtnConnect_Click;
+            btnCodeFirst.Click += BtnCodeFirst_Click;
             btnCancel.Click += BtnCancel_Click;
             btnViewLogs.Click += BtnViewLogs_Click;
 
@@ -77,30 +80,42 @@ namespace GeneratorCode.Forms
             btnConnect.Enabled = false;
         }
 
+        private void ApplyTheme()
+        {
+            AppTheme.StyleButton(btnTestConnection, AppTheme.Primary);
+            AppTheme.StyleButton(btnConnect, AppTheme.Success);
+            AppTheme.StyleButton(btnCancel, AppTheme.Danger);
+            AppTheme.StyleButton(btnViewLogs, AppTheme.Purple);
+            AppTheme.StyleButton(btnCodeFirst, AppTheme.PurpleDark, large: true);
+            AppTheme.StyleGroupBox(grpDatabaseType, AppTheme.PrimaryDark);
+            AppTheme.StyleGroupBox(grpConnectionDetails, AppTheme.PrimaryDark);
+            AppTheme.StyleGroupBox(grpAuthentication, AppTheme.PrimaryDark);
+            AppTheme.StyleGroupBox(grpActions, AppTheme.PrimaryDark);
+        }
+
         private void SetupUI()
         {
-            // إعداد الأيقونات
+            AppTheme.StyleForm(this);
+            KeyDown += (s, e) => { if (e.KeyCode == Keys.Escape) Close(); };
+
             UpdateDatabaseIcon("default");
             UpdateStatusIcon(StatusType.Info);
-            
-            // إعداد تلميحات الأدوات
             SetupTooltips();
-            
-            // إعداد الأحداث الإضافية
             chkSaveCredentials.CheckedChanged += ChkSaveCredentials_CheckedChanged;
-            
-            // إعداد حدث زر عرض السجلات
-            btnViewLogs.Click += BtnViewLogs_Click;
         }
 
         private void SetupTooltips()
         {
-            var toolTip = new ToolTip();
+            var toolTip = AppTheme.CreateTooltipProvider();
             toolTip.SetToolTip(cmbDatabaseType, "اختر نوع قاعدة البيانات التي تريد الاتصال بها");
             toolTip.SetToolTip(cmbServer, "أدخل اسم السيرفر أو عنوان IP");
             toolTip.SetToolTip(txtPort, "رقم المنفذ (Port) الخاص بقاعدة البيانات");
-            toolTip.SetToolTip(btnTestConnection, "اختبر الاتصال قبل المتابعة");
+            toolTip.SetToolTip(btnTestConnection, "اختبر الاتصال قبل المتابعة (Ctrl+T)");
             toolTip.SetToolTip(chkSaveCredentials, "حفظ بيانات الدخول للاستخدام التالي");
+            toolTip.SetToolTip(btnConnect, "الاتصال بقاعدة البيانات والمتابعة");
+            toolTip.SetToolTip(btnCancel, "إغلاق النافذة (Escape)");
+            toolTip.SetToolTip(btnViewLogs, "عرض سجلات النظام");
+            toolTip.SetToolTip(btnCodeFirst, "الانتقال إلى وضع Code First لتصميم الكيانات");
         }
 
         private void UpdateDatabaseIcon(string databaseType)
@@ -326,7 +341,7 @@ namespace GeneratorCode.Forms
             btnTestConnection.Enabled = false;
             
             // تأثير بصري لمدة قصيرة
-            btnTestConnection.BackColor = Color.FromArgb(41, 128, 185);
+            btnTestConnection.BackColor = AppTheme.PrimaryLight;
 
             try
             {
@@ -383,7 +398,7 @@ namespace GeneratorCode.Forms
             {
                 progressBar.Visible = false;
                 btnTestConnection.Enabled = true;
-                btnTestConnection.BackColor = Color.FromArgb(52, 152, 219);
+                btnTestConnection.BackColor = AppTheme.Primary;
             }
         }
 
@@ -445,6 +460,13 @@ namespace GeneratorCode.Forms
             }
         }
 
+        private void BtnCodeFirst_Click(object sender, EventArgs e)
+        {
+            _logger.LogInfo("Opening Code First Entity Designer", "FrmConnection");
+            var designer = new FrmEntityDesigner();
+            designer.ShowDialog(this);
+        }
+
         private void BtnConnect_Click(object sender, EventArgs e)
         {
             if (!ValidateConnectionInputs() || cmbDatabase.SelectedIndex == -1) return;
@@ -453,7 +475,7 @@ namespace GeneratorCode.Forms
             progressBar.Visible = true;
             
             // تأثير بصري للزر
-            btnConnect.BackColor = Color.FromArgb(39, 174, 96);
+            btnConnect.BackColor = AppTheme.SuccessDark;
             
             try
             {
@@ -516,7 +538,7 @@ namespace GeneratorCode.Forms
             finally
             {
                 progressBar.Visible = false;
-                btnConnect.BackColor = Color.FromArgb(46, 204, 113);
+                btnConnect.BackColor = AppTheme.Success;
             }
         }
 

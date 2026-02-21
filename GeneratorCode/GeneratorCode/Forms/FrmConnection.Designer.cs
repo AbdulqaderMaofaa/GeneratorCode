@@ -1,3 +1,5 @@
+using Helpers = GeneratorCode.Helpers;
+
 namespace GeneratorCode.Forms
 {
     partial class FrmConnection
@@ -57,6 +59,7 @@ namespace GeneratorCode.Forms
             // Actions Group Controls
             btnTestConnection = new System.Windows.Forms.Button();
             btnConnect = new System.Windows.Forms.Button();
+            btnCodeFirst = new System.Windows.Forms.Button();
             btnCancel = new System.Windows.Forms.Button();
             btnViewLogs = new System.Windows.Forms.Button();
             
@@ -294,7 +297,6 @@ namespace GeneratorCode.Forms
             grpActions.Controls.Add(btnTestConnection);
             grpActions.Controls.Add(btnConnect);
             grpActions.Controls.Add(btnCancel);
-            grpActions.Controls.Add(btnViewLogs);
             grpActions.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
             grpActions.ForeColor = System.Drawing.Color.DarkRed;
             grpActions.Location = new System.Drawing.Point(20, 470);
@@ -309,7 +311,7 @@ namespace GeneratorCode.Forms
             // 
             // btnTestConnection
             // 
-            btnTestConnection.BackColor = System.Drawing.Color.FromArgb(52, 152, 219);
+            btnTestConnection.BackColor = Helpers.AppTheme.Primary;
             btnTestConnection.FlatAppearance.BorderSize = 0;
             btnTestConnection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnTestConnection.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
@@ -324,7 +326,7 @@ namespace GeneratorCode.Forms
             // 
             // btnConnect
             // 
-            btnConnect.BackColor = System.Drawing.Color.FromArgb(46, 204, 113);
+            btnConnect.BackColor = Helpers.AppTheme.Success;
             btnConnect.FlatAppearance.BorderSize = 0;
             btnConnect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnConnect.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
@@ -339,7 +341,7 @@ namespace GeneratorCode.Forms
             // 
             // btnCancel
             // 
-            btnCancel.BackColor = System.Drawing.Color.FromArgb(231, 76, 60);
+            btnCancel.BackColor = Helpers.AppTheme.Danger;
             btnCancel.FlatAppearance.BorderSize = 0;
             btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnCancel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
@@ -352,14 +354,14 @@ namespace GeneratorCode.Forms
             btnCancel.UseVisualStyleBackColor = false;
 
             // 
-            // btnViewLogs
+            // btnViewLogs - positioned after btnCodeFirst, before panelStatus
             // 
-            btnViewLogs.BackColor = System.Drawing.Color.FromArgb(155, 89, 182);
+            btnViewLogs.BackColor = Helpers.AppTheme.Purple;
             btnViewLogs.FlatAppearance.BorderSize = 0;
             btnViewLogs.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnViewLogs.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             btnViewLogs.ForeColor = System.Drawing.Color.White;
-            btnViewLogs.Location = new System.Drawing.Point(20, 30);
+            btnViewLogs.Location = new System.Drawing.Point(20, 560);
             btnViewLogs.Name = "btnViewLogs";
             btnViewLogs.Size = new System.Drawing.Size(160, 40);
             btnViewLogs.TabIndex = 3;
@@ -367,14 +369,30 @@ namespace GeneratorCode.Forms
             btnViewLogs.UseVisualStyleBackColor = false;
 
             // 
+            // btnCodeFirst
+            // 
+            btnCodeFirst.BackColor = Helpers.AppTheme.PurpleDark;
+            btnCodeFirst.FlatAppearance.BorderSize = 0;
+            btnCodeFirst.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnCodeFirst.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            btnCodeFirst.ForeColor = System.Drawing.Color.White;
+            btnCodeFirst.Location = new System.Drawing.Point(190, 560);
+            btnCodeFirst.Name = "btnCodeFirst";
+            btnCodeFirst.Size = new System.Drawing.Size(390, 40);
+            btnCodeFirst.TabIndex = 4;
+            btnCodeFirst.Text = "Code First - تصميم الكيانات وتوليد المشروع";
+            btnCodeFirst.UseVisualStyleBackColor = false;
+            btnCodeFirst.Cursor = System.Windows.Forms.Cursors.Hand;
+
+            // 
             // panelStatus
             // 
-            panelStatus.BackColor = System.Drawing.Color.FromArgb(236, 240, 241);
+            panelStatus.BackColor = Helpers.AppTheme.PanelBackground;
             panelStatus.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             panelStatus.Controls.Add(picStatus);
             panelStatus.Controls.Add(lblStatus);
             panelStatus.Controls.Add(progressBar);
-            panelStatus.Location = new System.Drawing.Point(20, 560);
+            panelStatus.Location = new System.Drawing.Point(20, 610);
             panelStatus.Name = "panelStatus";
             panelStatus.Size = new System.Drawing.Size(560, 60);
             panelStatus.TabIndex = 4;
@@ -417,9 +435,11 @@ namespace GeneratorCode.Forms
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            BackColor = System.Drawing.Color.FromArgb(245, 245, 245);
-            ClientSize = new System.Drawing.Size(600, 640);
+            BackColor = Helpers.AppTheme.SurfaceLight;
+            ClientSize = new System.Drawing.Size(600, 690);
             Controls.Add(panelStatus);
+            Controls.Add(btnViewLogs);
+            Controls.Add(btnCodeFirst);
             Controls.Add(grpActions);
             Controls.Add(grpAuthentication);
             Controls.Add(grpConnectionDetails);
@@ -477,6 +497,7 @@ namespace GeneratorCode.Forms
         private System.Windows.Forms.GroupBox grpActions;
         private System.Windows.Forms.Button btnTestConnection;
         private System.Windows.Forms.Button btnConnect;
+        private System.Windows.Forms.Button btnCodeFirst;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnViewLogs;
         

@@ -1,3 +1,5 @@
+using GeneratorCode.Helpers;
+
 namespace GeneratorCode.Forms
 {
     partial class FrmTabls
@@ -498,11 +500,11 @@ namespace GeneratorCode.Forms
             grpCrudOperations.Controls.Add(chkGenerateDelete);
             grpCrudOperations.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             grpCrudOperations.ForeColor = System.Drawing.Color.DarkGreen;
-            grpCrudOperations.Location = new System.Drawing.Point(609, 13);
+            grpCrudOperations.Location = new System.Drawing.Point(570, 225);
             grpCrudOperations.Name = "grpCrudOperations";
             grpCrudOperations.Padding = new System.Windows.Forms.Padding(10);
             grpCrudOperations.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            grpCrudOperations.Size = new System.Drawing.Size(570, 180);
+            grpCrudOperations.Size = new System.Drawing.Size(609, 180);
             grpCrudOperations.TabIndex = 1;
             grpCrudOperations.TabStop = false;
             grpCrudOperations.Text = "📝 عمليات CRUD";
@@ -653,6 +655,8 @@ namespace GeneratorCode.Forms
             grpProjectSettings.Controls.Add(txtOutputPath);
             grpProjectSettings.Controls.Add(btnBrowse);
             grpProjectSettings.Controls.Add(btnSettings);
+            grpProjectSettings.Controls.Add(lblTargetFramework);
+            grpProjectSettings.Controls.Add(cmbTargetFramework);
             grpProjectSettings.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             grpProjectSettings.ForeColor = System.Drawing.Color.DarkBlue;
             grpProjectSettings.Location = new System.Drawing.Point(13, 13);
@@ -704,7 +708,7 @@ namespace GeneratorCode.Forms
             // 
             // btnBrowse
             // 
-            btnBrowse.BackColor = System.Drawing.Color.FromArgb(52, 152, 219);
+            btnBrowse.BackColor = global::GeneratorCode.Helpers.AppTheme.Primary;
             btnBrowse.FlatAppearance.BorderSize = 0;
             btnBrowse.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnBrowse.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
@@ -719,7 +723,7 @@ namespace GeneratorCode.Forms
             // 
             // btnSettings
             // 
-            btnSettings.BackColor = System.Drawing.Color.FromArgb(155, 89, 182);
+            btnSettings.BackColor = global::GeneratorCode.Helpers.AppTheme.Purple;
             btnSettings.FlatAppearance.BorderSize = 0;
             btnSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnSettings.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
@@ -731,6 +735,30 @@ namespace GeneratorCode.Forms
             btnSettings.Text = "⚙️ إعدادات";
             btnSettings.UseVisualStyleBackColor = false;
             btnSettings.Click += BtnSettings_Click;
+            //
+            // lblTargetFramework
+            //
+            lblTargetFramework = new System.Windows.Forms.Label();
+            lblTargetFramework.AutoSize = true;
+            lblTargetFramework.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            lblTargetFramework.ForeColor = System.Drawing.Color.Black;
+            lblTargetFramework.Location = new System.Drawing.Point(560, 33);
+            lblTargetFramework.Name = "lblTargetFramework";
+            lblTargetFramework.Size = new System.Drawing.Size(100, 23);
+            lblTargetFramework.TabIndex = 6;
+            lblTargetFramework.Text = "إصدار .NET:";
+            //
+            // cmbTargetFramework
+            //
+            cmbTargetFramework = new System.Windows.Forms.ComboBox();
+            cmbTargetFramework.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            cmbTargetFramework.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            cmbTargetFramework.Items.AddRange(new object[] { ".NET 6", ".NET 7", ".NET 8", ".NET 9" });
+            cmbTargetFramework.Location = new System.Drawing.Point(297, 30);
+            cmbTargetFramework.Name = "cmbTargetFramework";
+            cmbTargetFramework.Size = new System.Drawing.Size(250, 31);
+            cmbTargetFramework.TabIndex = 7;
+            cmbTargetFramework.SelectedIndex = 2;
             // 
             // grpDatabaseInfo
             // 
@@ -799,7 +827,7 @@ namespace GeneratorCode.Forms
             // 
             // btnPreview
             // 
-            btnPreview.BackColor = System.Drawing.Color.FromArgb(52, 152, 219);
+            btnPreview.BackColor = global::GeneratorCode.Helpers.AppTheme.Primary;
             btnPreview.FlatAppearance.BorderSize = 0;
             btnPreview.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnPreview.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
@@ -814,7 +842,7 @@ namespace GeneratorCode.Forms
             // 
             // btnGenerate
             // 
-            btnGenerate.BackColor = System.Drawing.Color.FromArgb(46, 204, 113);
+            btnGenerate.BackColor = global::GeneratorCode.Helpers.AppTheme.Success;
             btnGenerate.FlatAppearance.BorderSize = 0;
             btnGenerate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnGenerate.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
@@ -829,7 +857,7 @@ namespace GeneratorCode.Forms
             // 
             // btnViewLogs
             // 
-            btnViewLogs.BackColor = System.Drawing.Color.FromArgb(155, 89, 182);
+            btnViewLogs.BackColor = global::GeneratorCode.Helpers.AppTheme.Purple;
             btnViewLogs.FlatAppearance.BorderSize = 0;
             btnViewLogs.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnViewLogs.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
@@ -879,7 +907,7 @@ namespace GeneratorCode.Forms
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(9F, 23F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            BackColor = System.Drawing.Color.FromArgb(248, 249, 250);
+            BackColor = global::GeneratorCode.Helpers.AppTheme.FormBackground;
             ClientSize = new System.Drawing.Size(1200, 800);
             Controls.Add(tabControl);
             Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
@@ -979,6 +1007,8 @@ namespace GeneratorCode.Forms
         private System.Windows.Forms.TextBox txtOutputPath;
         private System.Windows.Forms.Button btnBrowse;
         private System.Windows.Forms.Button btnSettings;
+        private System.Windows.Forms.Label lblTargetFramework;
+        private System.Windows.Forms.ComboBox cmbTargetFramework;
         private System.Windows.Forms.Label lblDatabaseType;
         private System.Windows.Forms.Label lblConnectionInfo;
         private System.Windows.Forms.Label lblNamespace;

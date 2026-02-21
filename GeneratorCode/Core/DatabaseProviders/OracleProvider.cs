@@ -219,7 +219,7 @@ namespace GeneratorCode.Core.DatabaseProviders
         {
             var port = 1521;
             if (additionalParams != null && additionalParams.TryGetValue("port", out var portStr))
-                int.TryParse(portStr, out port);
+                _ = int.TryParse(portStr, out port);
 
             return $"Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST={server})(PORT={port}))(CONNECT_DATA=(SID={database})));User Id={username};Password={password};";
         }

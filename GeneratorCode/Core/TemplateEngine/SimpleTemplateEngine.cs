@@ -507,7 +507,7 @@ namespace GeneratorCode.Core.TemplateEngine
         private static string ToPascalCaseWord(string word)
         {
             if (string.IsNullOrEmpty(word)) return word;
-            return char.ToUpperInvariant(word[0]) + word.Substring(1).ToLowerInvariant();
+            return char.ToUpperInvariant(word[0]) + word[1..].ToLowerInvariant();
         }
 
         private string ProcessLoops(string template, object data)
@@ -519,9 +519,8 @@ namespace GeneratorCode.Core.TemplateEngine
             {
                 var propertyPath = match.Groups[1].Value.Trim();
                 var content = match.Groups[2].Value;
-                var items = GetPropertyValue(data, propertyPath) as IEnumerable<object>;
-                
-                if (items == null)
+
+                if (GetPropertyValue(data, propertyPath) is not IEnumerable<object> items)
                 {
                     _logger.LogWarning($"تحذير: المصفوفة {propertyPath} غير موجودة أو فارغة", null, "SimpleTemplateEngine.ProcessLoops");
                     return string.Empty;
@@ -551,7 +550,7 @@ namespace GeneratorCode.Core.TemplateEngine
                 var falseContent = match.Groups[3].Success ? match.Groups[3].Value : string.Empty;
 
                 var value = GetPropertyValue(data, condition);
-                var isTrue = value != null && (value is bool boolValue ? boolValue : true);
+                var isTrue = value != null && (value is not bool boolValue || boolValue);
 
                 return isTrue ? RenderTemplate(trueContent, data) : RenderTemplate(falseContent, data);
             }, RegexOptions.Singleline);
@@ -604,9 +603,9 @@ namespace GeneratorCode.Core.TemplateEngine
                 // التعامل مع القواميس
                 if (value is IDictionary<string, object> dict)
                 {
-                    if (dict.ContainsKey(prop))
+                    if (dict.TryGetValue(prop, out object val))
                     {
-                        value = dict[prop];
+                        value = val;
                         continue;
                     }
                 }

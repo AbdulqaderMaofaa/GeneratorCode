@@ -69,6 +69,9 @@ namespace GeneratorCode.CLI
                 );
             });
 
+            var codeFirstCommand = BuildCodeFirstCommand();
+            rootCommand.AddCommand(codeFirstCommand);
+
             return rootCommand;
         }
 
@@ -188,6 +191,101 @@ namespace GeneratorCode.CLI
                 Console.WriteLine();
                 Console.WriteLine($"اكتمل التوليد: {successCount} نجح، {failCount} فشل");
                 Console.WriteLine($"المسار: {output}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"خطأ: {ex.Message}");
+            }
+        }
+
+        private Command BuildCodeFirstCommand()
+        {
+            var modelPathOption = new Option<string>("--model-path", "مسار ملف نموذج المجال (domain-model.json)") { IsRequired = true };
+            var outputOption = new Option<string>("--output", "مسار حفظ الملفات المولدة") { IsRequired = true };
+            var migrationNameOption = new Option<string>("--migration-name", () => "", "اسم الـ Migration");
+            var applyMigrationOption = new Option<bool>("--apply-migration", () => false, "تطبيق الـ Migration تلقائياً");
+            var targetFrameworkOption = new Option<string>("--target-framework", () => "net8.0", "إطار العمل المستهدف (net6.0, net7.0, net8.0, net9.0)");
+
+            var cmd = new Command("codefirst", "توليد مشروع EF Core من نموذج المجال (Code First)");
+            cmd.AddOption(modelPathOption);
+            cmd.AddOption(outputOption);
+            cmd.AddOption(migrationNameOption);
+            cmd.AddOption(applyMigrationOption);
+            cmd.AddOption(targetFrameworkOption);
+
+            cmd.SetHandler(async (ctx) =>
+            {
+                var parseResult = ctx.ParseResult;
+                await HandleCodeFirstCommand(
+                    parseResult.GetValueForOption(modelPathOption),
+                    parseResult.GetValueForOption(outputOption),
+                    parseResult.GetValueForOption(migrationNameOption),
+                    parseResult.GetValueForOption(applyMigrationOption),
+                    parseResult.GetValueForOption(targetFrameworkOption)
+                );
+            });
+
+            return cmd;
+        }
+
+        private async Task HandleCodeFirstCommand(string modelPath, string output, string migrationName, bool applyMigration, string targetFramework)
+        {
+            try
+            {
+                if (!System.IO.File.Exists(modelPath))
+                {
+                    Console.WriteLine($"ملف النموذج غير موجود: {modelPath}");
+                    return;
+                }
+
+                Console.WriteLine("جاري تحميل نموذج المجال...");
+                var modelService = new Core.Services.DomainModelService();
+                var model = await modelService.LoadModelAsync(modelPath);
+
+                var validation = modelService.ValidateModel();
+                if (!validation.IsValid)
+                {
+                    Console.WriteLine("أخطاء في نموذج المجال:");
+                    foreach (var err in validation.Errors)
+                        Console.WriteLine($"  - {err}");
+                    return;
+                }
+
+                model.TargetFramework = targetFramework;
+
+                var context = new CodeGenerationContext
+                {
+                    Mode = GenerationMode.CodeFirst,
+                    DomainModel = model,
+                    OutputPath = output,
+                    Namespace = model.DefaultNamespace,
+                    TargetFramework = targetFramework,
+                    MigrationName = migrationName,
+                    ApplyMigration = applyMigration,
+                    DatabaseType = model.TargetDatabaseType
+                };
+
+                Console.WriteLine($"جاري توليد مشروع Code First ({model.Entities.Count} كيان)...");
+                var result = await _codeGenerationService.GenerateCodeAsync(context);
+
+                if (result.Success)
+                {
+                    Console.WriteLine($"تم التوليد بنجاح: {result.GeneratedFiles?.Count ?? 0} ملف");
+                    Console.WriteLine($"المسار: {output}");
+                    if (result.Warnings?.Count > 0)
+                    {
+                        Console.WriteLine("تحذيرات:");
+                        foreach (var w in result.Warnings)
+                            Console.WriteLine($"  - {w}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"فشل التوليد: {result.Message}");
+                    if (result.Errors?.Count > 0)
+                        foreach (var err in result.Errors)
+                            Console.WriteLine($"  - {err}");
+                }
             }
             catch (Exception ex)
             {

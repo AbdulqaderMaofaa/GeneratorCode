@@ -1,31 +1,105 @@
 using GeneratorCode.Core.Logging;
+using GeneratorCode.Helpers;
 using System;
+using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
 namespace GeneratorCode.Forms
 {
-    /// <summary>
-    /// نافذة عرض تفاصيل السجل الكاملة
-    /// </summary>
     public partial class FrmLogDetails : Form
     {
-        #region Private Fields
-
         private readonly LogEntry _logEntry;
-
-        #endregion
-
-        #region Constructors
+        private int _lastSearchIndex;
 
         public FrmLogDetails(LogEntry logEntry)
         {
             _logEntry = logEntry ?? throw new ArgumentNullException(nameof(logEntry));
             InitializeComponent();
+            SetupToolbarEvents();
             LoadLogDetails();
+            ColorSections();
         }
 
-        #endregion
+        private void SetupToolbarEvents()
+        {
+            btnCopyAll.Click += (s, e) =>
+            {
+                if (!string.IsNullOrEmpty(rtbDetails.Text))
+                {
+                    Clipboard.SetText(rtbDetails.Text);
+                    btnCopyAll.Text = "تم النسخ!";
+                    var timer = new Timer { Interval = 2000 };
+                    timer.Tick += (ts, te) => { btnCopyAll.Text = "نسخ الكل"; timer.Stop(); timer.Dispose(); };
+                    timer.Start();
+                }
+            };
+
+            btnSearch.Click += (s, e) => SearchText();
+            txtSearchBox.KeyDown += (s, e) => { if (e.KeyCode == Keys.Enter) { SearchText(); e.SuppressKeyPress = true; } };
+
+            KeyPreview = true;
+            KeyDown += (s, e) =>
+            {
+                if (e.KeyCode == Keys.Escape) Close();
+                if (e.Control && e.KeyCode == Keys.C && rtbDetails.SelectionLength == 0)
+                {
+                    Clipboard.SetText(rtbDetails.Text);
+                    e.SuppressKeyPress = true;
+                }
+                if (e.Control && e.KeyCode == Keys.F) { txtSearchBox.Focus(); e.SuppressKeyPress = true; }
+            };
+        }
+
+        private void SearchText()
+        {
+            var query = txtSearchBox.Text;
+            if (string.IsNullOrEmpty(query)) return;
+
+            int idx = rtbDetails.Find(query, _lastSearchIndex, RichTextBoxFinds.None);
+            if (idx >= 0)
+            {
+                rtbDetails.Select(idx, query.Length);
+                rtbDetails.SelectionBackColor = AppTheme.Warning;
+                rtbDetails.SelectionColor = Color.Black;
+                rtbDetails.ScrollToCaret();
+                _lastSearchIndex = idx + query.Length;
+            }
+            else
+            {
+                _lastSearchIndex = 0;
+                MessageBox.Show("لم يتم العثور على نتائج أخرى", "بحث", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void ColorSections()
+        {
+            var text = rtbDetails.Text;
+            var headerColor = AppTheme.Primary;
+            var separatorColor = AppTheme.Gray;
+
+            int pos = 0;
+            while ((pos = text.IndexOf('═', pos)) >= 0)
+            {
+                int lineEnd = text.IndexOf('\n', pos);
+                if (lineEnd < 0) lineEnd = text.Length;
+                rtbDetails.Select(pos, lineEnd - pos);
+                rtbDetails.SelectionColor = headerColor;
+                pos = lineEnd;
+            }
+
+            pos = 0;
+            while ((pos = text.IndexOf('─', pos)) >= 0)
+            {
+                int lineEnd = text.IndexOf('\n', pos);
+                if (lineEnd < 0) lineEnd = text.Length;
+                rtbDetails.Select(pos, lineEnd - pos);
+                rtbDetails.SelectionColor = separatorColor;
+                pos = lineEnd;
+            }
+
+            rtbDetails.Select(0, 0);
+        }
 
         #region Business Logic Methods
 
