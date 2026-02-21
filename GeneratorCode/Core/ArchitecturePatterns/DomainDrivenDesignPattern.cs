@@ -16,15 +16,14 @@ namespace GeneratorCode.Core.ArchitecturePatterns
         }
         
         public override bool SupportsDatabaseType(DatabaseType databaseType) => true;
-        public override List<string> GetRequiredLayers() => new List<string> { "Domain", "Application", "Infrastructure", "Presentation" };
-        public override List<string> GetRequiredDependencies() => new List<string> { "MediatR", "FluentValidation" };
+        public override List<string> GetRequiredLayers() => new() { "Domain", "Application", "Infrastructure", "Presentation" };
+        public override List<string> GetRequiredDependencies() => new() { "MediatR", "FluentValidation" };
 
         public override List<PreviewFile> GeneratePreview(TableInfo table, CodeGenerationContext context)
         {
             return new List<PreviewFile>
             {
-                new PreviewFile
-                {
+                new() {
                     FileName = "Preview.txt",
                     Content = "DDD pattern preview is under development.",
                     Language = "text"

@@ -1,22 +1,12 @@
 using System;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace GeneratorCode.Core.Helpers
 {
-    /// <summary>
-    /// فئة مساعدة لتشفير وفك تشفير كلمات المرور
-    /// </summary>
     public static class PasswordEncryption
     {
-        private static readonly byte[] Key = Encoding.UTF8.GetBytes("GeneratorCode2024!SecretKeyForEncryption12345678"); // 32 bytes
-        private static readonly byte[] IV = Encoding.UTF8.GetBytes("InitVector123456"); // 16 bytes
-
-        /// <summary>
-        /// تشفير كلمة المرور
-        /// </summary>
-        /// <param name="plainText">كلمة المرور النصية</param>
-        /// <returns>كلمة المرور المشفرة (Base64)</returns>
         public static string Encrypt(string plainText)
         {
             if (string.IsNullOrEmpty(plainText))
@@ -24,33 +14,21 @@ namespace GeneratorCode.Core.Helpers
 
             try
             {
-                using (var aes = Aes.Create())
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
-                    aes.Key = Key;
-                    aes.IV = IV;
-                    aes.Mode = CipherMode.CBC;
-                    aes.Padding = PaddingMode.PKCS7;
-
-                    using (var encryptor = aes.CreateEncryptor())
-                    {
-                        var plainBytes = Encoding.UTF8.GetBytes(plainText);
-                        var encryptedBytes = encryptor.TransformFinalBlock(plainBytes, 0, plainBytes.Length);
-                        return Convert.ToBase64String(encryptedBytes);
-                    }
+                    var plainBytes = Encoding.UTF8.GetBytes(plainText);
+                    var encryptedBytes = ProtectedData.Protect(plainBytes, null, DataProtectionScope.CurrentUser);
+                    return Convert.ToBase64String(encryptedBytes);
                 }
+
+                return EncryptFallback(plainText);
             }
             catch
             {
-                // في حالة الفشل، إرجاع النص الأصلي (للتوافق مع الكود القديم)
-                return plainText;
+                return EncryptFallback(plainText);
             }
         }
 
-        /// <summary>
-        /// فك تشفير كلمة المرور
-        /// </summary>
-        /// <param name="cipherText">كلمة المرور المشفرة (Base64)</param>
-        /// <returns>كلمة المرور النصية</returns>
         public static string Decrypt(string cipherText)
         {
             if (string.IsNullOrEmpty(cipherText))
@@ -58,27 +36,82 @@ namespace GeneratorCode.Core.Helpers
 
             try
             {
-                using (var aes = Aes.Create())
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
-                    aes.Key = Key;
-                    aes.IV = IV;
-                    aes.Mode = CipherMode.CBC;
-                    aes.Padding = PaddingMode.PKCS7;
-
-                    using (var decryptor = aes.CreateDecryptor())
-                    {
-                        var cipherBytes = Convert.FromBase64String(cipherText);
-                        var decryptedBytes = decryptor.TransformFinalBlock(cipherBytes, 0, cipherBytes.Length);
-                        return Encoding.UTF8.GetString(decryptedBytes);
-                    }
+                    var cipherBytes = Convert.FromBase64String(cipherText);
+                    var decryptedBytes = ProtectedData.Unprotect(cipherBytes, null, DataProtectionScope.CurrentUser);
+                    return Encoding.UTF8.GetString(decryptedBytes);
                 }
+
+                return DecryptFallback(cipherText);
             }
             catch
             {
-                // في حالة الفشل، إرجاع النص الأصلي (قد يكون غير مشفر)
+                return DecryptFallback(cipherText);
+            }
+        }
+
+        private static string EncryptFallback(string plainText)
+        {
+            try
+            {
+                var key = DeriveKeyFromMachine();
+                using var aes = Aes.Create();
+                aes.Key = key;
+                aes.GenerateIV();
+                aes.Mode = CipherMode.CBC;
+                aes.Padding = PaddingMode.PKCS7;
+
+                using var encryptor = aes.CreateEncryptor();
+                var plainBytes = Encoding.UTF8.GetBytes(plainText);
+                var encryptedBytes = encryptor.TransformFinalBlock(plainBytes, 0, plainBytes.Length);
+
+                var result = new byte[aes.IV.Length + encryptedBytes.Length];
+                Array.Copy(aes.IV, 0, result, 0, aes.IV.Length);
+                Array.Copy(encryptedBytes, 0, result, aes.IV.Length, encryptedBytes.Length);
+                return Convert.ToBase64String(result);
+            }
+            catch
+            {
+                return plainText;
+            }
+        }
+
+        private static string DecryptFallback(string cipherText)
+        {
+            try
+            {
+                var key = DeriveKeyFromMachine();
+                var fullCipher = Convert.FromBase64String(cipherText);
+
+                using var aes = Aes.Create();
+                aes.Key = key;
+                aes.Mode = CipherMode.CBC;
+                aes.Padding = PaddingMode.PKCS7;
+
+                var iv = new byte[16];
+                var cipher = new byte[fullCipher.Length - 16];
+                Array.Copy(fullCipher, 0, iv, 0, 16);
+                Array.Copy(fullCipher, 16, cipher, 0, cipher.Length);
+                aes.IV = iv;
+
+                using var decryptor = aes.CreateDecryptor();
+                var decryptedBytes = decryptor.TransformFinalBlock(cipher, 0, cipher.Length);
+                return Encoding.UTF8.GetString(decryptedBytes);
+            }
+            catch
+            {
                 return cipherText;
             }
         }
+
+        private static byte[] DeriveKeyFromMachine()
+        {
+            var machineName = Environment.MachineName ?? "DefaultMachine";
+            var userName = Environment.UserName ?? "DefaultUser";
+            var seed = Encoding.UTF8.GetBytes($"{machineName}:{userName}:GeneratorCode");
+            using var sha256 = SHA256.Create();
+            return sha256.ComputeHash(seed);
+        }
     }
 }
-

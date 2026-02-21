@@ -33,7 +33,7 @@ namespace GeneratorCode.Core.Helpers
             bool useIntegratedSecurity = false,
             bool trustServerCertificate = true)
         {
-            if (string.IsNullOrWhiteSpace(server))
+            if (dbType != DatabaseType.SQLite && string.IsNullOrWhiteSpace(server))
                 throw new ArgumentException("Server name cannot be null or empty", nameof(server));
 
             return dbType switch
@@ -44,6 +44,8 @@ namespace GeneratorCode.Core.Helpers
                     server, database, username, password, port),
                 DatabaseType.PostgreSql => BuildPostgreSqlConnectionString(
                     server, database, username, password, port),
+                DatabaseType.SQLite => BuildSQLiteConnectionString(server, database),
+                DatabaseType.Oracle => BuildOracleConnectionString(server, database, username, password, port),
                 _ => throw new ArgumentException($"نوع قاعدة البيانات غير مدعوم: {dbType}")
             };
         }
@@ -163,6 +165,28 @@ namespace GeneratorCode.Core.Helpers
         }
 
         /// <summary>
+        /// بناء Connection String لـ SQLite
+        /// </summary>
+        private static string BuildSQLiteConnectionString(string server, string database)
+        {
+            return $"Data Source={database ?? ""}";
+        }
+
+        /// <summary>
+        /// بناء Connection String لـ Oracle
+        /// </summary>
+        private static string BuildOracleConnectionString(
+            string server,
+            string database,
+            string username,
+            string password,
+            int? port)
+        {
+            var portNum = port ?? 1521;
+            return $"Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST={server})(PORT={portNum}))(CONNECT_DATA=(SID={database})));User Id={username};Password={password};";
+        }
+
+        /// <summary>
         /// بناء Connection String من string (للتوافق مع الكود القديم)
         /// </summary>
         public static string Build(
@@ -192,6 +216,8 @@ namespace GeneratorCode.Core.Helpers
                 "sqlserver" or "sql server" or "mssql" => DatabaseType.SqlServer,
                 "mysql" => DatabaseType.MySql,
                 "postgresql" or "postgres" or "pgsql" => DatabaseType.PostgreSql,
+                "sqlite" => DatabaseType.SQLite,
+                "oracle" => DatabaseType.Oracle,
                 _ => throw new ArgumentException($"نوع قاعدة البيانات غير مدعوم: {dbType}")
             };
         }

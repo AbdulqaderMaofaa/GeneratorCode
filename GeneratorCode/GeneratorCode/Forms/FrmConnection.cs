@@ -193,9 +193,11 @@ namespace GeneratorCode.Forms
         {
             var databaseTypes = new List<DbType>
             {
-                new DbType("PostgreSQL", "PostgreSQL"),
-                new DbType("SQL Server", "SQLServer"),
-                new DbType("MySQL", "MySQL")
+                new("PostgreSQL", "PostgreSQL"),
+                new("SQL Server", "SQLServer"),
+                new("MySQL", "MySQL"),
+                new("Oracle", "Oracle"),
+                new("SQLite", "SQLite")
             };
 
             cmbDatabaseType.DataSource = databaseTypes;

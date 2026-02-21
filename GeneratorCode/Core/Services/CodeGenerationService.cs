@@ -58,10 +58,17 @@ namespace GeneratorCode.Core.Services
 
             var result = new CodeGenerationResult();
             var pattern = _patternFactory.CreatePattern(context.ArchitecturePattern);
-            
+
+            if (pattern == null)
+            {
+                result.Success = false;
+                result.Message = $"النمط المعماري '{context.ArchitecturePattern}' غير مدعوم";
+                _logger.LogError($"Unsupported architecture pattern: {context.ArchitecturePattern}", null, "CodeGenerationService.GenerateCodeAsync");
+                return result;
+            }
+
             try
             {
-                // Generate the code using the selected pattern
                 result = await pattern.Generate(context);
 
                 // Generate DI Configuration if enabled
@@ -340,21 +347,42 @@ namespace GeneratorCode.Core.Services
             return table;
         }
 
-        private static async Task SaveGeneratedFilesAsync(CodeGenerationResult result)
+        private async Task SaveGeneratedFilesAsync(CodeGenerationResult result)
         {
+            var savedCount = 0;
             foreach (var file in result.GeneratedFiles)
             {
-                var directory = System.IO.Path.GetDirectoryName(file.FullPath);
-                if (!System.IO.Directory.Exists(directory))
+                try
                 {
-                    System.IO.Directory.CreateDirectory(directory);
+                    var directory = Path.GetDirectoryName(file.FullPath);
+                    if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+                    {
+                        Directory.CreateDirectory(directory);
+                    }
+
+                    await File.WriteAllTextAsync(file.FullPath, file.Content);
+                    file.SizeInBytes = System.Text.Encoding.UTF8.GetByteCount(file.Content);
+                    savedCount++;
                 }
-                
-                await System.IO.File.WriteAllTextAsync(file.FullPath, file.Content);
-                file.SizeInBytes = System.Text.Encoding.UTF8.GetByteCount(file.Content);
+                catch (UnauthorizedAccessException ex)
+                {
+                    result.Warnings.Add($"لا توجد صلاحيات كافية لحفظ الملف: {file.FileName} - {ex.Message}");
+                    _logger.LogWarning($"Access denied saving file: {file.FullPath}", ex, "CodeGenerationService.SaveGeneratedFilesAsync");
+                }
+                catch (DirectoryNotFoundException ex)
+                {
+                    result.Warnings.Add($"المسار غير موجود: {file.FileName} - {ex.Message}");
+                    _logger.LogWarning($"Directory not found for file: {file.FullPath}", ex, "CodeGenerationService.SaveGeneratedFilesAsync");
+                }
+                catch (IOException ex)
+                {
+                    result.Warnings.Add($"خطأ في حفظ الملف: {file.FileName} - {ex.Message}");
+                    _logger.LogError($"IO error saving file: {file.FullPath}", ex, "CodeGenerationService.SaveGeneratedFilesAsync");
+                }
             }
-            
+
             result.TotalSizeInBytes = result.GeneratedFiles.Sum(f => f.SizeInBytes);
+            _logger.LogInfo($"Saved {savedCount}/{result.GeneratedFiles.Count} files successfully", "CodeGenerationService.SaveGeneratedFilesAsync");
         }
 
         private static string GetTemplateDirectory(string architecturePattern)

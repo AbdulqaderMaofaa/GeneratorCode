@@ -86,5 +86,10 @@ namespace GeneratorCode.Core.Models
         /// خيارات الاختبار
         /// </summary>
         public TestingOptions TestingOptions { get; set; } = new TestingOptions();
+
+        /// <summary>
+        /// إطار العمل المستهدف (مثل net6.0, net7.0, net8.0)
+        /// </summary>
+        public string TargetFramework { get; set; } = "net8.0";
     }
 } 

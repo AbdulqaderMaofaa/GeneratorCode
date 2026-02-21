@@ -1,0 +1,19 @@
+{
+  "AutoMapper": "13.0.1",
+  "FluentValidation": "11.9.0",
+  "MediatR": "12.2.0",
+  "Microsoft.EntityFrameworkCore": "8.0.0",
+  "Microsoft.EntityFrameworkCore.Tools": "8.0.0",
+  "Microsoft.EntityFrameworkCore.SqlServer": "8.0.0",
+  "Pomelo.EntityFrameworkCore.MySql": "8.0.0",
+  "Npgsql.EntityFrameworkCore.PostgreSQL": "8.0.0",
+  "Swashbuckle.AspNetCore": "6.5.0",
+  "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "8.0.0",
+  "Microsoft.NET.Test.Sdk": "17.9.0",
+  "xunit": "2.7.0",
+  "xunit.runner.visualstudio": "2.5.7",
+  "Moq": "4.20.70",
+  "Microsoft.AspNetCore.Mvc.Testing": "8.0.0",
+  "Oracle.EntityFrameworkCore": "8.23.50",
+  "Microsoft.EntityFrameworkCore.Sqlite": "8.0.0"
+}

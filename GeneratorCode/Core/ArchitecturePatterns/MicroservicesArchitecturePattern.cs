@@ -16,15 +16,14 @@ namespace GeneratorCode.Core.ArchitecturePatterns
         }
         
         public override bool SupportsDatabaseType(DatabaseType databaseType) => true;
-        public override List<string> GetRequiredLayers() => new List<string> { "API", "Domain", "Infrastructure", "Gateway" };
-        public override List<string> GetRequiredDependencies() => new List<string> { "Ocelot", "RabbitMQ.Client" };
+        public override List<string> GetRequiredLayers() => new() { "API", "Domain", "Infrastructure", "Gateway" };
+        public override List<string> GetRequiredDependencies() => new() { "Ocelot", "RabbitMQ.Client" };
 
         public override List<PreviewFile> GeneratePreview(TableInfo table, CodeGenerationContext context)
         {
             return new List<PreviewFile>
             {
-                new PreviewFile
-                {
+                new() {
                     FileName = "Preview.txt",
                     Content = "Microservices pattern preview is under development.",
                     Language = "text"

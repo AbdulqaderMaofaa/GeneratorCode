@@ -37,8 +37,7 @@ namespace GeneratorCode.Forms
 
             InitializeComponent();
 
-            // تحسين المظهر العام للنموذج
-            //SetupFormStyling();
+            SetupFormStyling();
 
             // تهيئة أعمدة الجدول
             SetupDataGridColumns();
@@ -164,10 +163,11 @@ namespace GeneratorCode.Forms
             cmbArchitecture.Items.Clear();
             cmbArchitecture.Items.AddRange(new string[] {
                 "Clean Architecture",
+                "Simple Architecture",
                 "Layered Architecture",
-                "Microservices",
+                "CQRS",
                 "DDD (Domain-Driven Design)",
-                "CQRS"
+                "Microservices"
             });
             cmbArchitecture.SelectedIndex = 0;
         }
@@ -198,12 +198,36 @@ namespace GeneratorCode.Forms
             progressBar.Style = ProgressBarStyle.Marquee;
             progressBar.Visible = true;
 
-            _availableTables = _codeGenerationService.GetTables(
-                _context.DatabaseType, _context.ConnectionString);
+            try
+            {
+                _availableTables = _codeGenerationService.GetTables(
+                    _context.DatabaseType, _context.ConnectionString);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error loading tables", ex, "FrmTabls.LoadTables");
+                _availableTables = new List<TableInfo>();
+                UpdateStatusLabel("فشل في تحميل الجداول");
+                progressBar.Visible = false;
+                MessageBox.Show(
+                    $"تعذّر تحميل الجداول من قاعدة البيانات:\n{ex.Message}",
+                    "خطأ في الاتصال",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
 
             if (_availableTables == null || !_availableTables.Any())
             {
-                throw new Exception("لم يتم العثور على أي جداول في قاعدة البيانات");
+                _availableTables = new List<TableInfo>();
+                UpdateStatusLabel("لا توجد جداول في قاعدة البيانات");
+                progressBar.Visible = false;
+                MessageBox.Show(
+                    "لم يتم العثور على أي جداول في قاعدة البيانات.\nتأكد من أن قاعدة البيانات تحتوي على جداول.",
+                    "لا توجد جداول",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
             }
 
             lstTables.Items.Clear();
@@ -224,14 +248,12 @@ namespace GeneratorCode.Forms
             progressBar.Style = ProgressBarStyle.Blocks;
             progressBar.Visible = false;
 
-            // تحديث النص التوضيحي للجداول
             lblTablesSelection.Text = $"الجداول المتاحة ({_availableTables.Count} جدول متاح):";
             if (chkGenerateAllTables.Checked)
             {
                 lblTablesSelection.Text = $"سيتم توليد الكود لجميع الجداول ({_availableTables.Count} جداول):";
             }
 
-            // التأكد من دعم RTL للقائمة
             lstTables.RightToLeft = RightToLeft.Yes;
         }
 
@@ -737,12 +759,11 @@ namespace GeneratorCode.Forms
             _context.TableName = table.Name ?? string.Empty;
             _context.EntityName = table.Name ?? string.Empty; // Set EntityName from table name
             _context.ClassName = table.Name ?? string.Empty; // Set ClassName from table name
-            _context.ArchitecturePattern = cmbArchitecture.SelectedItem?.ToString()?.Trim() ?? string.Empty;
+            _context.ArchitecturePattern = cmbArchitecture.SelectedItem?.ToString()?.Trim()?.Replace(" ", "") ?? string.Empty;
             _context.TargetLanguage = (ProgrammingLanguage)cmbLanguage.SelectedIndex;
             _context.Options = CreateGenerationOptions();
             _context.Namespace = txtNamespace.Text;
             _context.OutputPath = txtOutputPath.Text;
-            _context.ArchitecturePattern = cmbArchitecture.SelectedItem?.ToString().Trim().Replace(" ", "");
         }
 
         /// <summary>
@@ -797,20 +818,33 @@ namespace GeneratorCode.Forms
             switch (_context.ArchitecturePattern?.ToLower())
             {
                 case "clean architecture":
+                case "cleanarchitecture":
                     EnableAllOptions();
                     break;
 
+                case "simple architecture":
+                case "simplearchitecture":
+                    EnableAllOptions();
+                    chkDTOs.Checked = false;
+                    chkDTOs.Enabled = false;
+                    chkSwagger.Checked = false;
+                    chkSwagger.Enabled = false;
+                    break;
+
                 case "layered architecture":
+                case "layeredarchitecture":
                     EnableAllOptions();
                     chkDTOs.Checked = false;
                     chkDTOs.Enabled = false;
                     break;
 
                 case "microservices":
+                case "microservicesarchitecture":
                     EnableAllOptions();
                     break;
 
                 case "ddd (domain-driven design)":
+                case "ddd":
                     EnableAllOptions();
                     break;
 
@@ -819,7 +853,7 @@ namespace GeneratorCode.Forms
                     break;
 
                 default:
-                    DisableModernOptions();
+                    EnableAllOptions();
                     break;
             }
         }
@@ -1091,11 +1125,19 @@ namespace GeneratorCode.Forms
             LoadSettings();
         }
 
-        private static void LoadSettings()
+        private void LoadSettings()
         {
-            // تحميل الإعدادات وتحديث واجهة المستخدم
-            //_settings = Properties.Settings.Default;
-            // ... تحديث العناصر حسب الإعدادات
+            var settings = Properties.Settings.Default;
+
+            if (!string.IsNullOrEmpty(settings.DefaultNamespace))
+                txtNamespace.Text = settings.DefaultNamespace;
+
+            if (!string.IsNullOrEmpty(settings.DefaultOutputPath))
+                txtOutputPath.Text = settings.DefaultOutputPath;
+
+            chkDependencyInjection.Checked = settings.EnableDI;
+            chkValidation.Checked = settings.EnableValidation;
+            chkUnitTests.Checked = settings.EnableTesting;
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
@@ -1218,7 +1260,7 @@ namespace GeneratorCode.Forms
 
         private void btnBrowse_Click_1(object sender, EventArgs e)
         {
-            
+            BtnBrowse_Click(sender, e);
         }
 
         
