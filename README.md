@@ -1,209 +1,252 @@
 <div dir="rtl" align="right">
 
-# 🚀 GeneratorCode - مولد الكود الذكي
+# GeneratorCode - مولد الكود الذكي
 
 <div align="left">
 
-[English](#-generatorcode---intelligent-code-generator) | [العربية](#-generatorcode---مولد-الكود-الذكي)
+[English](#generatorcode---intelligent-code-generator) | [العربية](#generatorcode---مولد-الكود-الذكي)
 
 </div>
 
 ---
 
-## 📋 نظرة عامة
+## نظرة عامة
 
-**GeneratorCode** هو تطبيق سطح مكتب متقدم لتوليد الكود البرمجي ديناميكياً بناءً على قواعد البيانات وأنماط العمارة البرمجية المختلفة. يساعد المطورين على إنشاء هياكل مشاريع متكاملة وفق أفضل الممارسات المعمارية في دقائق معدودة.
+**GeneratorCode** هو تطبيق سطح مكتب مبني بـ **.NET 7 Windows Forms** لتوليد مشاريع C# كاملة من قواعد البيانات أو من تصميم نماذج المجال. يدعم وضعين أساسيين: **Database First** (من قاعدة بيانات موجودة) و **Code First** (تصميم الكيانات وتوليد مشروع EF Core مع إدارة الترحيلات). يوفر واجهة رسومية (GUI) وواجهة سطر أوامر (CLI).
 
-## ✨ الميزات الرئيسية
+## الميزات الرئيسية
 
-### 🏗️ أنماط العمارة المدعومة
-- **Clean Architecture** - عمارة نظيفة مع فصل الطبقات
-- **Layered Architecture** - عمارة متعددة الطبقات
-- **CQRS Pattern** - فصل الأوامر والاستعلامات
-- **Domain-Driven Design (DDD)** - التصميم الموجه بالمجال
-- **Microservices Architecture** - عمارة الخدمات الصغيرة
-- **Simple Architecture** - عمارة بسيطة للمشاريع الصغيرة
+### أوضاع التوليد
 
-### 🗄️ قواعد البيانات المدعومة
-- **SQL Server** - دعم كامل لـ Microsoft SQL Server
-- **MySQL** - دعم لـ MySQL و MariaDB
-- **PostgreSQL** - دعم لـ PostgreSQL
+| الوضع | الوصف |
+|-------|-------|
+| **Database First** | الاتصال بقاعدة بيانات موجودة، اكتشاف الجداول والأعمدة والمفاتيح، ثم توليد مشروع كامل |
+| **Code First** | تصميم نموذج المجال (كيانات، خصائص، علاقات) عبر مصمم الكيانات، ثم توليد مشروع EF Core مع إدارة الترحيلات |
 
-### 🔧 المكونات المولدة
-- ✅ **Entities/Domain Models** - نماذج المجال
-- ✅ **DTOs** - كائنات نقل البيانات
-- ✅ **Repositories** - مستودعات البيانات
-- ✅ **Services** - طبقة الخدمات
-- ✅ **Controllers** - وحدات التحكم (API)
-- ✅ **Validators** - أدوات التحقق من البيانات
-- ✅ **Mappings** - AutoMapper Profiles
-- ✅ **Unit Tests** - اختبارات الوحدة
-- ✅ **Integration Tests** - اختبارات التكامل
+### أنماط العمارة المدعومة
 
-### 🎯 ميزات إضافية
-- 🔐 **Dependency Injection** - دعم Microsoft DI و Autofac
-- 📝 **Logging System** - نظام تسجيل شامل مع واجهة عرض
-- 🔍 **Preview Mode** - معاينة الكود قبل التوليد
-- 🎨 **GUI & CLI** - واجهة رسومية وسطر أوامر
-- 🔄 **Async/Await Support** - دعم العمليات غير المتزامنة
-- 📊 **Swagger Integration** - تكامل مع Swagger/OpenAPI
-- 🛡️ **Input Validation** - التحقق من المدخلات
+| النمط | الحالة |
+|-------|--------|
+| **Clean Architecture** | مكتمل |
+| **Simple Architecture** | مكتمل |
+| **Layered Architecture** | قيد التطوير |
+| **CQRS Pattern** | قيد التطوير |
+| **Domain-Driven Design (DDD)** | قيد التطوير |
+| **Microservices Architecture** | قيد التطوير |
 
-## 📦 متطلبات التشغيل
+### قواعد البيانات المدعومة
+
+- **SQL Server** - دعم كامل (جداول، أعمدة، مفاتيح، فهارس، triggers)
+- **PostgreSQL** - دعم كامل
+- **MySQL / MariaDB** - دعم كامل
+- **Oracle** - دعم كامل
+- **SQLite** - دعم كامل
+
+### المكونات المولدة
+
+- **Entities / Domain Models** - نماذج المجال
+- **DTOs** - كائنات نقل البيانات
+- **Repositories** - مستودعات البيانات (مع Generic Repository)
+- **Services** - طبقة الخدمات
+- **Controllers** - وحدات التحكم (ASP.NET Core API)
+- **Validators** - التحقق من البيانات (FluentValidation)
+- **Mappings** - AutoMapper Profiles
+- **Unit Tests** - اختبارات الوحدة
+- **Integration Tests** - اختبارات التكامل
+- **Dependency Injection** - تسجيل الخدمات (Microsoft DI / Autofac)
+- **ASP.NET Core Views** - صفحات Razor
+- **TypeScript Models** - نماذج TypeScript
+
+### ملفات المشروع المولدة
+
+- ملف الحل `.sln`
+- ملفات المشاريع `.csproj` مع حزم NuGet
+- `Program.cs` / `Startup.cs`
+- `appsettings.json`
+- `.gitignore`
+- `README.md`
+
+## واجهات التطبيق
+
+### الشاشات الرئيسية
+
+| الشاشة | الوظيفة |
+|--------|---------|
+| **شاشة الاتصال** | اختيار نوع قاعدة البيانات، إدخال بيانات الاتصال، اختبار الاتصال، تحميل قواعد البيانات المتاحة، حفظ بيانات الاتصال مشفرة |
+| **شاشة الجداول** | عرض الجداول والأعمدة، اختيار نمط العمارة واللغة، تحديد المكونات والطبقات المراد توليدها، خيارات DI/Async/Tests/Swagger/CRUD |
+| **مصمم الكيانات** | تصميم نموذج المجال: إضافة/حذف/تعديل كيانات وخصائصها وعلاقاتها، حفظ/تحميل/تصدير/استيراد JSON، معاينة كود C# |
+| **مدير الترحيلات** | توليد كود EF Core، إضافة ترحيل، تحديث قاعدة البيانات، التراجع، توليد سكريبت SQL، إزالة آخر ترحيل |
+| **شاشة المعاينة** | عرض الكود المولد مع تلوين بناء الجملة، نسخ إلى الحافظة، حفظ كملف |
+| **شاشة التقدم** | عرض تقدم عملية التوليد مع سجل تفصيلي وشريط تقدم |
+| **شاشة الإعدادات** | مساحة الأسماء الافتراضية، مسار الحفظ، إعدادات قاعدة البيانات الافتراضية (مشفرة)، تصدير/استيراد الإعدادات JSON |
+| **عارض السجلات** | عرض وتصفية السجلات حسب المستوى/التاريخ/المصدر/البحث، تصدير JSON/CSV/TXT |
+
+### اللغات المدعومة للتوليد
+
+- C#
+- ASP.NET Web Forms
+- ASP.NET MVC
+- ASP.NET Core
+- TypeScript
+
+## المتطلبات
 
 - **.NET 7.0** أو أحدث
 - **Windows OS** (Windows Forms)
-- **قاعدة بيانات** (SQL Server / MySQL / PostgreSQL)
+- قاعدة بيانات واحدة على الأقل (SQL Server / MySQL / PostgreSQL / Oracle / SQLite)
 
-## 🚀 البدء السريع
+## التثبيت والتشغيل
 
-### التثبيت
-
-1. استنسخ المستودع:
 ```bash
-git clone https://github.com/yourusername/GeneratorCode.git
+git clone https://github.com/AbdulqaderMaofaa/GeneratorCode.git
 cd GeneratorCode
-```
-
-2. افتح المشروع في Visual Studio أو Rider
-
-3. قم ببناء المشروع:
-```bash
 dotnet build
-```
-
-4. شغل التطبيق:
-```bash
 dotnet run
 ```
 
-### الاستخدام الأساسي
+## الاستخدام
 
-#### واجهة المستخدم الرسومية (GUI)
+### واجهة المستخدم الرسومية (GUI)
 
-1. افتح التطبيق
-2. أدخل معلومات الاتصال بقاعدة البيانات
-3. اختر نمط العمارة المطلوب
-4. حدد الجداول المراد توليد الكود لها
-5. اضغط "Generate" وانتظر النتيجة
+#### Database First
+1. اختر نوع قاعدة البيانات وأدخل بيانات الاتصال
+2. اختبر الاتصال واختر قاعدة البيانات
+3. اضغط "Connect" لفتح شاشة الجداول
+4. اختر نمط العمارة واللغة والمكونات المطلوبة
+5. حدد الجداول المراد توليد الكود لها
+6. اضغط "Generate" لبدء التوليد
 
-#### واجهة سطر الأوامر (CLI)
+#### Code First
+1. من شاشة الاتصال اختر "Entity Designer"
+2. صمم الكيانات والخصائص والعلاقات
+3. احفظ النموذج أو صدّره كـ JSON
+4. اضغط "Generate" لفتح مدير الترحيلات
+5. أنشئ المشروع وأضف الترحيلات وحدّث قاعدة البيانات
+
+### واجهة سطر الأوامر (CLI)
 
 ```bash
 GeneratorCode.exe --server localhost --database MyDatabase --output C:\Output
 ```
 
-**معاملات CLI:**
-- `--server`: اسم السيرفر
-- `--database`: اسم قاعدة البيانات
-- `--db-type`: نوع قاعدة البيانات (SqlServer, MySQL, PostgreSQL)
-- `--namespace`: مساحة الأسماء للكود المولد
-- `--pattern`: نمط العمارة (CleanArchitecture, CQRS, DDD, etc.)
-- `--output`: مسار حفظ الملفات
-- `--enable-di`: تفعيل Dependency Injection
-- `--async`: توليد عمليات غير متزامنة
-- `--tests`: توليد اختبارات وحدة
+**المعاملات:**
 
-## 📖 أمثلة الاستخدام
+| المعامل | الوصف | مطلوب |
+|---------|-------|-------|
+| `--server` | اسم السيرفر | نعم |
+| `--database` | اسم قاعدة البيانات | نعم |
+| `--output` | مسار حفظ الملفات | نعم |
+| `--db-type` | نوع قاعدة البيانات (SqlServer, MySQL, PostgreSQL) | لا |
+| `--namespace` | مساحة الأسماء | لا |
+| `--pattern` | نمط العمارة (CleanArchitecture, Simple, CQRS, DDD, etc.) | لا |
+| `--enable-di` | تفعيل Dependency Injection | لا |
+| `--async` | توليد عمليات غير متزامنة | لا |
+| `--tests` | توليد اختبارات وحدة | لا |
 
-### مثال 1: توليد كود Clean Architecture
-
-```bash
-GeneratorCode.exe \
-  --server localhost \
-  --database Northwind \
-  --pattern CleanArchitecture \
-  --namespace NorthwindApp \
-  --output C:\GeneratedCode \
-  --enable-di true \
-  --async true
-```
-
-### مثال 2: توليد كود CQRS مع اختبارات
+### أمثلة CLI
 
 ```bash
-GeneratorCode.exe \
-  --server localhost \
-  --database ShopDB \
-  --pattern CQRS \
-  --namespace ShopApp \
-  --output C:\ShopCode \
-  --tests true
+# Clean Architecture مع DI و Async
+GeneratorCode.exe --server localhost --database Northwind --pattern CleanArchitecture --namespace NorthwindApp --output C:\GeneratedCode --enable-di true --async true
+
+# MySQL مع CQRS واختبارات
+GeneratorCode.exe --server localhost --database ShopDB --db-type MySQL --pattern CQRS --namespace ShopApp --output C:\ShopCode --tests true
 ```
 
-## 🏛️ هيكل المشروع المولد
+## هيكل المشروع المولد
 
 ```
 GeneratedProject/
 ├── src/
-│   ├── ProjectName.Domain/          # طبقة المجال
-│   ├── ProjectName.Application/     # طبقة التطبيق
-│   ├── ProjectName.Infrastructure/  # طبقة البنية التحتية
-│   └── ProjectName.API/            # طبقة العرض (API)
+│   ├── ProjectName.Domain/              # الكيانات، Value Objects، واجهات المستودعات
+│   ├── ProjectName.Application/         # DTOs، خدمات التطبيق، Validators، Mappings
+│   ├── ProjectName.Infrastructure/      # تنفيذ المستودعات، DbContext، الإعدادات
+│   └── ProjectName.API/                 # Controllers، Middleware، Program.cs، Swagger
 ├── tests/
-│   ├── ProjectName.UnitTests/      # اختبارات الوحدة
-│   └── ProjectName.IntegrationTests/ # اختبارات التكامل
-└── ProjectName.sln                 # ملف الحل
+│   ├── ProjectName.UnitTests/           # اختبارات الوحدة
+│   └── ProjectName.IntegrationTests/    # اختبارات التكامل
+├── ProjectName.sln
+├── appsettings.json
+├── .gitignore
+└── README.md
 ```
 
-## 🔧 التكوين
+## هيكل الكود المصدري
 
-### إعدادات قاعدة البيانات
+```
+GeneratorCode/
+├── GeneratorCode.sln
+└── GeneratorCode/
+    ├── GeneratorCode.csproj
+    ├── Program.cs
+    ├── CLI/
+    │   └── CommandLineInterface.cs          # معالجة سطر الأوامر
+    ├── Core/
+    │   ├── ArchitecturePatterns/             # أنماط العمارة (Clean, Simple, Layered, CQRS, DDD, Microservices)
+    │   ├── CodeFirst/                       # EfCoreCodeFirstGenerator، TypeMappingService
+    │   ├── CodeGenerators/                  # مولدات ASP.NET Core Views و TypeScript
+    │   ├── DatabaseProviders/               # موفرو قواعد البيانات (SqlServer, MySQL, PostgreSql, SQLite, Oracle)
+    │   ├── DependencyInjection/             # DIIntegrationService، PackagesGenerator
+    │   ├── DomainModel/                     # DomainEntity، DomainProperty، DomainRelation
+    │   ├── Factories/                       # مصانع أنماط العمارة وموفري قواعد البيانات
+    │   ├── Helpers/                         # ConnectionStringBuilder، PasswordEncryption، ProcessRunner
+    │   ├── Interfaces/                      # IDatabaseProvider، IArchitecturePattern، IMigrationService
+    │   ├── Logging/                         # LoggerFactory، ExceptionMiddleware
+    │   ├── Models/                          # CodeGenerationContext، TableInfo، ColumnInfo
+    │   ├── Services/                        # CodeGenerationService، DomainModelService، EfCoreMigrationService
+    │   └── TemplateEngine/                  # محرك القوالب
+    └── GeneratorCode/
+        ├── Forms/                           # شاشات التطبيق (Connection, Tables, Preview, Settings, EntityDesigner, etc.)
+        └── Helpers/                         # AppTheme، DatabaseHelper، LogViewerHelper
+```
 
-يمكن حفظ إعدادات الاتصال بقاعدة البيانات بشكل آمن مع تشفير كلمات المرور.
+## الحزم المستخدمة
 
-### إعدادات التوليد
+| الحزمة | الاستخدام |
+|--------|----------|
+| MaterialSkin.2 | واجهة مستخدم حديثة (Material Design) |
+| Microsoft.Data.SqlClient | الاتصال بـ SQL Server |
+| Npgsql | الاتصال بـ PostgreSQL |
+| MySql.Data | الاتصال بـ MySQL |
+| Microsoft.Data.Sqlite | الاتصال بـ SQLite |
+| Oracle.ManagedDataAccess.Core | الاتصال بـ Oracle |
+| System.CommandLine | واجهة سطر الأوامر |
+| System.Security.Cryptography.ProtectedData | تشفير كلمات المرور |
 
-- اختيار المكونات المراد توليدها
-- تخصيص مساحة الأسماء
-- تحديد مسار الحفظ
-- خيارات Dependency Injection
+## نظام التسجيل (Logging)
 
-## 📝 نظام التسجيل (Logging)
+- **المستويات**: Debug, Info, Warning, Error
+- **التنسيق**: JSON منظم مع Correlation ID
+- **واجهة العرض**: تصفية حسب المستوى/التاريخ/المصدر/النص
+- **التصدير**: JSON, CSV, TXT
+- **تفاصيل الأخطاء**: عرض Stack Trace و Inner Exceptions و بيانات إضافية
 
-التطبيق يحتوي على نظام تسجيل شامل:
-- **مستويات التسجيل**: Debug, Info, Warning, Error
-- **تنسيق JSON** - سجلات منظمة
-- **واجهة عرض** - عرض السجلات وتصفيتها
-- **تصدير السجلات** - تصدير إلى JSON, CSV, TXT
+## الأمان
 
-## 🤝 المساهمة
+- تشفير كلمات المرور المحفوظة باستخدام DPAPI
+- عدم تخزين بيانات الاتصال بنص واضح
+- تصدير/استيراد الإعدادات بدون كلمات المرور
 
-نرحب بمساهماتكم! يرجى:
+## المساهمة
 
-1. عمل Fork للمشروع
+1. Fork المشروع
 2. إنشاء branch للميزة (`git checkout -b feature/AmazingFeature`)
-3. عمل Commit للتغييرات (`git commit -m 'Add some AmazingFeature'`)
-4. عمل Push للـ branch (`git push origin feature/AmazingFeature`)
+3. Commit التغييرات (`git commit -m 'Add some AmazingFeature'`)
+4. Push للـ branch (`git push origin feature/AmazingFeature`)
 5. فتح Pull Request
 
-## 📄 الترخيص
+## الترخيص
 
 هذا المشروع مرخص تحت [MIT License](LICENSE)
 
-## 👥 المؤلفون
+## المؤلف
 
-- **عبدالقادر موفعة** - *Initial work* - [Profile](https://github.com/AbdulqaderMaofaa/)
+- **عبدالقادر موفعة** - [GitHub](https://github.com/AbdulqaderMaofaa/)
 
-## 🙏 شكر وتقدير
-
-- شكراً لجميع المساهمين في هذا المشروع
-- شكراً لمجتمع .NET المفتوح المصدر
-
-## 📞 التواصل
+## التواصل
 
 - **Issues**: [GitHub Issues](https://github.com/AbdulqaderMaofaa/GeneratorCode/issues)
 - **Email**: maofaacom@gmail.com
-
----
-
-<div align="center">
-
-**صنع بـ ❤️ باستخدام .NET**
-
-[⭐ Star على GitHub](https://github.com/AbdulqaderMaofaa/GeneratorCode) | [📖 الوثائق](docs/) | [🐛 الإبلاغ عن مشكلة](https://github.com/AbdulqaderMaofaa/GeneratorCode/issues)
-
-</div>
 
 </div>
 
@@ -211,176 +254,232 @@ GeneratedProject/
 
 <div dir="ltr" align="left">
 
-# 🚀 GeneratorCode - Intelligent Code Generator
+# GeneratorCode - Intelligent Code Generator
 
 <div align="right">
 
-[العربية](#-generatorcode---مولد-الكود-الذكي) | [English](#-generatorcode---intelligent-code-generator)
+[العربية](#generatorcode---مولد-الكود-الذكي) | [English](#generatorcode---intelligent-code-generator)
 
 </div>
 
 ---
 
-## 📋 Overview
+## Overview
 
-**GeneratorCode** is an advanced desktop application for dynamically generating code based on databases and various software architecture patterns. It helps developers create complete project structures following best architectural practices in just minutes.
+**GeneratorCode** is a **.NET 7 Windows Forms** desktop application that generates complete C# projects from existing databases or from hand-designed domain models. It supports two primary modes: **Database First** (reverse-engineer an existing database) and **Code First** (design entities in a visual designer and generate an EF Core project with migration management). Both a GUI and a CLI are provided.
 
-## ✨ Key Features
+## Key Features
 
-### 🏗️ Supported Architecture Patterns
-- **Clean Architecture** - Clean architecture with layer separation
-- **Layered Architecture** - Multi-layered architecture
-- **CQRS Pattern** - Command Query Responsibility Segregation
-- **Domain-Driven Design (DDD)** - Domain-driven design
-- **Microservices Architecture** - Microservices architecture
-- **Simple Architecture** - Simple architecture for small projects
+### Generation Modes
 
-### 🗄️ Supported Databases
-- **SQL Server** - Full support for Microsoft SQL Server
-- **MySQL** - Support for MySQL and MariaDB
-- **PostgreSQL** - Support for PostgreSQL
+| Mode | Description |
+|------|-------------|
+| **Database First** | Connect to an existing database, discover tables/columns/keys, and generate a full project |
+| **Code First** | Design a domain model (entities, properties, relations) in the Entity Designer, then generate an EF Core project with migration management |
 
-### 🔧 Generated Components
-- ✅ **Entities/Domain Models** - Domain models
-- ✅ **DTOs** - Data Transfer Objects
-- ✅ **Repositories** - Data repositories
-- ✅ **Services** - Service layer
-- ✅ **Controllers** - API controllers
-- ✅ **Validators** - Data validation
-- ✅ **Mappings** - AutoMapper Profiles
-- ✅ **Unit Tests** - Unit tests
-- ✅ **Integration Tests** - Integration tests
+### Supported Architecture Patterns
 
-### 🎯 Additional Features
-- 🔐 **Dependency Injection** - Microsoft DI and Autofac support
-- 📝 **Logging System** - Comprehensive logging with viewer interface
-- 🔍 **Preview Mode** - Preview code before generation
-- 🎨 **GUI & CLI** - Graphical and command-line interfaces
-- 🔄 **Async/Await Support** - Asynchronous operations support
-- 📊 **Swagger Integration** - Swagger/OpenAPI integration
-- 🛡️ **Input Validation** - Input validation
+| Pattern | Status |
+|---------|--------|
+| **Clean Architecture** | Complete |
+| **Simple Architecture** | Complete |
+| **Layered Architecture** | In Development |
+| **CQRS Pattern** | In Development |
+| **Domain-Driven Design (DDD)** | In Development |
+| **Microservices Architecture** | In Development |
 
-## 📦 Requirements
+### Supported Databases
+
+- **SQL Server** - Full support (tables, columns, keys, indexes, triggers)
+- **PostgreSQL** - Full support
+- **MySQL / MariaDB** - Full support
+- **Oracle** - Full support
+- **SQLite** - Full support
+
+### Generated Components
+
+- **Entities / Domain Models**
+- **DTOs** - Data Transfer Objects
+- **Repositories** - with Generic Repository pattern
+- **Services** - Service layer
+- **Controllers** - ASP.NET Core API controllers
+- **Validators** - FluentValidation
+- **Mappings** - AutoMapper Profiles
+- **Unit Tests**
+- **Integration Tests**
+- **Dependency Injection** - Service registration (Microsoft DI / Autofac)
+- **ASP.NET Core Views** - Razor pages
+- **TypeScript Models**
+
+### Generated Project Files
+
+- `.sln` solution file
+- `.csproj` project files with NuGet packages
+- `Program.cs` / `Startup.cs`
+- `appsettings.json`
+- `.gitignore`
+- `README.md`
+
+## Application Screens
+
+| Screen | Purpose |
+|--------|---------|
+| **Connection** | Select database type, enter credentials, test connection, load available databases, save encrypted credentials |
+| **Tables** | Browse tables and columns, select architecture pattern and language, choose components and layers to generate, DI/Async/Tests/Swagger/CRUD options |
+| **Entity Designer** | Design domain model: add/remove/edit entities, properties (type, required, PK, identity, max length, default, description), and relations (target, type, FK, delete behavior, navigation); save/load/export/import JSON; preview C# code |
+| **Migration Manager** | Generate EF Core code, add migration, update database, rollback, generate SQL script, remove last migration, list migrations |
+| **Preview** | View generated code with syntax highlighting; copy to clipboard or save as file |
+| **Progress** | Real-time generation progress with detailed log and progress bar |
+| **Settings** | Default namespace, output path, default database credentials (encrypted), export/import settings as JSON |
+| **Log Viewer** | View and filter logs by level/date/source/search; export to JSON/CSV/TXT |
+
+### Supported Generation Languages
+
+- C#
+- ASP.NET Web Forms
+- ASP.NET MVC
+- ASP.NET Core
+- TypeScript
+
+## Requirements
 
 - **.NET 7.0** or later
 - **Windows OS** (Windows Forms)
-- **Database** (SQL Server / MySQL / PostgreSQL)
+- At least one database (SQL Server / MySQL / PostgreSQL / Oracle / SQLite)
 
-## 🚀 Quick Start
+## Installation
 
-### Installation
-
-1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/GeneratorCode.git
+git clone https://github.com/AbdulqaderMaofaa/GeneratorCode.git
 cd GeneratorCode
-```
-
-2. Open the project in Visual Studio or Rider
-
-3. Build the project:
-```bash
 dotnet build
-```
-
-4. Run the application:
-```bash
 dotnet run
 ```
 
-### Basic Usage
+## Usage
 
-#### Graphical User Interface (GUI)
+### GUI
 
-1. Open the application
-2. Enter database connection information
-3. Select the desired architecture pattern
-4. Choose tables to generate code for
-5. Click "Generate" and wait for the result
+#### Database First
+1. Select the database type and enter connection credentials
+2. Test the connection and select a database
+3. Click "Connect" to open the Tables screen
+4. Choose architecture pattern, language, and desired components
+5. Select the tables to generate code for
+6. Click "Generate" to start generation
 
-#### Command Line Interface (CLI)
+#### Code First
+1. From the Connection screen, choose "Entity Designer"
+2. Design entities, properties, and relations
+3. Save the model or export it as JSON
+4. Click "Generate" to open the Migration Manager
+5. Generate the project, add migrations, and update the database
+
+### CLI
 
 ```bash
 GeneratorCode.exe --server localhost --database MyDatabase --output C:\Output
 ```
 
-**CLI Parameters:**
-- `--server`: Server name
-- `--database`: Database name
-- `--db-type`: Database type (SqlServer, MySQL, PostgreSQL)
-- `--namespace`: Namespace for generated code
-- `--pattern`: Architecture pattern (CleanArchitecture, CQRS, DDD, etc.)
-- `--output`: Output path for files
-- `--enable-di`: Enable Dependency Injection
-- `--async`: Generate async operations
-- `--tests`: Generate unit tests
+**Parameters:**
 
-## 📖 Usage Examples
+| Parameter | Description | Required |
+|-----------|-------------|----------|
+| `--server` | Server name | Yes |
+| `--database` | Database name | Yes |
+| `--output` | Output path | Yes |
+| `--db-type` | Database type (SqlServer, MySQL, PostgreSQL) | No |
+| `--namespace` | Namespace for generated code | No |
+| `--pattern` | Architecture pattern (CleanArchitecture, Simple, CQRS, DDD, etc.) | No |
+| `--enable-di` | Enable Dependency Injection | No |
+| `--async` | Generate async operations | No |
+| `--tests` | Generate unit tests | No |
 
-### Example 1: Generate Clean Architecture Code
-
-```bash
-GeneratorCode.exe \
-  --server localhost \
-  --database Northwind \
-  --pattern CleanArchitecture \
-  --namespace NorthwindApp \
-  --output C:\GeneratedCode \
-  --enable-di true \
-  --async true
-```
-
-### Example 2: Generate CQRS Code with Tests
+### CLI Examples
 
 ```bash
-GeneratorCode.exe \
-  --server localhost \
-  --database ShopDB \
-  --pattern CQRS \
-  --namespace ShopApp \
-  --output C:\ShopCode \
-  --tests true
+# Clean Architecture with DI and Async
+GeneratorCode.exe --server localhost --database Northwind --pattern CleanArchitecture --namespace NorthwindApp --output C:\GeneratedCode --enable-di true --async true
+
+# MySQL with CQRS and Tests
+GeneratorCode.exe --server localhost --database ShopDB --db-type MySQL --pattern CQRS --namespace ShopApp --output C:\ShopCode --tests true
 ```
 
-## 🏛️ Generated Project Structure
+## Generated Project Structure
 
 ```
 GeneratedProject/
 ├── src/
-│   ├── ProjectName.Domain/          # Domain layer
-│   ├── ProjectName.Application/     # Application layer
-│   ├── ProjectName.Infrastructure/  # Infrastructure layer
-│   └── ProjectName.API/            # Presentation layer (API)
+│   ├── ProjectName.Domain/              # Entities, Value Objects, Repository interfaces
+│   ├── ProjectName.Application/         # DTOs, Application services, Validators, Mappings
+│   ├── ProjectName.Infrastructure/      # Repository implementations, DbContext, Configuration
+│   └── ProjectName.API/                 # Controllers, Middleware, Program.cs, Swagger
 ├── tests/
-│   ├── ProjectName.UnitTests/      # Unit tests
-│   └── ProjectName.IntegrationTests/ # Integration tests
-└── ProjectName.sln                 # Solution file
+│   ├── ProjectName.UnitTests/
+│   └── ProjectName.IntegrationTests/
+├── ProjectName.sln
+├── appsettings.json
+├── .gitignore
+└── README.md
 ```
 
-## 🔧 Configuration
+## Source Code Structure
 
-### Database Settings
+```
+GeneratorCode/
+├── GeneratorCode.sln
+└── GeneratorCode/
+    ├── GeneratorCode.csproj
+    ├── Program.cs
+    ├── CLI/
+    │   └── CommandLineInterface.cs          # CLI argument handling
+    ├── Core/
+    │   ├── ArchitecturePatterns/             # Clean, Simple, Layered, CQRS, DDD, Microservices
+    │   ├── CodeFirst/                       # EfCoreCodeFirstGenerator, TypeMappingService
+    │   ├── CodeGenerators/                  # ASP.NET Core Views, TypeScript generators
+    │   ├── DatabaseProviders/               # SqlServer, MySQL, PostgreSql, SQLite, Oracle
+    │   ├── DependencyInjection/             # DIIntegrationService, PackagesGenerator
+    │   ├── DomainModel/                     # DomainEntity, DomainProperty, DomainRelation
+    │   ├── Factories/                       # ArchitecturePatternFactory, DatabaseProviderFactory
+    │   ├── Helpers/                         # ConnectionStringBuilder, PasswordEncryption, ProcessRunner
+    │   ├── Interfaces/                      # IDatabaseProvider, IArchitecturePattern, IMigrationService
+    │   ├── Logging/                         # LoggerFactory, ExceptionMiddleware
+    │   ├── Models/                          # CodeGenerationContext, TableInfo, ColumnInfo
+    │   ├── Services/                        # CodeGenerationService, DomainModelService, EfCoreMigrationService
+    │   └── TemplateEngine/                  # Template engine for code generation
+    └── GeneratorCode/
+        ├── Forms/                           # UI forms (Connection, Tables, Preview, Settings, EntityDesigner, etc.)
+        └── Helpers/                         # AppTheme, DatabaseHelper, LogViewerHelper
+```
 
-Database connection settings can be saved securely with encrypted passwords.
+## NuGet Packages
 
-### Generation Settings
+| Package | Purpose |
+|---------|---------|
+| MaterialSkin.2 | Material Design UI |
+| Microsoft.Data.SqlClient | SQL Server connectivity |
+| Npgsql | PostgreSQL connectivity |
+| MySql.Data | MySQL connectivity |
+| Microsoft.Data.Sqlite | SQLite connectivity |
+| Oracle.ManagedDataAccess.Core | Oracle connectivity |
+| System.CommandLine | CLI interface |
+| System.Security.Cryptography.ProtectedData | Password encryption |
 
-- Select components to generate
-- Customize namespace
-- Set output path
-- Dependency Injection options
+## Logging
 
-## 📝 Logging System
+- **Levels**: Debug, Info, Warning, Error
+- **Format**: Structured JSON with Correlation ID
+- **Viewer**: Filter by level/date/source/text
+- **Export**: JSON, CSV, TXT
+- **Error Details**: Stack trace, inner exceptions, additional data
 
-The application includes a comprehensive logging system:
-- **Log Levels**: Debug, Info, Warning, Error
-- **JSON Format** - Structured logs
-- **Viewer Interface** - View and filter logs
-- **Export Logs** - Export to JSON, CSV, TXT
+## Security
 
-## 🤝 Contributing
+- Saved passwords encrypted with DPAPI
+- No plaintext credential storage
+- Settings export/import excludes passwords
 
-Contributions are welcome! Please:
+## Contributing
 
 1. Fork the project
 2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
@@ -388,32 +487,17 @@ Contributions are welcome! Please:
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📄 License
+## License
 
 This project is licensed under the [MIT License](LICENSE)
 
-## 👥 Authors
+## Author
 
-- **Abdulqader Maofaa** - *Initial work* - [Profile](https://github.com/AbdulqaderMaofaa/)
+- **Abdulqader Maofaa** - [GitHub](https://github.com/AbdulqaderMaofaa/)
 
-## 🙏 Acknowledgments
-
-- Thanks to all contributors to this project
-- Thanks to the open-source .NET community
-
-## 📞 Contact
+## Contact
 
 - **Issues**: [GitHub Issues](https://github.com/AbdulqaderMaofaa/GeneratorCode/issues)
 - **Email**: maofaacom@gmail.com
-
----
-
-<div align="center">
-
-**Made with ❤️ using .NET**
-
-[⭐ Star on GitHub](https://github.com/AbdulqaderMaofaa/GeneratorCode) | [📖 Documentation](docs/) | [🐛 Report Bug](https://github.com/AbdulqaderMaofaa/GeneratorCode/issues)
-
-</div>
 
 </div>
