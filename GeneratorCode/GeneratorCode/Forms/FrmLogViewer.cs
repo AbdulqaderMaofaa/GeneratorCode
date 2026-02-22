@@ -1,4 +1,5 @@
 using GeneratorCode.Core.Logging;
+using GeneratorCode.Helpers;
 using GeneratorCode.Properties;
 using System;
 using System.Collections.Generic;
@@ -34,6 +35,7 @@ namespace GeneratorCode.Forms
 
             InitializeComponent();
             SetupEventHandlers();
+            SetupTooltips();
             LoadLogs();
         }
 
@@ -41,25 +43,44 @@ namespace GeneratorCode.Forms
 
         #region Initialization Methods
 
+        private void SetupTooltips()
+        {
+            var tip = AppTheme.CreateTooltipProvider();
+            tip.SetToolTip(btnRefresh, "تحديث السجلات (F5)");
+            tip.SetToolTip(btnClearFilters, "مسح جميع الفلاتر");
+            tip.SetToolTip(btnViewDetails, "عرض تفاصيل السجل المحدد");
+            tip.SetToolTip(btnExport, "تصدير السجلات إلى ملف");
+            tip.SetToolTip(btnClose, "إغلاق النافذة (Escape)");
+            tip.SetToolTip(cmbLevelFilter, "تصفية حسب مستوى السجل");
+            tip.SetToolTip(txtSearch, "بحث في الرسائل والمصادر");
+            tip.SetToolTip(dgvTableView, "انقر مرتين لعرض التفاصيل");
+        }
+
         private void SetupEventHandlers()
         {
-            // أحداث وضع العرض
             rdoFormattedView.CheckedChanged += RdoViewMode_CheckedChanged;
             rdoTableView.CheckedChanged += RdoViewMode_CheckedChanged;
 
-            // أحداث التصفية
             cmbLevelFilter.SelectedIndexChanged += FilterChanged;
             dtpDateFilter.ValueChanged += FilterChanged;
             txtSearch.TextChanged += FilterChanged;
             txtSourceFilter.TextChanged += FilterChanged;
 
-            // أحداث الأزرار
             btnRefresh.Click += BtnRefresh_Click;
             btnViewDetails.Click += BtnViewDetails_Click;
             btnExport.Click += BtnExport_Click;
-            btnClose.Click += (s, e) => this.Close();
-            
-            // تطبيق وضع العرض الافتراضي
+            btnClose.Click += (s, e) => Close();
+            btnClearFilters.Click += BtnClearFilters_Click;
+
+            dgvTableView.CellDoubleClick += DgvTableView_CellDoubleClick;
+
+            KeyPreview = true;
+            KeyDown += (s, e) =>
+            {
+                if (e.KeyCode == Keys.Escape) Close();
+                if (e.KeyCode == Keys.F5) { LoadLogs(); e.SuppressKeyPress = true; }
+            };
+
             ApplyViewMode();
         }
 
@@ -80,6 +101,29 @@ namespace GeneratorCode.Forms
         private void BtnRefresh_Click(object sender, EventArgs e)
         {
             LoadLogs();
+        }
+
+        private void BtnClearFilters_Click(object sender, EventArgs e)
+        {
+            cmbLevelFilter.SelectedIndex = 0;
+            dtpDateFilter.Checked = false;
+            txtSearch.Clear();
+            txtSourceFilter.Clear();
+        }
+
+        private void DgvTableView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+            var row = dgvTableView.Rows[e.RowIndex];
+            if (row.DataBoundItem != null)
+            {
+                var logEntry = ((dynamic)row.DataBoundItem).LogEntry as LogEntry;
+                if (logEntry != null)
+                {
+                    var detailsForm = new FrmLogDetails(logEntry);
+                    detailsForm.ShowDialog();
+                }
+            }
         }
 
         private void BtnViewDetails_Click(object sender, EventArgs e)
@@ -318,14 +362,7 @@ namespace GeneratorCode.Forms
 
         private Color GetLevelColor(LogLevel level)
         {
-            return level switch
-            {
-                LogLevel.Error => Color.FromArgb(231, 76, 60),   // Red
-                LogLevel.Warning => Color.FromArgb(243, 156, 18), // Orange
-                LogLevel.Info => Color.FromArgb(52, 152, 219),    // Blue
-                LogLevel.Debug => Color.FromArgb(149, 165, 166), // Gray
-                _ => Color.White
-            };
+            return AppTheme.GetLogLevelColor(level.ToString());
         }
 
         private void UpdateLogCount()

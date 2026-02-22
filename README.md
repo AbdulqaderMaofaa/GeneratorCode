@@ -183,7 +183,7 @@ GeneratedProject/
 
 ## 👥 المؤلفون
 
-- **Your Name** - *Initial work* - [YourGitHub](https://github.com/yourusername)
+- **عبدالقادر موفعة** - *Initial work* - [Profile](https://github.com/AbdulqaderMaofaa/)
 
 ## 🙏 شكر وتقدير
 
@@ -192,8 +192,8 @@ GeneratedProject/
 
 ## 📞 التواصل
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/GeneratorCode/issues)
-- **Email**: your.email@example.com
+- **Issues**: [GitHub Issues](https://github.com/AbdulqaderMaofaa/GeneratorCode/issues)
+- **Email**: maofaacom@gmail.com
 
 ---
 
@@ -201,7 +201,7 @@ GeneratedProject/
 
 **صنع بـ ❤️ باستخدام .NET**
 
-[⭐ Star على GitHub](https://github.com/yourusername/GeneratorCode) | [📖 الوثائق](docs/) | [🐛 الإبلاغ عن مشكلة](https://github.com/yourusername/GeneratorCode/issues)
+[⭐ Star على GitHub](https://github.com/AbdulqaderMaofaa/GeneratorCode) | [📖 الوثائق](docs/) | [🐛 الإبلاغ عن مشكلة](https://github.com/AbdulqaderMaofaa/GeneratorCode/issues)
 
 </div>
 
@@ -394,7 +394,7 @@ This project is licensed under the [MIT License](LICENSE)
 
 ## 👥 Authors
 
-- **Your Name** - *Initial work* - [YourGitHub](https://github.com/yourusername)
+- **Abdulqader Maofaa** - *Initial work* - [Profile](https://github.com/AbdulqaderMaofaa/)
 
 ## 🙏 Acknowledgments
 
@@ -403,8 +403,8 @@ This project is licensed under the [MIT License](LICENSE)
 
 ## 📞 Contact
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/GeneratorCode/issues)
-- **Email**: your.email@example.com
+- **Issues**: [GitHub Issues](https://github.com/AbdulqaderMaofaa/GeneratorCode/issues)
+- **Email**: maofaacom@gmail.com
 
 ---
 
@@ -412,7 +412,7 @@ This project is licensed under the [MIT License](LICENSE)
 
 **Made with ❤️ using .NET**
 
-[⭐ Star on GitHub](https://github.com/yourusername/GeneratorCode) | [📖 Documentation](docs/) | [🐛 Report Bug](https://github.com/yourusername/GeneratorCode/issues)
+[⭐ Star on GitHub](https://github.com/AbdulqaderMaofaa/GeneratorCode) | [📖 Documentation](docs/) | [🐛 Report Bug](https://github.com/AbdulqaderMaofaa/GeneratorCode/issues)
 
 </div>
 

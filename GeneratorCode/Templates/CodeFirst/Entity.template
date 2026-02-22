@@ -1,0 +1,29 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace {{Namespace}}.Entities
+{
+    {{#Description}}
+    /// <summary>
+    /// {{Description}}
+    /// </summary>
+    {{/Description}}
+    [Table("{{TableName}}")]
+    public class {{EntityName}}
+    {
+        {{#Properties}}
+        {{#IsPrimaryKey}}[Key]{{/IsPrimaryKey}}
+        {{#IsIdentity}}[DatabaseGenerated(DatabaseGeneratedOption.Identity)]{{/IsIdentity}}
+        {{#IsRequired}}[Required]{{/IsRequired}}
+        {{#HasMaxLength}}[MaxLength({{MaxLength}})]{{/HasMaxLength}}
+        {{#HasColumnType}}[Column(TypeName = "{{ColumnType}}")]{{/HasColumnType}}
+        public {{CSharpType}} {{PropertyName}} { get; set; }
+
+        {{/Properties}}
+        {{#NavigationProperties}}
+        public virtual {{NavType}} {{NavName}} { get; set; }
+        {{/NavigationProperties}}
+    }
+}

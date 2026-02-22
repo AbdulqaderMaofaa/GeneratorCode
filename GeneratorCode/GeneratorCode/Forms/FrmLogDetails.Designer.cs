@@ -28,44 +28,93 @@ namespace GeneratorCode.Forms
         /// </summary>
         private void InitializeComponent()
         {
+            panelToolbar = new System.Windows.Forms.Panel();
+            btnCopyAll = new System.Windows.Forms.Button();
+            btnSearch = new System.Windows.Forms.Button();
+            txtSearchBox = new System.Windows.Forms.TextBox();
             rtbDetails = new System.Windows.Forms.RichTextBox();
             btnClose = new System.Windows.Forms.Button();
+            panelToolbar.SuspendLayout();
             SuspendLayout();
+
+            // 
+            // panelToolbar
+            // 
+            panelToolbar.BackColor = Helpers.AppTheme.PrimaryDark;
+            panelToolbar.Controls.Add(btnCopyAll);
+            panelToolbar.Controls.Add(txtSearchBox);
+            panelToolbar.Controls.Add(btnSearch);
+            panelToolbar.Dock = System.Windows.Forms.DockStyle.Top;
+            panelToolbar.Location = new System.Drawing.Point(0, 0);
+            panelToolbar.Name = "panelToolbar";
+            panelToolbar.Padding = new System.Windows.Forms.Padding(5);
+            panelToolbar.Size = new System.Drawing.Size(900, 40);
+            panelToolbar.TabIndex = 0;
+
+            // 
+            // btnCopyAll
+            // 
+            Helpers.AppTheme.StyleButton(btnCopyAll, Helpers.AppTheme.Primary);
+            btnCopyAll.Location = new System.Drawing.Point(10, 5);
+            btnCopyAll.Name = "btnCopyAll";
+            btnCopyAll.Size = new System.Drawing.Size(100, 30);
+            btnCopyAll.TabIndex = 0;
+            btnCopyAll.Text = "نسخ الكل";
+
+            // 
+            // txtSearchBox
+            // 
+            txtSearchBox.Location = new System.Drawing.Point(120, 8);
+            txtSearchBox.Name = "txtSearchBox";
+            txtSearchBox.Size = new System.Drawing.Size(200, 23);
+            txtSearchBox.TabIndex = 1;
+            txtSearchBox.PlaceholderText = "بحث في النص...";
+            txtSearchBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+
+            // 
+            // btnSearch
+            // 
+            Helpers.AppTheme.StyleButton(btnSearch, Helpers.AppTheme.Success);
+            btnSearch.Location = new System.Drawing.Point(330, 5);
+            btnSearch.Name = "btnSearch";
+            btnSearch.Size = new System.Drawing.Size(80, 30);
+            btnSearch.TabIndex = 2;
+            btnSearch.Text = "بحث";
 
             // 
             // rtbDetails
             // 
+            Helpers.AppTheme.StyleRichTextBoxConsole(rtbDetails);
             rtbDetails.Dock = System.Windows.Forms.DockStyle.Fill;
-            rtbDetails.Font = new System.Drawing.Font("Consolas", 9F);
-            rtbDetails.BackColor = System.Drawing.Color.FromArgb(30, 30, 30);
-            rtbDetails.ForeColor = System.Drawing.Color.White;
-            rtbDetails.Location = new System.Drawing.Point(0, 0);
+            rtbDetails.Location = new System.Drawing.Point(0, 40);
             rtbDetails.Name = "rtbDetails";
-            rtbDetails.ReadOnly = true;
             rtbDetails.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            rtbDetails.Size = new System.Drawing.Size(900, 660);
-            rtbDetails.TabIndex = 0;
+            rtbDetails.Size = new System.Drawing.Size(900, 620);
+            rtbDetails.TabIndex = 1;
             rtbDetails.Text = "";
 
             // 
             // btnClose
             // 
+            Helpers.AppTheme.StyleButton(btnClose, Helpers.AppTheme.Danger);
             btnClose.DialogResult = System.Windows.Forms.DialogResult.OK;
             btnClose.Dock = System.Windows.Forms.DockStyle.Bottom;
             btnClose.Location = new System.Drawing.Point(0, 660);
             btnClose.Name = "btnClose";
             btnClose.Size = new System.Drawing.Size(900, 40);
-            btnClose.TabIndex = 1;
+            btnClose.TabIndex = 2;
             btnClose.Text = "إغلاق";
-            btnClose.UseVisualStyleBackColor = true;
 
             // 
             // FrmLogDetails
             // 
+            this.BackColor = Helpers.AppTheme.FormBackground;
+            this.Font = Helpers.AppTheme.DefaultFont;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(900, 700);
             this.Controls.Add(rtbDetails);
+            this.Controls.Add(panelToolbar);
             this.Controls.Add(btnClose);
             this.MinimumSize = new System.Drawing.Size(600, 400);
             this.Name = "FrmLogDetails";
@@ -74,11 +123,17 @@ namespace GeneratorCode.Forms
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "تفاصيل السجل";
 
+            panelToolbar.ResumeLayout(false);
+            panelToolbar.PerformLayout();
             ResumeLayout(false);
         }
 
         #endregion
 
+        private System.Windows.Forms.Panel panelToolbar;
+        private System.Windows.Forms.Button btnCopyAll;
+        private System.Windows.Forms.Button btnSearch;
+        private System.Windows.Forms.TextBox txtSearchBox;
         private System.Windows.Forms.RichTextBox rtbDetails;
         private System.Windows.Forms.Button btnClose;
     }

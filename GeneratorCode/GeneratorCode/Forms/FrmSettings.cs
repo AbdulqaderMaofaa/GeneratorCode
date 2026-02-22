@@ -1,7 +1,9 @@
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 using GeneratorCode.Properties;
 using System.IO;
+using GeneratorCode.Helpers;
 using GeneratorCode.GeneratorCode.Helpers;
 
 namespace GeneratorCode.Forms
@@ -27,6 +29,7 @@ namespace GeneratorCode.Forms
         public FrmSettings()
         {
             InitializeComponent();
+            ApplyTheme();
             _settings = Settings.Default;
             
             // تعيين الحد الأدنى لحجم النموذج
@@ -34,6 +37,25 @@ namespace GeneratorCode.Forms
             
             LoadSettings();
             ShowDatabaseGroup(_settings.DatabaseType);
+            KeyDown += (s, ev) =>
+            {
+                if (ev.KeyCode == Keys.Escape) { btnCancel_Click(s, ev); }
+                if (ev.Control && ev.KeyCode == Keys.S) { ev.SuppressKeyPress = true; btnSave_Click(s, ev); }
+            };
+        }
+
+        private void ApplyTheme()
+        {
+            AppTheme.StyleForm(this);
+            AppTheme.StyleGroupBox(grpPostgres, AppTheme.PrimaryDark);
+            AppTheme.StyleGroupBox(grpSqlServer, AppTheme.PrimaryDark);
+            AppTheme.StyleGroupBox(grpMySql, AppTheme.PrimaryDark);
+            AppTheme.StyleButton(btnSave, AppTheme.Success);
+            AppTheme.StyleButton(btnCancel, AppTheme.Danger);
+            AppTheme.StyleButton(btnViewLogs, AppTheme.Purple);
+            AppTheme.StyleButton(btnBrowse, AppTheme.Primary);
+            AppTheme.StyleButton(btnExportSettings, AppTheme.Primary);
+            AppTheme.StyleButton(btnImportSettings, AppTheme.Primary);
         }
 
         private void ShowDatabaseGroup(string databaseType)
@@ -129,6 +151,12 @@ namespace GeneratorCode.Forms
 
         private void btnSave_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(txtDefaultNamespace.Text))
+            {
+                MessageBox.Show("يرجى إدخال مساحة الاسم (Namespace)", "تنبيه", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.RightAlign);
+                txtDefaultNamespace.Focus();
+                return;
+            }
             // إعدادات عامة
             _settings.EnableDI = chkEnableDI.Checked;
             _settings.EnableValidation = chkEnableValidation.Checked;
@@ -175,6 +203,75 @@ namespace GeneratorCode.Forms
         LogViewerHelper.ShowLogViewer(this);
         }
 
+        protected void btnExportSettings_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                using var dialog = new SaveFileDialog
+                {
+                    Title = "تصدير الإعدادات",
+                    Filter = "JSON Files (*.json)|*.json",
+                    FileName = $"GeneratorCode_Settings_{DateTime.Now:yyyyMMdd}.json",
+                    DefaultExt = "json"
+                };
+
+                if (dialog.ShowDialog(this) == DialogResult.OK)
+                {
+                    _settings.ExportToFile(dialog.FileName);
+                    MessageBox.Show(
+                        "تم تصدير الإعدادات بنجاح.",
+                        "تصدير",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"حدث خطأ أثناء التصدير:\n{ex.Message}",
+                    "خطأ",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
+
+        protected void btnImportSettings_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                using var dialog = new OpenFileDialog
+                {
+                    Title = "استيراد الإعدادات",
+                    Filter = "JSON Files (*.json)|*.json",
+                    DefaultExt = "json"
+                };
+
+                if (dialog.ShowDialog(this) == DialogResult.OK)
+                {
+                    var imported = Properties.Settings.ImportFromFile(dialog.FileName);
+                    _settings = imported;
+                    LoadSettings();
+                    ShowDatabaseGroup(_settings.DatabaseType);
+
+                    MessageBox.Show(
+                        "تم استيراد الإعدادات بنجاح.\nملاحظة: كلمات المرور لا يتم استيرادها لأسباب أمنية.",
+                        "استيراد",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+
+                    SettingsUpdated?.Invoke();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"حدث خطأ أثناء الاستيراد:\n{ex.Message}",
+                    "خطأ",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
+
         private void btnBrowse_Click(object sender, EventArgs e)
         {
             SaveFileDialog dialog = new()
@@ -197,5 +294,6 @@ namespace GeneratorCode.Forms
                     }
                 }
         }
+
     }
 } 

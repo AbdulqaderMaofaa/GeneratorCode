@@ -68,18 +68,14 @@ namespace GeneratorCode.Core.DependencyInjection
             var diProvider = _diProviderFactory.CreateProvider(context.DIOptions.PreferredContainer);
             if (diProvider == null)
                 return string.Empty;
-                
-            switch (context.ArchitecturePattern)
+
+            return context.ArchitecturePattern switch
             {
-                case "CleanArchitecture":
-                    return GenerateCleanArchitectureDI(diProvider, context);
-                case "LayeredArchitecture":
-                    return GenerateLayeredArchitectureDI(diProvider, context);
-                case "CQRS":
-                    return GenerateCQRSDI(diProvider, context);
-                default:
-                    return diProvider.GenerateServiceExtensions(context);
-            }
+                "CleanArchitecture" => GenerateCleanArchitectureDI(diProvider, context),
+                "LayeredArchitecture" => GenerateLayeredArchitectureDI(diProvider, context),
+                "CQRS" => GenerateCQRSDI(diProvider, context),
+                _ => diProvider.GenerateServiceExtensions(context),
+            };
         }
         
         private string GenerateCleanArchitectureDI(IDependencyInjectionProvider diProvider, CodeGenerationContext context)

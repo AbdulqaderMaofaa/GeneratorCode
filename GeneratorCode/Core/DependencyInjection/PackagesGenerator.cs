@@ -1,25 +1,34 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
+using System.Text.Json;
 using GeneratorCode.Core.Models;
 
 namespace GeneratorCode.Core.DependencyInjection
 {
-    /// <summary>
-    /// مولد ملفات التبعيات
-    /// </summary>
     public class PackagesGenerator
     {
-        /// <summary>
-        /// توليد ملف csproj للتبعيات
-        /// </summary>
-        /// <param name="context">سياق توليد الكود</param>
-        /// <param name="diPackages">التبعيات الخاصة بـ DI</param>
-        /// <returns>محتوى ملف csproj</returns>
+        private readonly PackageVersionResolver _resolver;
+        private readonly string _targetFramework;
+
+        public PackagesGenerator() : this("net8.0") { }
+
+        public PackagesGenerator(string targetFramework)
+        {
+            _targetFramework = targetFramework ?? "net8.0";
+            _resolver = new PackageVersionResolver();
+        }
+
+        private string V(string packageName)
+        {
+            return _resolver.GetVersion(_targetFramework, packageName);
+        }
+
         public string GenerateProjectFile(CodeGenerationContext context, List<string> diPackages = null, string projectType = "Application")
         {
             var sb = new StringBuilder();
-            
-            // تحديد نوع SDK بناءً على نوع المشروع
+            var targetFramework = context.TargetFramework ?? "net8.0";
+
             string sdkType = projectType switch
             {
                 "API" => "Microsoft.NET.Sdk.Web",
@@ -29,7 +38,7 @@ namespace GeneratorCode.Core.DependencyInjection
             sb.AppendLine($"<Project Sdk=\"{sdkType}\">");
             sb.AppendLine();
             sb.AppendLine("  <PropertyGroup>");
-            sb.AppendLine("    <TargetFramework>net6.0</TargetFramework>");
+            sb.AppendLine($"    <TargetFramework>{targetFramework}</TargetFramework>");
             sb.AppendLine("    <Nullable>enable</Nullable>");
             sb.AppendLine("    <ImplicitUsings>enable</ImplicitUsings>");
             sb.AppendLine($"    <RootNamespace>{context.Namespace}.{projectType}</RootNamespace>");
@@ -46,27 +55,32 @@ namespace GeneratorCode.Core.DependencyInjection
                     break;
                     
                 case "Application":
-                    sb.AppendLine("    <PackageReference Include=\"AutoMapper\" Version=\"12.0.1\" />");
-                    sb.AppendLine("    <PackageReference Include=\"FluentValidation\" Version=\"11.5.2\" />");
-                    sb.AppendLine("    <PackageReference Include=\"MediatR\" Version=\"12.0.1\" />");
+                    sb.AppendLine($"    <PackageReference Include=\"AutoMapper\" Version=\"{V("AutoMapper")}\" />");
+                    sb.AppendLine($"    <PackageReference Include=\"FluentValidation\" Version=\"{V("FluentValidation")}\" />");
+                    sb.AppendLine($"    <PackageReference Include=\"MediatR\" Version=\"{V("MediatR")}\" />");
                     // Add reference to Domain project
                     sb.AppendLine($"    <ProjectReference Include=\"..\\{context.Namespace}.Domain\\{context.Namespace}.Domain.csproj\" />");
                     break;
                     
                 case "Infrastructure":
-                    sb.AppendLine("    <PackageReference Include=\"Microsoft.EntityFrameworkCore\" Version=\"6.0.0\" />");
-                    sb.AppendLine("    <PackageReference Include=\"Microsoft.EntityFrameworkCore.Tools\" Version=\"6.0.0\" />");
-                    // Add database provider
+                    sb.AppendLine($"    <PackageReference Include=\"Microsoft.EntityFrameworkCore\" Version=\"{V("Microsoft.EntityFrameworkCore")}\" />");
+                    sb.AppendLine($"    <PackageReference Include=\"Microsoft.EntityFrameworkCore.Tools\" Version=\"{V("Microsoft.EntityFrameworkCore.Tools")}\" />");
                     switch (context.DatabaseType)
                     {
                         case DatabaseType.SqlServer:
-                            sb.AppendLine("    <PackageReference Include=\"Microsoft.EntityFrameworkCore.SqlServer\" Version=\"6.0.0\" />");
+                            sb.AppendLine($"    <PackageReference Include=\"Microsoft.EntityFrameworkCore.SqlServer\" Version=\"{V("Microsoft.EntityFrameworkCore.SqlServer")}\" />");
                             break;
                         case DatabaseType.MySql:
-                            sb.AppendLine("    <PackageReference Include=\"Pomelo.EntityFrameworkCore.MySql\" Version=\"6.0.0\" />");
+                            sb.AppendLine($"    <PackageReference Include=\"Pomelo.EntityFrameworkCore.MySql\" Version=\"{V("Pomelo.EntityFrameworkCore.MySql")}\" />");
                             break;
                         case DatabaseType.PostgreSql:
-                            sb.AppendLine("    <PackageReference Include=\"Npgsql.EntityFrameworkCore.PostgreSQL\" Version=\"6.0.0\" />");
+                            sb.AppendLine($"    <PackageReference Include=\"Npgsql.EntityFrameworkCore.PostgreSQL\" Version=\"{V("Npgsql.EntityFrameworkCore.PostgreSQL")}\" />");
+                            break;
+                        case DatabaseType.Oracle:
+                            sb.AppendLine($"    <PackageReference Include=\"Oracle.EntityFrameworkCore\" Version=\"{V("Oracle.EntityFrameworkCore")}\" />");
+                            break;
+                        case DatabaseType.SQLite:
+                            sb.AppendLine($"    <PackageReference Include=\"Microsoft.EntityFrameworkCore.Sqlite\" Version=\"{V("Microsoft.EntityFrameworkCore.Sqlite")}\" />");
                             break;
                     }
                     // Add references to Domain and Application projects
@@ -75,10 +89,8 @@ namespace GeneratorCode.Core.DependencyInjection
                     break;
                     
                 case "API":
-                    // Microsoft.AspNetCore.OpenApi is only available in .NET 7.0+, not in .NET 6.0
-                    // Swashbuckle.AspNetCore is sufficient for OpenAPI/Swagger in .NET 6.0
-                    sb.AppendLine("    <PackageReference Include=\"Swashbuckle.AspNetCore\" Version=\"6.2.3\" />");
-                    sb.AppendLine("    <PackageReference Include=\"Microsoft.AspNetCore.Mvc.NewtonsoftJson\" Version=\"6.0.0\" />");
+                    sb.AppendLine($"    <PackageReference Include=\"Swashbuckle.AspNetCore\" Version=\"{V("Swashbuckle.AspNetCore")}\" />");
+                    sb.AppendLine($"    <PackageReference Include=\"Microsoft.AspNetCore.Mvc.NewtonsoftJson\" Version=\"{V("Microsoft.AspNetCore.Mvc.NewtonsoftJson")}\" />");
                     // Add references to all other projects
                     sb.AppendLine($"    <ProjectReference Include=\"..\\{context.Namespace}.Domain\\{context.Namespace}.Domain.csproj\" />");
                     sb.AppendLine($"    <ProjectReference Include=\"..\\{context.Namespace}.Application\\{context.Namespace}.Application.csproj\" />");
@@ -86,20 +98,20 @@ namespace GeneratorCode.Core.DependencyInjection
                     break;
                     
                 case "UnitTests":
-                    sb.AppendLine("    <PackageReference Include=\"Microsoft.NET.Test.Sdk\" Version=\"17.5.0\" />");
-                    sb.AppendLine("    <PackageReference Include=\"xunit\" Version=\"2.4.2\" />");
-                    sb.AppendLine("    <PackageReference Include=\"xunit.runner.visualstudio\" Version=\"2.4.5\" />");
-                    sb.AppendLine("    <PackageReference Include=\"Moq\" Version=\"4.18.4\" />");
+                    sb.AppendLine($"    <PackageReference Include=\"Microsoft.NET.Test.Sdk\" Version=\"{V("Microsoft.NET.Test.Sdk")}\" />");
+                    sb.AppendLine($"    <PackageReference Include=\"xunit\" Version=\"{V("xunit")}\" />");
+                    sb.AppendLine($"    <PackageReference Include=\"xunit.runner.visualstudio\" Version=\"{V("xunit.runner.visualstudio")}\" />");
+                    sb.AppendLine($"    <PackageReference Include=\"Moq\" Version=\"{V("Moq")}\" />");
                     // Add references to projects being tested
                     sb.AppendLine($"    <ProjectReference Include=\"..\\..\\src\\{context.Namespace}.Domain\\{context.Namespace}.Domain.csproj\" />");
                     sb.AppendLine($"    <ProjectReference Include=\"..\\..\\src\\{context.Namespace}.Application\\{context.Namespace}.Application.csproj\" />");
                     break;
                     
                 case "IntegrationTests":
-                    sb.AppendLine("    <PackageReference Include=\"Microsoft.NET.Test.Sdk\" Version=\"17.5.0\" />");
-                    sb.AppendLine("    <PackageReference Include=\"xunit\" Version=\"2.4.2\" />");
-                    sb.AppendLine("    <PackageReference Include=\"xunit.runner.visualstudio\" Version=\"2.4.5\" />");
-                    sb.AppendLine("    <PackageReference Include=\"Microsoft.AspNetCore.Mvc.Testing\" Version=\"6.0.0\" />");
+                    sb.AppendLine($"    <PackageReference Include=\"Microsoft.NET.Test.Sdk\" Version=\"{V("Microsoft.NET.Test.Sdk")}\" />");
+                    sb.AppendLine($"    <PackageReference Include=\"xunit\" Version=\"{V("xunit")}\" />");
+                    sb.AppendLine($"    <PackageReference Include=\"xunit.runner.visualstudio\" Version=\"{V("xunit.runner.visualstudio")}\" />");
+                    sb.AppendLine($"    <PackageReference Include=\"Microsoft.AspNetCore.Mvc.Testing\" Version=\"{V("Microsoft.AspNetCore.Mvc.Testing")}\" />");
                     // Add references to projects being tested
                     sb.AppendLine($"    <ProjectReference Include=\"..\\..\\src\\{context.Namespace}.API\\{context.Namespace}.API.csproj\" />");
                     break;
@@ -209,21 +221,6 @@ namespace GeneratorCode.Core.DependencyInjection
             return sb.ToString();
         }
         
-        private string GetPackageVersion(string packageName)
-        {
-            var versions = new Dictionary<string, string>
-            {
-                ["Microsoft.Extensions.DependencyInjection"] = "6.0.0",
-                ["Microsoft.Extensions.Configuration"] = "6.0.0",
-                ["Autofac"] = "6.4.0",
-                ["Autofac.Extensions.DependencyInjection"] = "8.0.0",
-                ["Microsoft.EntityFrameworkCore"] = "6.0.0",
-                ["AutoMapper.Extensions.Microsoft.DependencyInjection"] = "11.0.0",
-                ["MediatR.Extensions.Microsoft.DependencyInjection"] = "10.0.0",
-                ["FluentValidation.DependencyInjectionExtensions"] = "11.0.0"
-            };
-            
-            return versions.TryGetValue(packageName, out var version) ? version : "6.0.0";
-        }
+        private string GetPackageVersion(string packageName) => V(packageName);
     }
 } 

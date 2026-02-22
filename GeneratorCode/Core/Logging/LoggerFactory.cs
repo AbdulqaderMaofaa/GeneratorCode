@@ -6,7 +6,7 @@ namespace GeneratorCode.Core.Logging
     public static class LoggerFactory
     {
         private static ILogger? _defaultLogger;
-        private static readonly object _lock = new object();
+        private static readonly object _lock = new();
 
         /// <summary>
         /// الحصول على Logger الافتراضي (Singleton)

@@ -1,5 +1,7 @@
 using GeneratorCode.CLI;
+using GeneratorCode.Core.CodeFirst;
 using GeneratorCode.Core.Factories;
+using GeneratorCode.Core.Interfaces;
 using GeneratorCode.Core.Services;
 using GeneratorCode.Core.TemplateEngine;
 using GeneratorCode.Core.Logging;

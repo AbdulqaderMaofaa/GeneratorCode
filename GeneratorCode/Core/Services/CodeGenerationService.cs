@@ -7,6 +7,7 @@ using GeneratorCode.Core.Factories;
 using GeneratorCode.Core.Interfaces;
 using GeneratorCode.Core.Models;
 using GeneratorCode.Core.DependencyInjection;
+using GeneratorCode.Core.CodeGenerators;
 using GeneratorCode.Core.Logging;
 
 namespace GeneratorCode.Core.Services
@@ -43,6 +44,11 @@ namespace GeneratorCode.Core.Services
         /// <returns>نتيجة التوليد</returns>
         public async Task<CodeGenerationResult> GenerateCodeAsync(CodeGenerationContext context)
         {
+            if (context?.Mode == Models.GenerationMode.CodeFirst)
+            {
+                return await GenerateCodeFirstAsync(context);
+            }
+
             _logger.LogInfo($"Starting code generation for table: {context?.TableName}, pattern: {context?.ArchitecturePattern}", 
                 "CodeGenerationService.GenerateCodeAsync",
                 new Dictionary<string, object> { { "EntityName", context?.EntityName ?? "N/A" }, { "Namespace", context?.Namespace ?? "N/A" } });
@@ -58,10 +64,17 @@ namespace GeneratorCode.Core.Services
 
             var result = new CodeGenerationResult();
             var pattern = _patternFactory.CreatePattern(context.ArchitecturePattern);
-            
+
+            if (pattern == null)
+            {
+                result.Success = false;
+                result.Message = $"النمط المعماري '{context.ArchitecturePattern}' غير مدعوم";
+                _logger.LogError($"Unsupported architecture pattern: {context.ArchitecturePattern}", null, "CodeGenerationService.GenerateCodeAsync");
+                return result;
+            }
+
             try
             {
-                // Generate the code using the selected pattern
                 result = await pattern.Generate(context);
 
                 // Generate DI Configuration if enabled
@@ -94,7 +107,11 @@ namespace GeneratorCode.Core.Services
                     }
                 }
 
-                // Save all generated files
+                if (result.Success)
+                {
+                    AppendLanguageSpecificFiles(context, result);
+                }
+
                 if (result.Success)
                 {
                     await SaveGeneratedFilesAsync(result);
@@ -276,6 +293,39 @@ namespace GeneratorCode.Core.Services
             return result;
         }
 
+        private void AppendLanguageSpecificFiles(CodeGenerationContext context, CodeGenerationResult result)
+        {
+            try
+            {
+                switch (context.TargetLanguage)
+                {
+                    case ProgrammingLanguage.TypeScript:
+                        var tsFiles = TypeScriptGenerator.Generate(context);
+                        result.GeneratedFiles.AddRange(tsFiles);
+                        result.TotalSizeInBytes += tsFiles.Sum(f => f.SizeInBytes);
+                        _logger.LogInfo($"Generated {tsFiles.Count} TypeScript files", "CodeGenerationService.AppendLanguageSpecificFiles");
+                        break;
+
+                    case ProgrammingLanguage.AspNetCore:
+                        var razorFiles = AspNetCoreViewGenerator.Generate(context);
+                        result.GeneratedFiles.AddRange(razorFiles);
+                        result.TotalSizeInBytes += razorFiles.Sum(f => f.SizeInBytes);
+                        _logger.LogInfo($"Generated {razorFiles.Count} ASP.NET Core Razor Pages", "CodeGenerationService.AppendLanguageSpecificFiles");
+                        break;
+
+                    case ProgrammingLanguage.CSharp:
+                    case ProgrammingLanguage.AspNetWebForms:
+                    case ProgrammingLanguage.AspNetMvc:
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Warnings.Add($"Language-specific generation warning: {ex.Message}");
+                _logger.LogWarning($"Language-specific generation failed: {ex.Message}", ex, "CodeGenerationService.AppendLanguageSpecificFiles");
+            }
+        }
+
         private static CodeGenerationResult ValidateContext(CodeGenerationContext context)
         {
             var result = new CodeGenerationResult { Success = true };
@@ -340,21 +390,42 @@ namespace GeneratorCode.Core.Services
             return table;
         }
 
-        private static async Task SaveGeneratedFilesAsync(CodeGenerationResult result)
+        private async Task SaveGeneratedFilesAsync(CodeGenerationResult result)
         {
+            var savedCount = 0;
             foreach (var file in result.GeneratedFiles)
             {
-                var directory = System.IO.Path.GetDirectoryName(file.FullPath);
-                if (!System.IO.Directory.Exists(directory))
+                try
                 {
-                    System.IO.Directory.CreateDirectory(directory);
+                    var directory = Path.GetDirectoryName(file.FullPath);
+                    if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+                    {
+                        Directory.CreateDirectory(directory);
+                    }
+
+                    await File.WriteAllTextAsync(file.FullPath, file.Content);
+                    file.SizeInBytes = System.Text.Encoding.UTF8.GetByteCount(file.Content);
+                    savedCount++;
                 }
-                
-                await System.IO.File.WriteAllTextAsync(file.FullPath, file.Content);
-                file.SizeInBytes = System.Text.Encoding.UTF8.GetByteCount(file.Content);
+                catch (UnauthorizedAccessException ex)
+                {
+                    result.Warnings.Add($"لا توجد صلاحيات كافية لحفظ الملف: {file.FileName} - {ex.Message}");
+                    _logger.LogWarning($"Access denied saving file: {file.FullPath}", ex, "CodeGenerationService.SaveGeneratedFilesAsync");
+                }
+                catch (DirectoryNotFoundException ex)
+                {
+                    result.Warnings.Add($"المسار غير موجود: {file.FileName} - {ex.Message}");
+                    _logger.LogWarning($"Directory not found for file: {file.FullPath}", ex, "CodeGenerationService.SaveGeneratedFilesAsync");
+                }
+                catch (IOException ex)
+                {
+                    result.Warnings.Add($"خطأ في حفظ الملف: {file.FileName} - {ex.Message}");
+                    _logger.LogError($"IO error saving file: {file.FullPath}", ex, "CodeGenerationService.SaveGeneratedFilesAsync");
+                }
             }
-            
+
             result.TotalSizeInBytes = result.GeneratedFiles.Sum(f => f.SizeInBytes);
+            _logger.LogInfo($"Saved {savedCount}/{result.GeneratedFiles.Count} files successfully", "CodeGenerationService.SaveGeneratedFilesAsync");
         }
 
         private static string GetTemplateDirectory(string architecturePattern)
@@ -712,6 +783,59 @@ namespace GeneratorCode.Core.Services
                     new Dictionary<string, object> { { "DirectoryPath", directoryPath }, { "Namespace", context.Namespace } });
                 throw new Exception($"Error generating presentation layer: {ex.Message}", ex);
             }
+        }
+
+        private async Task<CodeGenerationResult> GenerateCodeFirstAsync(CodeGenerationContext context)
+        {
+            _logger.LogInfo("Starting Code First generation", "CodeGenerationService.GenerateCodeFirstAsync");
+
+            if (context.DomainModel == null)
+            {
+                return new CodeGenerationResult
+                {
+                    Success = false,
+                    Message = "نموذج المجال مطلوب لوضع Code First"
+                };
+            }
+
+            var validator = new Core.DomainModel.DomainModelValidator();
+            var validation = validator.Validate(context.DomainModel);
+            if (!validation.IsValid)
+            {
+                return new CodeGenerationResult
+                {
+                    Success = false,
+                    Message = "أخطاء في نموذج المجال",
+                    Errors = validation.Errors
+                };
+            }
+
+            var generator = new Core.CodeFirst.EfCoreCodeFirstGenerator(_logger);
+            var result = await generator.GenerateFullProjectAsync(context.DomainModel, context);
+
+            if (result.Success && context.ApplyMigration && !string.IsNullOrWhiteSpace(context.MigrationName))
+            {
+                var migrationService = new EfCoreMigrationService(_logger);
+                var migResult = await migrationService.AddMigrationAsync(
+                    context.MigrationName, context.OutputPath);
+
+                if (migResult.Success)
+                {
+                    var updateResult = await migrationService.UpdateDatabaseAsync(context.OutputPath);
+                    if (!updateResult.Success)
+                    {
+                        result.Warnings ??= new List<string>();
+                        result.Warnings.Add($"تم توليد الكود بنجاح لكن فشل تحديث قاعدة البيانات: {updateResult.ErrorOutput}");
+                    }
+                }
+                else
+                {
+                    result.Warnings ??= new List<string>();
+                    result.Warnings.Add($"تم توليد الكود بنجاح لكن فشل إنشاء Migration: {migResult.ErrorOutput}");
+                }
+            }
+
+            return result;
         }
     }
 } 

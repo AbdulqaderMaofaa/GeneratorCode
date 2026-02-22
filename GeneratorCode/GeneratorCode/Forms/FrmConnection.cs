@@ -1,6 +1,7 @@
 using GeneratorCode.GeneratorCode.Helpers;
 using GeneratorCode.Core.Models;
 using GeneratorCode.Core.Logging;
+using GeneratorCode.Helpers;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -32,6 +33,7 @@ namespace GeneratorCode.Forms
             _logger.LogDebug("Initializing FrmConnection", "FrmConnection");
             
             InitializeComponent();
+            ApplyTheme();
             _settings = Settings.Default;
             _dbHelper = new DatabaseHelper();
             SetupInitialState();
@@ -51,6 +53,7 @@ namespace GeneratorCode.Forms
             // أحداث الأزرار
             btnTestConnection.Click += BtnTestConnection_Click;
             btnConnect.Click += BtnConnect_Click;
+            btnCodeFirst.Click += BtnCodeFirst_Click;
             btnCancel.Click += BtnCancel_Click;
             btnViewLogs.Click += BtnViewLogs_Click;
 
@@ -77,30 +80,42 @@ namespace GeneratorCode.Forms
             btnConnect.Enabled = false;
         }
 
+        private void ApplyTheme()
+        {
+            AppTheme.StyleButton(btnTestConnection, AppTheme.Primary);
+            AppTheme.StyleButton(btnConnect, AppTheme.Success);
+            AppTheme.StyleButton(btnCancel, AppTheme.Danger);
+            AppTheme.StyleButton(btnViewLogs, AppTheme.Purple);
+            AppTheme.StyleButton(btnCodeFirst, AppTheme.PurpleDark, large: true);
+            AppTheme.StyleGroupBox(grpDatabaseType, AppTheme.PrimaryDark);
+            AppTheme.StyleGroupBox(grpConnectionDetails, AppTheme.PrimaryDark);
+            AppTheme.StyleGroupBox(grpAuthentication, AppTheme.PrimaryDark);
+            AppTheme.StyleGroupBox(grpActions, AppTheme.PrimaryDark);
+        }
+
         private void SetupUI()
         {
-            // إعداد الأيقونات
+            AppTheme.StyleForm(this);
+            KeyDown += (s, e) => { if (e.KeyCode == Keys.Escape) Close(); };
+
             UpdateDatabaseIcon("default");
             UpdateStatusIcon(StatusType.Info);
-            
-            // إعداد تلميحات الأدوات
             SetupTooltips();
-            
-            // إعداد الأحداث الإضافية
             chkSaveCredentials.CheckedChanged += ChkSaveCredentials_CheckedChanged;
-            
-            // إعداد حدث زر عرض السجلات
-            btnViewLogs.Click += BtnViewLogs_Click;
         }
 
         private void SetupTooltips()
         {
-            var toolTip = new ToolTip();
+            var toolTip = AppTheme.CreateTooltipProvider();
             toolTip.SetToolTip(cmbDatabaseType, "اختر نوع قاعدة البيانات التي تريد الاتصال بها");
             toolTip.SetToolTip(cmbServer, "أدخل اسم السيرفر أو عنوان IP");
             toolTip.SetToolTip(txtPort, "رقم المنفذ (Port) الخاص بقاعدة البيانات");
-            toolTip.SetToolTip(btnTestConnection, "اختبر الاتصال قبل المتابعة");
+            toolTip.SetToolTip(btnTestConnection, "اختبر الاتصال قبل المتابعة (Ctrl+T)");
             toolTip.SetToolTip(chkSaveCredentials, "حفظ بيانات الدخول للاستخدام التالي");
+            toolTip.SetToolTip(btnConnect, "الاتصال بقاعدة البيانات والمتابعة");
+            toolTip.SetToolTip(btnCancel, "إغلاق النافذة (Escape)");
+            toolTip.SetToolTip(btnViewLogs, "عرض سجلات النظام");
+            toolTip.SetToolTip(btnCodeFirst, "الانتقال إلى وضع Code First لتصميم الكيانات");
         }
 
         private void UpdateDatabaseIcon(string databaseType)
@@ -127,46 +142,30 @@ namespace GeneratorCode.Forms
         private void UpdateStatusIcon(StatusType statusType)
         {
             // تحديث أيقونة الحالة حسب النوع
-            switch (statusType)
+            picStatus.BackColor = statusType switch
             {
-                case StatusType.Success:
-                    picStatus.BackColor = Color.Green;
-                    break;
-                case StatusType.Error:
-                    picStatus.BackColor = Color.Red;
-                    break;
-                case StatusType.Warning:
-                    picStatus.BackColor = Color.Orange;
-                    break;
-                case StatusType.Info:
-                default:
-                    picStatus.BackColor = Color.Blue;
-                    break;
-            }
+                StatusType.Success => AppTheme.StatusLedGreen,
+                StatusType.Error => AppTheme.StatusLedRed,
+                StatusType.Warning => AppTheme.StatusLedOrange,
+                _ => AppTheme.StatusLedBlue,
+            };
+
         }
 
         private void UpdateStatus(string message, StatusType statusType = StatusType.Info)
         {
             lblStatus.Text = message;
             UpdateStatusIcon(statusType);
-            
+
             // تحديث لون النص حسب النوع
-            switch (statusType)
+            lblStatus.ForeColor = statusType switch
             {
-                case StatusType.Success:
-                    lblStatus.ForeColor = Color.DarkGreen;
-                    break;
-                case StatusType.Error:
-                    lblStatus.ForeColor = Color.DarkRed;
-                    break;
-                case StatusType.Warning:
-                    lblStatus.ForeColor = Color.DarkOrange;
-                    break;
-                case StatusType.Info:
-                default:
-                    lblStatus.ForeColor = Color.DarkBlue;
-                    break;
-            }
+                StatusType.Success => AppTheme.StatusSuccess,
+                StatusType.Error => AppTheme.StatusError,
+                StatusType.Warning => AppTheme.StatusWarning,
+                _ => AppTheme.StatusInfo,
+            };
+
         }
 
         private void ChkSaveCredentials_CheckedChanged(object sender, EventArgs e)
@@ -193,9 +192,11 @@ namespace GeneratorCode.Forms
         {
             var databaseTypes = new List<DbType>
             {
-                new DbType("PostgreSQL", "PostgreSQL"),
-                new DbType("SQL Server", "SQLServer"),
-                new DbType("MySQL", "MySQL")
+                new("PostgreSQL", "PostgreSQL"),
+                new("SQL Server", "SQLServer"),
+                new("MySQL", "MySQL"),
+                new("Oracle", "Oracle"),
+                new("SQLite", "SQLite")
             };
 
             cmbDatabaseType.DataSource = databaseTypes;
@@ -324,7 +325,7 @@ namespace GeneratorCode.Forms
             btnTestConnection.Enabled = false;
             
             // تأثير بصري لمدة قصيرة
-            btnTestConnection.BackColor = Color.FromArgb(41, 128, 185);
+            btnTestConnection.BackColor = AppTheme.PrimaryLight;
 
             try
             {
@@ -381,7 +382,7 @@ namespace GeneratorCode.Forms
             {
                 progressBar.Visible = false;
                 btnTestConnection.Enabled = true;
-                btnTestConnection.BackColor = Color.FromArgb(52, 152, 219);
+                btnTestConnection.BackColor = AppTheme.Primary;
             }
         }
 
@@ -443,6 +444,13 @@ namespace GeneratorCode.Forms
             }
         }
 
+        private void BtnCodeFirst_Click(object sender, EventArgs e)
+        {
+            _logger.LogInfo("Opening Code First Entity Designer", "FrmConnection");
+            var designer = new FrmEntityDesigner();
+            designer.ShowDialog(this);
+        }
+
         private void BtnConnect_Click(object sender, EventArgs e)
         {
             if (!ValidateConnectionInputs() || cmbDatabase.SelectedIndex == -1) return;
@@ -451,7 +459,7 @@ namespace GeneratorCode.Forms
             progressBar.Visible = true;
             
             // تأثير بصري للزر
-            btnConnect.BackColor = Color.FromArgb(39, 174, 96);
+            btnConnect.BackColor = AppTheme.SuccessDark;
             
             try
             {
@@ -514,7 +522,7 @@ namespace GeneratorCode.Forms
             finally
             {
                 progressBar.Visible = false;
-                btnConnect.BackColor = Color.FromArgb(46, 204, 113);
+                btnConnect.BackColor = AppTheme.Success;
             }
         }
 

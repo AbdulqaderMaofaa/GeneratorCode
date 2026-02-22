@@ -52,16 +52,30 @@ namespace GeneratorCode.Core.Factories
         /// </summary>
         /// <param name="patternName">اسم النمط المعماري</param>
         /// <returns>النمط المعماري أو null إذا لم يوجد</returns>
+        private static readonly Dictionary<string, string> _patternAliases = new(StringComparer.OrdinalIgnoreCase)
+        {
+            { "Microservices", "MicroservicesArchitecture" },
+            { "DDD(Domain-DrivenDesign)", "DDD" },
+            { "DomainDrivenDesign", "DDD" },
+            { "Simple", "SimpleArchitecture" },
+            { "Layered", "LayeredArchitecture" },
+            { "Clean", "CleanArchitecture" },
+        };
+
         public IArchitecturePattern CreatePattern(string patternName)
         {
             if (string.IsNullOrEmpty(patternName))
                 return null;
-                
-            if (_patterns.TryGetValue(patternName.Trim().Replace(" ",""), out var factory))
-            {
+
+            var normalized = patternName.Trim().Replace(" ", "");
+
+            if (_patterns.TryGetValue(normalized, out var factory))
                 return factory();
-            }
-            
+
+            if (_patternAliases.TryGetValue(normalized, out var canonical) &&
+                _patterns.TryGetValue(canonical, out factory))
+                return factory();
+
             return null;
         }
         

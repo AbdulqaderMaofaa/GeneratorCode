@@ -29,17 +29,15 @@ namespace GeneratorCode.Core.DatabaseProviders
                     AND table_type = 'BASE TABLE'
                     ORDER BY table_schema, table_name";
 
-                using (var command = new NpgsqlCommand(sql, connection))
-                using (var reader = command.ExecuteReader())
+                using var command = new NpgsqlCommand(sql, connection);
+                using var reader = command.ExecuteReader();
+                while (reader.Read())
                 {
-                    while (reader.Read())
+                    tables.Add(new TableInfo
                     {
-                        tables.Add(new TableInfo
-                        {
-                            Name = reader.GetString(0),
-                            Schema = reader.GetString(1)
-                        });
-                    }
+                        Name = reader.GetString(0),
+                        Schema = reader.GetString(1)
+                    });
                 }
             }
             return tables;

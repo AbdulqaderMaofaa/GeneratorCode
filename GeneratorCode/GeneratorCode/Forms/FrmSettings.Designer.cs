@@ -1,3 +1,5 @@
+using GeneratorCode.Helpers;
+
 namespace GeneratorCode.Forms
 {
     partial class FrmSettings
@@ -56,6 +58,8 @@ namespace GeneratorCode.Forms
             lblMySqlPassword = new System.Windows.Forms.Label();
             txtMySqlPassword = new System.Windows.Forms.TextBox();
             lblPostgresUsername = new System.Windows.Forms.Label();
+            btnExportSettings = new System.Windows.Forms.Button();
+            btnImportSettings = new System.Windows.Forms.Button();
             grpPostgres.SuspendLayout();
             grpSqlServer.SuspendLayout();
             grpMySql.SuspendLayout();
@@ -118,45 +122,42 @@ namespace GeneratorCode.Forms
             btnBrowse.Size = new System.Drawing.Size(100, 35);
             btnBrowse.TabIndex = 5;
             btnBrowse.Text = "استعراض";
-            btnBrowse.UseVisualStyleBackColor = true;
             btnBrowse.Click += btnBrowse_Click;
             // 
             // btnSave
             // 
+            btnSave.BackColor = global::GeneratorCode.Helpers.AppTheme.Success;
+            btnSave.Font = global::GeneratorCode.Helpers.AppTheme.ButtonFont;
             btnSave.Location = new System.Drawing.Point(287, 785);
             btnSave.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             btnSave.Name = "btnSave";
             btnSave.Size = new System.Drawing.Size(100, 35);
             btnSave.TabIndex = 6;
             btnSave.Text = "حفظ";
-            btnSave.UseVisualStyleBackColor = true;
             btnSave.Click += btnSave_Click;
             // 
             // btnCancel
             // 
+            btnCancel.BackColor = global::GeneratorCode.Helpers.AppTheme.Danger;
+            btnCancel.Font = global::GeneratorCode.Helpers.AppTheme.ButtonFont;
             btnCancel.Location = new System.Drawing.Point(395, 785);
             btnCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new System.Drawing.Size(100, 35);
             btnCancel.TabIndex = 7;
             btnCancel.Text = "إلغاء";
-            btnCancel.UseVisualStyleBackColor = true;
             btnCancel.Click += btnCancel_Click;
             // 
             // btnViewLogs
             // 
-            btnViewLogs.BackColor = System.Drawing.Color.FromArgb(155, 89, 182);
-            btnViewLogs.FlatAppearance.BorderSize = 0;
-            btnViewLogs.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnViewLogs.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            btnViewLogs.ForeColor = System.Drawing.Color.White;
+            btnViewLogs.BackColor = global::GeneratorCode.Helpers.AppTheme.Purple;
+            btnViewLogs.Font = global::GeneratorCode.Helpers.AppTheme.ButtonFont;
             btnViewLogs.Location = new System.Drawing.Point(16, 785);
             btnViewLogs.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             btnViewLogs.Name = "btnViewLogs";
             btnViewLogs.Size = new System.Drawing.Size(120, 35);
             btnViewLogs.TabIndex = 8;
             btnViewLogs.Text = "📋 عرض السجلات";
-            btnViewLogs.UseVisualStyleBackColor = false;
             btnViewLogs.Click += btnViewLogs_Click;
             // 
             // lblNamespace
@@ -254,6 +255,7 @@ namespace GeneratorCode.Forms
             grpSqlServer.TabIndex = 11;
             grpSqlServer.TabStop = false;
             grpSqlServer.Text = "SQL Server";
+            grpSqlServer.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             // 
             // lblSqlServerUsername
             // 
@@ -304,6 +306,7 @@ namespace GeneratorCode.Forms
             grpMySql.TabIndex = 12;
             grpMySql.TabStop = false;
             grpMySql.Text = "MySQL";
+            grpMySql.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             // 
             // lblMySqlUsername
             // 
@@ -349,14 +352,41 @@ namespace GeneratorCode.Forms
             lblPostgresUsername.TabIndex = 6;
             lblPostgresUsername.Text = "اسم المستخدم:";
             // 
+            // btnExportSettings
+            // 
+            btnExportSettings.BackColor = global::GeneratorCode.Helpers.AppTheme.Primary;
+            btnExportSettings.Font = global::GeneratorCode.Helpers.AppTheme.ButtonFont;
+            btnExportSettings.Location = new System.Drawing.Point(144, 785);
+            btnExportSettings.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            btnExportSettings.Name = "btnExportSettings";
+            btnExportSettings.Size = new System.Drawing.Size(65, 35);
+            btnExportSettings.TabIndex = 13;
+            btnExportSettings.Text = "تصدير";
+            btnExportSettings.Click += btnExportSettings_Click;
+            // 
+            // btnImportSettings
+            // 
+            btnImportSettings.BackColor = global::GeneratorCode.Helpers.AppTheme.Primary;
+            btnImportSettings.Font = global::GeneratorCode.Helpers.AppTheme.ButtonFont;
+            btnImportSettings.Location = new System.Drawing.Point(217, 785);
+            btnImportSettings.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            btnImportSettings.Name = "btnImportSettings";
+            btnImportSettings.Size = new System.Drawing.Size(62, 35);
+            btnImportSettings.TabIndex = 14;
+            btnImportSettings.Text = "استيراد";
+            btnImportSettings.Click += btnImportSettings_Click;
+            // 
             // FrmSettings
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            BackColor = global::GeneratorCode.Helpers.AppTheme.FormBackground;
             ClientSize = new System.Drawing.Size(512, 846);
             Controls.Add(grpMySql);
             Controls.Add(grpSqlServer);
             Controls.Add(grpPostgres);
+            Controls.Add(btnImportSettings);
+            Controls.Add(btnExportSettings);
             Controls.Add(btnCancel);
             Controls.Add(btnSave);
             Controls.Add(btnBrowse);
@@ -417,5 +447,7 @@ namespace GeneratorCode.Forms
         private System.Windows.Forms.Label lblMySqlPassword;
         private System.Windows.Forms.TextBox txtMySqlPassword;
         private System.Windows.Forms.Label lblPostgresUsername;
+        private System.Windows.Forms.Button btnExportSettings;
+        private System.Windows.Forms.Button btnImportSettings;
     }
 } 

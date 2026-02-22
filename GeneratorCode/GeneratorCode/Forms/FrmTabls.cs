@@ -3,6 +3,7 @@ using GeneratorCode.Core.Models;
 using GeneratorCode.Core.Services;
 using GeneratorCode.Core.Logging;
 using GeneratorCode.GeneratorCode.Helpers;
+using GeneratorCode.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -37,8 +38,10 @@ namespace GeneratorCode.Forms
 
             InitializeComponent();
 
-            // تحسين المظهر العام للنموذج
-            //SetupFormStyling();
+            KeyDown += FrmTabls_KeyDown;
+
+            SetupFormStyling();
+            ApplyTheme();
 
             // تهيئة أعمدة الجدول
             SetupDataGridColumns();
@@ -77,24 +80,34 @@ namespace GeneratorCode.Forms
 
         private void SetupFormStyling()
         {
-            // تحسين المظهر العام للنموذج
-            this.BackColor = Color.FromArgb(248, 249, 250);
+            AppTheme.StyleForm(this);
+            AppTheme.StyleTabControl(tabControl);
+        }
 
-            // إعداد التبويبات بشكل افتراضي
-            tabControl.SizeMode = TabSizeMode.Fixed;
-            tabControl.ItemSize = new Size(200, 35);
+        private void ApplyTheme()
+        {
+            AppTheme.StyleButton(btnBrowse, AppTheme.Primary);
+            AppTheme.StyleButton(btnSettings, AppTheme.Purple);
+            AppTheme.StyleButton(btnGenerate, AppTheme.Success, large: true);
+            AppTheme.StyleButton(btnPreview, AppTheme.Primary);
+            AppTheme.StyleButton(btnViewLogs, AppTheme.Purple);
 
-            // التأكد من دعم RTL للنموذج
-            this.RightToLeft = RightToLeft.Yes;
-            this.RightToLeftLayout = true;
-
-            // إضافة دعم RTL للتبويبات
-            tabControl.RightToLeft = RightToLeft.Yes;
-            tabControl.RightToLeftLayout = true;
+            AppTheme.StyleGroupBox(grpTablesInfo, AppTheme.PrimaryDark);
+            AppTheme.StyleGroupBox(grpColumnsInfo, AppTheme.PrimaryDark);
+            AppTheme.StyleGroupBox(grpArchitecture, AppTheme.PrimaryDark);
+            AppTheme.StyleGroupBox(grpCodeGeneration, AppTheme.PrimaryDark);
+            AppTheme.StyleGroupBox(grpCrudOperations, AppTheme.PrimaryDark);
+            AppTheme.StyleGroupBox(grpProjectStructure, AppTheme.PrimaryDark);
+            AppTheme.StyleGroupBox(grpProjectSettings, AppTheme.PrimaryDark);
+            AppTheme.StyleGroupBox(grpDatabaseInfo, AppTheme.PrimaryDark);
+            AppTheme.StyleGroupBox(grpActions, AppTheme.PrimaryDark);
+            AppTheme.StyleGroupBox(grpProgress, AppTheme.PrimaryDark);
         }
 
         private void SetupDataGridColumns()
         {
+            AppTheme.StyleDataGridView(gridColumns);
+
             gridColumns.Columns.Add("ColumnName", "اسم العمود");
             gridColumns.Columns.Add("DataType", "نوع البيانات");
             gridColumns.Columns.Add("IsNullable", "يقبل Null");
@@ -102,28 +115,15 @@ namespace GeneratorCode.Forms
             gridColumns.Columns.Add("IsForeignKey", "مفتاح خارجي");
             gridColumns.Columns.Add("ReferencedTable", "الجدول المرجعي");
 
-            // تحسين مظهر الجدول
-            gridColumns.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            gridColumns.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            gridColumns.MultiSelect = false;
-            gridColumns.ReadOnly = true;
-            gridColumns.AllowUserToAddRows = false;
-            gridColumns.AllowUserToDeleteRows = false;
-            gridColumns.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(52, 152, 219);
-            gridColumns.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            gridColumns.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            gridColumns.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(245, 245, 245);
-
-            // إضافة دعم RTL للجدول
+            // RTL-specific overrides
             gridColumns.RightToLeft = RightToLeft.Yes;
             gridColumns.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             gridColumns.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            gridColumns.DefaultCellStyle.Font = new Font("Segoe UI", 9F);
         }
 
         private void SetupTooltips()
         {
-            var tooltip = new ToolTip();
+            var tooltip = AppTheme.CreateTooltipProvider();
             tooltip.SetToolTip(chkGenerateAllTables, "إذا تم تحديد هذا الخيار، سيتم توليد الكود لجميع الجداول في قاعدة البيانات");
             tooltip.SetToolTip(cmbArchitecture, "اختر النمط المعماري الذي تريد استخدامه في مشروعك");
             tooltip.SetToolTip(cmbLanguage, "اختر لغة البرمجة أو إطار العمل المطلوب");
@@ -164,10 +164,11 @@ namespace GeneratorCode.Forms
             cmbArchitecture.Items.Clear();
             cmbArchitecture.Items.AddRange(new string[] {
                 "Clean Architecture",
+                "Simple Architecture",
                 "Layered Architecture",
-                "Microservices",
+                "CQRS",
                 "DDD (Domain-Driven Design)",
-                "CQRS"
+                "Microservices"
             });
             cmbArchitecture.SelectedIndex = 0;
         }
@@ -189,7 +190,7 @@ namespace GeneratorCode.Forms
         {
             lblDatabaseType.Text = $"نوع قاعدة البيانات: {_context.DatabaseType}";
             lblConnectionInfo.Text = "متصل بنجاح";
-            lblConnectionInfo.ForeColor = Color.Green;
+            lblConnectionInfo.ForeColor = AppTheme.StatusLedGreen;
         }
 
         private void LoadTables()
@@ -197,13 +198,40 @@ namespace GeneratorCode.Forms
             UpdateStatusLabel("جاري تحميل الجداول...");
             progressBar.Style = ProgressBarStyle.Marquee;
             progressBar.Visible = true;
+            Cursor = Cursors.WaitCursor;
 
-            _availableTables = _codeGenerationService.GetTables(
-                _context.DatabaseType, _context.ConnectionString);
+            try
+            {
+                _availableTables = _codeGenerationService.GetTables(
+                    _context.DatabaseType, _context.ConnectionString);
+            }
+            catch (Exception ex)
+            {
+                Cursor = Cursors.Default;
+                _logger.LogError("Error loading tables", ex, "FrmTabls.LoadTables");
+                _availableTables = new List<TableInfo>();
+                UpdateStatusLabel("فشل في تحميل الجداول");
+                progressBar.Visible = false;
+                MessageBox.Show(
+                    $"تعذّر تحميل الجداول من قاعدة البيانات:\n{ex.Message}",
+                    "خطأ في الاتصال",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
 
             if (_availableTables == null || !_availableTables.Any())
             {
-                throw new Exception("لم يتم العثور على أي جداول في قاعدة البيانات");
+                Cursor = Cursors.Default;
+                _availableTables = new List<TableInfo>();
+                UpdateStatusLabel("لا توجد جداول في قاعدة البيانات");
+                progressBar.Visible = false;
+                MessageBox.Show(
+                    "لم يتم العثور على أي جداول في قاعدة البيانات.\nتأكد من أن قاعدة البيانات تحتوي على جداول.",
+                    "لا توجد جداول",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
             }
 
             lstTables.Items.Clear();
@@ -223,15 +251,14 @@ namespace GeneratorCode.Forms
             UpdateStatusLabel($"تم تحميل {_availableTables.Count} جدول");
             progressBar.Style = ProgressBarStyle.Blocks;
             progressBar.Visible = false;
+            Cursor = Cursors.Default;
 
-            // تحديث النص التوضيحي للجداول
             lblTablesSelection.Text = $"الجداول المتاحة ({_availableTables.Count} جدول متاح):";
             if (chkGenerateAllTables.Checked)
             {
                 lblTablesSelection.Text = $"سيتم توليد الكود لجميع الجداول ({_availableTables.Count} جداول):";
             }
 
-            // التأكد من دعم RTL للقائمة
             lstTables.RightToLeft = RightToLeft.Yes;
         }
 
@@ -399,14 +426,14 @@ namespace GeneratorCode.Forms
                 btnGenerate.Enabled = true;
                 btnPreview.Enabled = true;
                 UpdateStatusLabel("✅ جاهز للتوليد - جميع الإعدادات صحيحة");
-                lblStatus.ForeColor = Color.Green;
+                lblStatus.ForeColor = AppTheme.StatusLedGreen;
             }
             else
             {
                 btnGenerate.Enabled = false;
                 btnPreview.Enabled = false;
                 UpdateStatusLabel($"❌ {validationMessage}");
-                lblStatus.ForeColor = Color.Red;
+                lblStatus.ForeColor = AppTheme.StatusLedRed;
             }
         }
 
@@ -555,34 +582,24 @@ namespace GeneratorCode.Forms
                 if (!btnBrowse.Enabled)
                     return;
 
-                // التأكد من أن الكود يعمل على UI thread
                 if (this.InvokeRequired)
                 {
                     this.Invoke(new Action(() => BtnBrowse_Click(sender, e)));
                     return;
                 }
 
-                // استخدام SaveFileDialog مثل FrmSettings لأنه يعمل بشكل موثوق
-                using var dialog = new SaveFileDialog
+                using var dialog = new FolderBrowserDialog
                 {
-                    Title = "اختر مسار لحفظ الكود المولد",
-                    InitialDirectory = !string.IsNullOrEmpty(txtOutputPath.Text) && Directory.Exists(txtOutputPath.Text)
+                    Description = "اختر مسار لحفظ الكود المولد",
+                    SelectedPath = !string.IsNullOrEmpty(txtOutputPath.Text) && Directory.Exists(txtOutputPath.Text)
                         ? txtOutputPath.Text
                         : Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                    FileName = "اختر هذا المجلد",
-                    Filter = "مجلد|*.",
-                    ValidateNames = false,
-                    CheckFileExists = false,
-                    CheckPathExists = true
+                    ShowNewFolderButton = true
                 };
 
-                if (dialog.ShowDialog(this) == DialogResult.OK)
+                if (dialog.ShowDialog(this) == DialogResult.OK && !string.IsNullOrEmpty(dialog.SelectedPath))
                 {
-                    string selectedPath = Path.GetDirectoryName(dialog.FileName);
-                    if (!string.IsNullOrEmpty(selectedPath))
-                    {
-                        txtOutputPath.Text = selectedPath;
-                    }
+                    txtOutputPath.Text = dialog.SelectedPath;
                 }
             }
             catch (Exception ex)
@@ -737,12 +754,23 @@ namespace GeneratorCode.Forms
             _context.TableName = table.Name ?? string.Empty;
             _context.EntityName = table.Name ?? string.Empty; // Set EntityName from table name
             _context.ClassName = table.Name ?? string.Empty; // Set ClassName from table name
-            _context.ArchitecturePattern = cmbArchitecture.SelectedItem?.ToString()?.Trim() ?? string.Empty;
+            _context.ArchitecturePattern = cmbArchitecture.SelectedItem?.ToString()?.Trim()?.Replace(" ", "") ?? string.Empty;
             _context.TargetLanguage = (ProgrammingLanguage)cmbLanguage.SelectedIndex;
             _context.Options = CreateGenerationOptions();
             _context.Namespace = txtNamespace.Text;
             _context.OutputPath = txtOutputPath.Text;
-            _context.ArchitecturePattern = cmbArchitecture.SelectedItem?.ToString().Trim().Replace(" ", "");
+
+            if (cmbTargetFramework != null && cmbTargetFramework.SelectedIndex >= 0)
+            {
+                _context.TargetFramework = cmbTargetFramework.SelectedIndex switch
+                {
+                    0 => "net6.0",
+                    1 => "net7.0",
+                    2 => "net8.0",
+                    3 => "net9.0",
+                    _ => "net8.0"
+                };
+            }
         }
 
         /// <summary>
@@ -797,20 +825,33 @@ namespace GeneratorCode.Forms
             switch (_context.ArchitecturePattern?.ToLower())
             {
                 case "clean architecture":
+                case "cleanarchitecture":
                     EnableAllOptions();
                     break;
 
+                case "simple architecture":
+                case "simplearchitecture":
+                    EnableAllOptions();
+                    chkDTOs.Checked = false;
+                    chkDTOs.Enabled = false;
+                    chkSwagger.Checked = false;
+                    chkSwagger.Enabled = false;
+                    break;
+
                 case "layered architecture":
+                case "layeredarchitecture":
                     EnableAllOptions();
                     chkDTOs.Checked = false;
                     chkDTOs.Enabled = false;
                     break;
 
                 case "microservices":
+                case "microservicesarchitecture":
                     EnableAllOptions();
                     break;
 
                 case "ddd (domain-driven design)":
+                case "ddd":
                     EnableAllOptions();
                     break;
 
@@ -819,7 +860,7 @@ namespace GeneratorCode.Forms
                     break;
 
                 default:
-                    DisableModernOptions();
+                    EnableAllOptions();
                     break;
             }
         }
@@ -1091,11 +1132,19 @@ namespace GeneratorCode.Forms
             LoadSettings();
         }
 
-        private static void LoadSettings()
+        private void LoadSettings()
         {
-            // تحميل الإعدادات وتحديث واجهة المستخدم
-            //_settings = Properties.Settings.Default;
-            // ... تحديث العناصر حسب الإعدادات
+            var settings = Properties.Settings.Default;
+
+            if (!string.IsNullOrEmpty(settings.DefaultNamespace))
+                txtNamespace.Text = settings.DefaultNamespace;
+
+            if (!string.IsNullOrEmpty(settings.DefaultOutputPath))
+                txtOutputPath.Text = settings.DefaultOutputPath;
+
+            chkDependencyInjection.Checked = settings.EnableDI;
+            chkValidation.Checked = settings.EnableValidation;
+            chkUnitTests.Checked = settings.EnableTesting;
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
@@ -1212,15 +1261,15 @@ namespace GeneratorCode.Forms
             return Math.Max(count, 1); // على الأقل ملف واحد
         }
 
-        #endregion
-
-
-
-        private void btnBrowse_Click_1(object sender, EventArgs e)
+        private void FrmTabls_KeyDown(object sender, KeyEventArgs e)
         {
-            
+            if (e.KeyCode == Keys.Escape)
+            {
+                e.Handled = true;
+                Close();
+            }
         }
 
-        
+        #endregion
     }
 }

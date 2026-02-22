@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using GeneratorCode.Core.DomainModel;
 
 namespace GeneratorCode.Core.Models
 {
@@ -86,5 +87,30 @@ namespace GeneratorCode.Core.Models
         /// خيارات الاختبار
         /// </summary>
         public TestingOptions TestingOptions { get; set; } = new TestingOptions();
+
+        /// <summary>
+        /// إطار العمل المستهدف (مثل net6.0, net7.0, net8.0)
+        /// </summary>
+        public string TargetFramework { get; set; } = "net8.0";
+
+        /// <summary>
+        /// وضع التوليد (Database First أو Code First)
+        /// </summary>
+        public GenerationMode Mode { get; set; } = GenerationMode.DatabaseFirst;
+
+        /// <summary>
+        /// نموذج المجال (يستخدم في وضع Code First)
+        /// </summary>
+        public DomainModel.DomainModel DomainModel { get; set; }
+
+        /// <summary>
+        /// اسم الـ Migration (يستخدم في وضع Code First)
+        /// </summary>
+        public string MigrationName { get; set; }
+
+        /// <summary>
+        /// تطبيق الـ Migration تلقائياً
+        /// </summary>
+        public bool ApplyMigration { get; set; }
     }
 } 

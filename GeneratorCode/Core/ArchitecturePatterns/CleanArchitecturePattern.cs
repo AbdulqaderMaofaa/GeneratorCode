@@ -494,13 +494,15 @@ namespace GeneratorCode.Core.ArchitecturePatterns
             sb.AppendLine($"using {namespaceName}.Domain.Entities;");
             sb.AppendLine($"using {namespaceName}.Domain.Repositories;");
             sb.AppendLine();
+            sb.AppendLine($"using {namespaceName}.Infrastructure.Data;");
+            sb.AppendLine();
             sb.AppendLine($"namespace {context.Namespace}.Infrastructure.Repositories");
             sb.AppendLine("{");
             sb.AppendLine($"    public class {context.EntityName}Repository : I{context.EntityName}Repository");
             sb.AppendLine("    {");
-            sb.AppendLine("        private readonly DbContext _context;");
+            sb.AppendLine($"        private readonly {namespaceName}DbContext _context;");
             sb.AppendLine();
-            sb.AppendLine($"        public {context.EntityName}Repository(DbContext context)");
+            sb.AppendLine($"        public {context.EntityName}Repository({namespaceName}DbContext context)");
             sb.AppendLine("        {");
             sb.AppendLine("            _context = context;");
             sb.AppendLine("        }");
@@ -613,7 +615,7 @@ namespace GeneratorCode.Core.ArchitecturePatterns
             sb.AppendLine($"using {context.Namespace}.Application.Features.{context.EntityName}.Commands;");
             sb.AppendLine($"using {context.Namespace}.Application.Features.{context.EntityName}.Queries;");
             sb.AppendLine();
-            sb.AppendLine($"namespace {context.Namespace}.Presentation.Controllers");
+            sb.AppendLine($"namespace {context.Namespace}.API.Controllers");
             sb.AppendLine("{");
             sb.AppendLine("    [ApiController]");
             sb.AppendLine($"    [Route(\"api/[controller]\")]");
@@ -835,31 +837,30 @@ namespace GeneratorCode.Core.ArchitecturePatterns
             var sb = new StringBuilder();
             
             sb.AppendLine("using System;");
+            sb.AppendLine("using System.Collections.Generic;");
             sb.AppendLine("using System.Threading.Tasks;");
             sb.AppendLine("using Xunit;");
             sb.AppendLine("using Moq;");
             sb.AppendLine($"using {context.Namespace}.Domain.Entities;");
             sb.AppendLine($"using {context.Namespace}.Domain.Repositories;");
-            sb.AppendLine($"using {context.Namespace}.Application.Services;");
+            sb.AppendLine($"using {context.Namespace}.Infrastructure.Repositories;");
             sb.AppendLine();
-            
+
             sb.AppendLine($"namespace {context.Namespace}.UnitTests");
             sb.AppendLine("{");
-            sb.AppendLine($"    public class {context.EntityName}Tests");
+            sb.AppendLine($"    public class {context.EntityName}RepositoryTests");
             sb.AppendLine("    {");
             sb.AppendLine($"        private readonly Mock<I{context.EntityName}Repository> _mockRepository;");
-            sb.AppendLine($"        private readonly I{context.EntityName}Service _service;");
             sb.AppendLine();
-            
-            sb.AppendLine($"        public {context.EntityName}Tests()");
+
+            sb.AppendLine($"        public {context.EntityName}RepositoryTests()");
             sb.AppendLine("        {");
             sb.AppendLine($"            _mockRepository = new Mock<I{context.EntityName}Repository>();");
-            sb.AppendLine($"            _service = new {context.EntityName}Service(_mockRepository.Object);");
             sb.AppendLine("        }");
             sb.AppendLine();
-            
+
             sb.AppendLine("        [Fact]");
-            sb.AppendLine("        public async Task GetById_ShouldReturnEntity_WhenEntityExists()");
+            sb.AppendLine("        public async Task GetByIdAsync_ShouldReturnEntity_WhenEntityExists()");
             sb.AppendLine("        {");
             sb.AppendLine("            // Arrange");
             sb.AppendLine($"            var entity = new {context.EntityName}();");
@@ -867,10 +868,41 @@ namespace GeneratorCode.Core.ArchitecturePatterns
             sb.AppendLine("                .ReturnsAsync(entity);");
             sb.AppendLine();
             sb.AppendLine("            // Act");
-            sb.AppendLine("            var result = await _service.GetByIdAsync(1);");
+            sb.AppendLine("            var result = await _mockRepository.Object.GetByIdAsync(1);");
             sb.AppendLine();
             sb.AppendLine("            // Assert");
             sb.AppendLine("            Assert.NotNull(result);");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+
+            sb.AppendLine("        [Fact]");
+            sb.AppendLine("        public async Task GetAllAsync_ShouldReturnList()");
+            sb.AppendLine("        {");
+            sb.AppendLine("            // Arrange");
+            sb.AppendLine($"            var entities = new List<{context.EntityName}> {{ new {context.EntityName}() }};");
+            sb.AppendLine("            _mockRepository.Setup(repo => repo.GetAllAsync())");
+            sb.AppendLine("                .ReturnsAsync(entities);");
+            sb.AppendLine();
+            sb.AppendLine("            // Act");
+            sb.AppendLine("            var result = await _mockRepository.Object.GetAllAsync();");
+            sb.AppendLine();
+            sb.AppendLine("            // Assert");
+            sb.AppendLine("            Assert.NotEmpty(result);");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+
+            sb.AppendLine("        [Fact]");
+            sb.AppendLine("        public async Task GetByIdAsync_ShouldReturnNull_WhenEntityNotFound()");
+            sb.AppendLine("        {");
+            sb.AppendLine("            // Arrange");
+            sb.AppendLine($"            _mockRepository.Setup(repo => repo.GetByIdAsync(It.IsAny<int>()))");
+            sb.AppendLine($"                .ReturnsAsync(({context.EntityName})null);");
+            sb.AppendLine();
+            sb.AppendLine("            // Act");
+            sb.AppendLine("            var result = await _mockRepository.Object.GetByIdAsync(999);");
+            sb.AppendLine();
+            sb.AppendLine("            // Assert");
+            sb.AppendLine("            Assert.Null(result);");
             sb.AppendLine("        }");
             sb.AppendLine("    }");
             sb.AppendLine("}");
@@ -1591,10 +1623,15 @@ namespace GeneratorCode.Core.ArchitecturePatterns
         {
             var sb = new StringBuilder();
             sb.AppendLine("using System;");
-            sb.AppendLine($"using {context.Namespace}.Domain.Common;");
+            sb.AppendLine($"using {context.Namespace}.Domain.Entities;");
             sb.AppendLine();
             sb.AppendLine($"namespace {context.Namespace}.Domain.Events");
             sb.AppendLine("{");
+            sb.AppendLine("    public abstract class DomainEvent");
+            sb.AppendLine("    {");
+            sb.AppendLine("        public DateTime OccurredOn { get; } = DateTime.UtcNow;");
+            sb.AppendLine("    }");
+            sb.AppendLine();
             sb.AppendLine($"    public class {context.EntityName}CreatedEvent : DomainEvent");
             sb.AppendLine("    {");
             sb.AppendLine($"        public {context.EntityName}CreatedEvent({context.EntityName} item)");
@@ -1603,6 +1640,26 @@ namespace GeneratorCode.Core.ArchitecturePatterns
             sb.AppendLine("        }");
             sb.AppendLine();
             sb.AppendLine($"        public {context.EntityName} Item {{ get; }}");
+            sb.AppendLine("    }");
+            sb.AppendLine();
+            sb.AppendLine($"    public class {context.EntityName}UpdatedEvent : DomainEvent");
+            sb.AppendLine("    {");
+            sb.AppendLine($"        public {context.EntityName}UpdatedEvent({context.EntityName} item)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            Item = item;");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine($"        public {context.EntityName} Item {{ get; }}");
+            sb.AppendLine("    }");
+            sb.AppendLine();
+            sb.AppendLine($"    public class {context.EntityName}DeletedEvent : DomainEvent");
+            sb.AppendLine("    {");
+            sb.AppendLine($"        public {context.EntityName}DeletedEvent(int id)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            Id = id;");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public int Id { get; }");
             sb.AppendLine("    }");
             sb.AppendLine("}");
             return sb.ToString();
@@ -1632,7 +1689,7 @@ namespace GeneratorCode.Core.ArchitecturePatterns
             sb.AppendLine("using System;");
             sb.AppendLine("using System.ComponentModel.DataAnnotations;");
             sb.AppendLine();
-            sb.AppendLine($"namespace {context.Namespace}.Presentation.ViewModels");
+            sb.AppendLine($"namespace {context.Namespace}.API.ViewModels");
             sb.AppendLine("{");
             sb.AppendLine($"    public class {context.EntityName}ViewModel");
             sb.AppendLine("    {");
@@ -1662,7 +1719,7 @@ namespace GeneratorCode.Core.ArchitecturePatterns
         private string GenerateView(CodeGenerationContext context, string viewName)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"@model {context.Namespace}.Presentation.ViewModels.{context.EntityName}ViewModel");
+            sb.AppendLine($"@model {context.Namespace}.API.ViewModels.{context.EntityName}ViewModel");
             sb.AppendLine();
             sb.AppendLine("@{");
             sb.AppendLine($"    ViewData[\"Title\"] = \"{viewName} {context.EntityName}\";");
