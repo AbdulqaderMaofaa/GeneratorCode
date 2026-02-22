@@ -91,6 +91,23 @@ namespace GeneratorCode.Helpers
         public static Font ButtonFont => _buttonFont.Value;
         public static Font ButtonFontLarge => _buttonFontLarge.Value;
 
+        // Standard control sizes
+        public static readonly int ButtonHeightSmall = 30;
+        public static readonly int ButtonHeight = 36;
+        public static readonly int ButtonHeightLarge = 50;
+        public static readonly int ButtonWidthSmall = 80;
+        public static readonly int ButtonWidth = 120;
+        public static readonly int ButtonWidthLarge = 200;
+        public static readonly int ToolbarHeight = 40;
+        public static readonly int TextBoxHeight = 28;
+        public static readonly int ComboBoxHeight = 28;
+        public static readonly int CheckBoxHeight = 24;
+        public static readonly int LabelHeight = 20;
+        public static readonly int Spacing = 10;
+        public static readonly int SpacingLarge = 20;
+        public static readonly Padding GroupBoxPadding = new Padding(10);
+        public static readonly Padding PanelPadding = new Padding(10);
+
         public static void StyleForm(Form form)
         {
             form.BackColor = FormBackground;
@@ -112,8 +129,9 @@ namespace GeneratorCode.Helpers
             btn.Font = large ? ButtonFontLarge : ButtonFont;
             btn.Cursor = Cursors.Hand;
             btn.UseVisualStyleBackColor = false;
-            if (btn.Height < 35) btn.Height = 35;
-            if (btn.Width < 100) btn.Width = 100;
+            int targetHeight = large ? ButtonHeightLarge : ButtonHeight;
+            if (btn.Height < targetHeight) btn.Height = targetHeight;
+            if (btn.Width < ButtonWidthSmall) btn.Width = ButtonWidthSmall;
         }
 
         public static void StyleDataGridView(DataGridView dgv)
