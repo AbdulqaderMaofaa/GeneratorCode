@@ -752,39 +752,17 @@ namespace GeneratorCode.Forms
                 Width = 400,
                 Height = 160,
                 FormBorderStyle = FormBorderStyle.FixedDialog,
-                StartPosition = FormStartPosition.CenterParent,
                 MaximizeBox = false,
-                MinimizeBox = false,
-                BackColor = AppTheme.FormBackground,
-                RightToLeft = RightToLeft.Yes,
-                RightToLeftLayout = true,
-                Font = new Font("Segoe UI", 10F)
+                MinimizeBox = false
             };
+            AppTheme.StyleForm(form);
 
-            var lbl = new Label { Text = prompt, Left = 20, Top = 15, Width = 340, Font = new Font("Segoe UI", 10F) };
-            var txt = new TextBox { Text = defaultValue, Left = 20, Top = 45, Width = 340, Font = new Font("Segoe UI", 10F) };
-            var btnOk = new Button
-            {
-                Text = "موافق",
-                Left = 200,
-                Top = 85,
-                Width = 80,
-                DialogResult = DialogResult.OK,
-                FlatStyle = FlatStyle.Flat,
-                BackColor = AppTheme.Primary,
-                ForeColor = Color.White
-            };
-            var btnCancel = new Button
-            {
-                Text = "إلغاء",
-                Left = 280,
-                Top = 85,
-                Width = 80,
-                DialogResult = DialogResult.Cancel,
-                FlatStyle = FlatStyle.Flat,
-                BackColor = AppTheme.GridLine,
-                ForeColor = Color.Black
-            };
+            var lbl = new Label { Text = prompt, Left = 20, Top = 15, Width = 340, Font = AppTheme.DefaultFont };
+            var txt = new TextBox { Text = defaultValue, Left = 20, Top = 45, Width = 340, Font = AppTheme.DefaultFont };
+            var btnOk = new Button { Text = "موافق", Left = 200, Top = 85, Width = 80, DialogResult = DialogResult.OK };
+            var btnCancel = new Button { Text = "إلغاء", Left = 280, Top = 85, Width = 80, DialogResult = DialogResult.Cancel };
+            AppTheme.StyleButton(btnOk, AppTheme.Primary);
+            AppTheme.StyleButton(btnCancel, AppTheme.Gray);
 
             form.Controls.AddRange(new Control[] { lbl, txt, btnOk, btnCancel });
             form.AcceptButton = btnOk;

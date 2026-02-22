@@ -1,3 +1,5 @@
+using Helpers = GeneratorCode.Helpers;
+
 namespace GeneratorCode.Forms
 {
     partial class FrmMigrationManager
@@ -23,7 +25,7 @@ namespace GeneratorCode.Forms
             var accentPurple = Helpers.AppTheme.Purple;
             var bgColor = Helpers.AppTheme.SurfaceLight;
             var panelBg = Helpers.AppTheme.PanelBackground;
-            var defaultFont = new System.Drawing.Font("Segoe UI", 9.5F);
+            var defaultFont = Helpers.AppTheme.DefaultFontSmall;
 
             // Top info panel
             panelInfo = new System.Windows.Forms.Panel();
@@ -74,7 +76,7 @@ namespace GeneratorCode.Forms
 
             lblProjectName.Text = "المشروع: -";
             lblProjectName.ForeColor = System.Drawing.Color.White;
-            lblProjectName.Font = new System.Drawing.Font("Segoe UI Semibold", 11F);
+            lblProjectName.Font = Helpers.AppTheme.HeaderFontSemibold;
             lblProjectName.Location = new System.Drawing.Point(15, 10);
             lblProjectName.AutoSize = true;
 
@@ -99,7 +101,7 @@ namespace GeneratorCode.Forms
 
             // ===== Migrations Panel (Panel1) =====
             grpMigrations.Text = "  الـ Migrations  ";
-            grpMigrations.Font = new System.Drawing.Font("Segoe UI Semibold", 10F);
+            grpMigrations.Font = Helpers.AppTheme.DefaultFontBold;
             grpMigrations.ForeColor = Helpers.AppTheme.TextPrimary;
             grpMigrations.Dock = System.Windows.Forms.DockStyle.Fill;
             grpMigrations.Padding = new System.Windows.Forms.Padding(8);
@@ -114,7 +116,7 @@ namespace GeneratorCode.Forms
             gridMigrations.ReadOnly = true;
             gridMigrations.ColumnHeadersDefaultCellStyle.BackColor = Helpers.AppTheme.PrimaryDark;
             gridMigrations.ColumnHeadersDefaultCellStyle.ForeColor = System.Drawing.Color.White;
-            gridMigrations.ColumnHeadersDefaultCellStyle.Font = new System.Drawing.Font("Segoe UI Semibold", 9.5F);
+            gridMigrations.ColumnHeadersDefaultCellStyle.Font = Helpers.AppTheme.DefaultFontSmall;
             gridMigrations.ColumnHeadersHeight = 34;
             gridMigrations.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             gridMigrations.EnableHeadersVisualStyles = false;
@@ -161,13 +163,13 @@ namespace GeneratorCode.Forms
 
             // ===== Output Panel (Panel2) =====
             grpOutput.Text = "  المخرجات  ";
-            grpOutput.Font = new System.Drawing.Font("Segoe UI Semibold", 10F);
+            grpOutput.Font = Helpers.AppTheme.DefaultFontBold;
             grpOutput.ForeColor = Helpers.AppTheme.TextPrimary;
             grpOutput.Dock = System.Windows.Forms.DockStyle.Fill;
             grpOutput.Padding = new System.Windows.Forms.Padding(8);
 
             txtOutput.Dock = System.Windows.Forms.DockStyle.Fill;
-            txtOutput.Font = new System.Drawing.Font("Consolas", 10.5F);
+            txtOutput.Font = Helpers.AppTheme.ConsoleFont;
             txtOutput.BackColor = Helpers.AppTheme.ConsoleBg;
             txtOutput.ForeColor = Helpers.AppTheme.ConsoleFg;
             txtOutput.ReadOnly = true;
@@ -229,7 +231,7 @@ namespace GeneratorCode.Forms
             btn.FlatAppearance.BorderSize = 0;
             btn.BackColor = bgColor;
             btn.ForeColor = System.Drawing.Color.White;
-            btn.Font = new System.Drawing.Font("Segoe UI", 9F);
+            btn.Font = Helpers.AppTheme.ButtonFont;
             btn.Location = new System.Drawing.Point(x, y);
             btn.Size = new System.Drawing.Size(w, h);
             btn.Cursor = System.Windows.Forms.Cursors.Hand;

@@ -89,52 +89,52 @@ namespace GeneratorCode.Forms
 
             // Row 1
             lblDatabaseType.AutoSize = true;
-            lblDatabaseType.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            lblDatabaseType.Font = Helpers.AppTheme.DefaultFontBold;
             lblDatabaseType.ForeColor = System.Drawing.Color.White;
             lblDatabaseType.Location = new System.Drawing.Point(1060, 15);
             lblDatabaseType.Name = "lblDatabaseType";
             lblDatabaseType.Text = "قاعدة البيانات:";
 
             cmbDatabaseType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            cmbDatabaseType.Font = new System.Drawing.Font("Segoe UI", 10F);
+            cmbDatabaseType.Font = Helpers.AppTheme.DefaultFont;
             cmbDatabaseType.Location = new System.Drawing.Point(880, 12);
             cmbDatabaseType.Name = "cmbDatabaseType";
             cmbDatabaseType.Size = new System.Drawing.Size(170, 25);
 
             lblFramework.AutoSize = true;
-            lblFramework.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            lblFramework.Font = Helpers.AppTheme.DefaultFontBold;
             lblFramework.ForeColor = System.Drawing.Color.White;
             lblFramework.Location = new System.Drawing.Point(780, 15);
             lblFramework.Name = "lblFramework";
             lblFramework.Text = "إصدار .NET:";
 
             cmbTargetFramework.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            cmbTargetFramework.Font = new System.Drawing.Font("Segoe UI", 10F);
+            cmbTargetFramework.Font = Helpers.AppTheme.DefaultFont;
             cmbTargetFramework.Location = new System.Drawing.Point(630, 12);
             cmbTargetFramework.Name = "cmbTargetFramework";
             cmbTargetFramework.Size = new System.Drawing.Size(140, 25);
 
             // Row 2
             lblProjectName.AutoSize = true;
-            lblProjectName.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            lblProjectName.Font = Helpers.AppTheme.DefaultFontBold;
             lblProjectName.ForeColor = System.Drawing.Color.White;
             lblProjectName.Location = new System.Drawing.Point(1060, 55);
             lblProjectName.Name = "lblProjectName";
             lblProjectName.Text = "اسم المشروع:";
 
-            txtProjectName.Font = new System.Drawing.Font("Segoe UI", 10F);
+            txtProjectName.Font = Helpers.AppTheme.DefaultFont;
             txtProjectName.Location = new System.Drawing.Point(840, 52);
             txtProjectName.Name = "txtProjectName";
             txtProjectName.Size = new System.Drawing.Size(210, 25);
 
             lblNamespaceLabel.AutoSize = true;
-            lblNamespaceLabel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            lblNamespaceLabel.Font = Helpers.AppTheme.DefaultFontBold;
             lblNamespaceLabel.ForeColor = System.Drawing.Color.White;
             lblNamespaceLabel.Location = new System.Drawing.Point(720, 55);
             lblNamespaceLabel.Name = "lblNamespaceLabel";
             lblNamespaceLabel.Text = "Namespace:";
 
-            txtNamespace.Font = new System.Drawing.Font("Segoe UI", 10F);
+            txtNamespace.Font = Helpers.AppTheme.DefaultFont;
             txtNamespace.Location = new System.Drawing.Point(480, 52);
             txtNamespace.Name = "txtNamespace";
             txtNamespace.Size = new System.Drawing.Size(230, 25);
@@ -147,7 +147,7 @@ namespace GeneratorCode.Forms
             grpEntities.Controls.Add(btnAddEntity);
             grpEntities.Controls.Add(btnRemoveEntity);
             grpEntities.Controls.Add(btnRenameEntity);
-            grpEntities.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            grpEntities.Font = Helpers.AppTheme.DefaultFontBold;
             grpEntities.ForeColor = System.Drawing.Color.DarkBlue;
             grpEntities.Location = new System.Drawing.Point(900, 100);
             grpEntities.Name = "grpEntities";
@@ -159,7 +159,7 @@ namespace GeneratorCode.Forms
             grpEntities.Text = "الكيانات";
 
             lstEntities.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            lstEntities.Font = new System.Drawing.Font("Segoe UI", 11F);
+            lstEntities.Font = Helpers.AppTheme.DefaultFont;
             lstEntities.ItemHeight = 30;
             lstEntities.Location = new System.Drawing.Point(13, 35);
             lstEntities.Name = "lstEntities";
@@ -171,7 +171,7 @@ namespace GeneratorCode.Forms
             btnAddEntity.BackColor = Helpers.AppTheme.Success;
             btnAddEntity.FlatAppearance.BorderSize = 0;
             btnAddEntity.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnAddEntity.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            btnAddEntity.Font = Helpers.AppTheme.DefaultFontBold;
             btnAddEntity.ForeColor = System.Drawing.Color.White;
             btnAddEntity.Location = new System.Drawing.Point(188, 522);
             btnAddEntity.Name = "btnAddEntity";
@@ -183,7 +183,7 @@ namespace GeneratorCode.Forms
             btnRemoveEntity.BackColor = Helpers.AppTheme.Danger;
             btnRemoveEntity.FlatAppearance.BorderSize = 0;
             btnRemoveEntity.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnRemoveEntity.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            btnRemoveEntity.Font = Helpers.AppTheme.DefaultFontBold;
             btnRemoveEntity.ForeColor = System.Drawing.Color.White;
             btnRemoveEntity.Location = new System.Drawing.Point(98, 522);
             btnRemoveEntity.Name = "btnRemoveEntity";
@@ -195,7 +195,7 @@ namespace GeneratorCode.Forms
             btnRenameEntity.BackColor = Helpers.AppTheme.Warning;
             btnRenameEntity.FlatAppearance.BorderSize = 0;
             btnRenameEntity.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnRenameEntity.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            btnRenameEntity.Font = Helpers.AppTheme.DefaultFontBold;
             btnRenameEntity.ForeColor = System.Drawing.Color.White;
             btnRenameEntity.Location = new System.Drawing.Point(8, 522);
             btnRenameEntity.Name = "btnRenameEntity";
@@ -210,7 +210,7 @@ namespace GeneratorCode.Forms
             tabControl.Controls.Add(tabProperties);
             tabControl.Controls.Add(tabRelations);
             tabControl.Controls.Add(tabPreview);
-            tabControl.Font = new System.Drawing.Font("Segoe UI", 10F);
+            tabControl.Font = Helpers.AppTheme.DefaultFont;
             tabControl.Location = new System.Drawing.Point(12, 100);
             tabControl.Name = "tabControl";
             tabControl.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
@@ -245,12 +245,12 @@ namespace GeneratorCode.Forms
             gridProperties.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             gridProperties.ColumnHeadersDefaultCellStyle.BackColor = Helpers.AppTheme.Primary;
             gridProperties.ColumnHeadersDefaultCellStyle.ForeColor = System.Drawing.Color.White;
-            gridProperties.ColumnHeadersDefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            gridProperties.ColumnHeadersDefaultCellStyle.Font = Helpers.AppTheme.DefaultFontBold;
             gridProperties.ColumnHeadersDefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             gridProperties.ColumnHeadersDefaultCellStyle.Padding = new System.Windows.Forms.Padding(5);
             gridProperties.ColumnHeadersHeight = 42;
             gridProperties.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            gridProperties.DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            gridProperties.DefaultCellStyle.Font = Helpers.AppTheme.DefaultFontSmall;
             gridProperties.DefaultCellStyle.Padding = new System.Windows.Forms.Padding(4);
             gridProperties.DefaultCellStyle.SelectionBackColor = Helpers.AppTheme.Primary;
             gridProperties.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
@@ -271,7 +271,7 @@ namespace GeneratorCode.Forms
             btnAddProperty.BackColor = Helpers.AppTheme.Success;
             btnAddProperty.FlatAppearance.BorderSize = 0;
             btnAddProperty.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnAddProperty.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            btnAddProperty.Font = Helpers.AppTheme.DefaultFontBold;
             btnAddProperty.ForeColor = System.Drawing.Color.White;
             btnAddProperty.Location = new System.Drawing.Point(711, 480);
             btnAddProperty.Name = "btnAddProperty";
@@ -283,7 +283,7 @@ namespace GeneratorCode.Forms
             btnRemoveProperty.BackColor = Helpers.AppTheme.Danger;
             btnRemoveProperty.FlatAppearance.BorderSize = 0;
             btnRemoveProperty.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnRemoveProperty.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            btnRemoveProperty.Font = Helpers.AppTheme.DefaultFontBold;
             btnRemoveProperty.ForeColor = System.Drawing.Color.White;
             btnRemoveProperty.Location = new System.Drawing.Point(551, 480);
             btnRemoveProperty.Name = "btnRemoveProperty";
@@ -316,12 +316,12 @@ namespace GeneratorCode.Forms
             gridRelations.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             gridRelations.ColumnHeadersDefaultCellStyle.BackColor = Helpers.AppTheme.Primary;
             gridRelations.ColumnHeadersDefaultCellStyle.ForeColor = System.Drawing.Color.White;
-            gridRelations.ColumnHeadersDefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            gridRelations.ColumnHeadersDefaultCellStyle.Font = Helpers.AppTheme.DefaultFontBold;
             gridRelations.ColumnHeadersDefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             gridRelations.ColumnHeadersDefaultCellStyle.Padding = new System.Windows.Forms.Padding(5);
             gridRelations.ColumnHeadersHeight = 42;
             gridRelations.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            gridRelations.DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            gridRelations.DefaultCellStyle.Font = Helpers.AppTheme.DefaultFontSmall;
             gridRelations.DefaultCellStyle.Padding = new System.Windows.Forms.Padding(4);
             gridRelations.DefaultCellStyle.SelectionBackColor = Helpers.AppTheme.Primary;
             gridRelations.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
@@ -342,7 +342,7 @@ namespace GeneratorCode.Forms
             btnAddRelation.BackColor = Helpers.AppTheme.Primary;
             btnAddRelation.FlatAppearance.BorderSize = 0;
             btnAddRelation.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnAddRelation.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            btnAddRelation.Font = Helpers.AppTheme.DefaultFontBold;
             btnAddRelation.ForeColor = System.Drawing.Color.White;
             btnAddRelation.Location = new System.Drawing.Point(711, 480);
             btnAddRelation.Name = "btnAddRelation";
@@ -354,7 +354,7 @@ namespace GeneratorCode.Forms
             btnRemoveRelation.BackColor = Helpers.AppTheme.Danger;
             btnRemoveRelation.FlatAppearance.BorderSize = 0;
             btnRemoveRelation.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnRemoveRelation.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            btnRemoveRelation.Font = Helpers.AppTheme.DefaultFontBold;
             btnRemoveRelation.ForeColor = System.Drawing.Color.White;
             btnRemoveRelation.Location = new System.Drawing.Point(551, 480);
             btnRemoveRelation.Name = "btnRemoveRelation";
@@ -377,7 +377,7 @@ namespace GeneratorCode.Forms
             txtPreview.BackColor = Helpers.AppTheme.ConsoleBg;
             txtPreview.BorderStyle = System.Windows.Forms.BorderStyle.None;
             txtPreview.Dock = System.Windows.Forms.DockStyle.Fill;
-            txtPreview.Font = new System.Drawing.Font("Consolas", 11F);
+            txtPreview.Font = Helpers.AppTheme.ConsoleFont;
             txtPreview.ForeColor = Helpers.AppTheme.ConsoleHighlight;
             txtPreview.Name = "txtPreview";
             txtPreview.ReadOnly = true;
@@ -395,7 +395,7 @@ namespace GeneratorCode.Forms
             grpActions.Controls.Add(btnImportJson);
             grpActions.Controls.Add(btnBack);
             grpActions.Controls.Add(lblStatus);
-            grpActions.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            grpActions.Font = Helpers.AppTheme.DefaultFontBold;
             grpActions.ForeColor = System.Drawing.Color.DarkGreen;
             grpActions.Location = new System.Drawing.Point(12, 676);
             grpActions.Name = "grpActions";
@@ -410,7 +410,7 @@ namespace GeneratorCode.Forms
             btnGenerate.BackColor = Helpers.AppTheme.Success;
             btnGenerate.FlatAppearance.BorderSize = 0;
             btnGenerate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnGenerate.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            btnGenerate.Font = Helpers.AppTheme.HeaderFont;
             btnGenerate.ForeColor = System.Drawing.Color.White;
             btnGenerate.Location = new System.Drawing.Point(1006, 30);
             btnGenerate.Name = "btnGenerate";
@@ -423,7 +423,7 @@ namespace GeneratorCode.Forms
             btnSaveModel.BackColor = Helpers.AppTheme.Primary;
             btnSaveModel.FlatAppearance.BorderSize = 0;
             btnSaveModel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnSaveModel.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            btnSaveModel.Font = Helpers.AppTheme.ButtonFontLarge;
             btnSaveModel.ForeColor = System.Drawing.Color.White;
             btnSaveModel.Location = new System.Drawing.Point(856, 30);
             btnSaveModel.Name = "btnSaveModel";
@@ -436,7 +436,7 @@ namespace GeneratorCode.Forms
             btnLoadModel.BackColor = Helpers.AppTheme.Primary;
             btnLoadModel.FlatAppearance.BorderSize = 0;
             btnLoadModel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnLoadModel.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            btnLoadModel.Font = Helpers.AppTheme.ButtonFontLarge;
             btnLoadModel.ForeColor = System.Drawing.Color.White;
             btnLoadModel.Location = new System.Drawing.Point(706, 30);
             btnLoadModel.Name = "btnLoadModel";
@@ -449,7 +449,7 @@ namespace GeneratorCode.Forms
             btnExportJson.BackColor = Helpers.AppTheme.Purple;
             btnExportJson.FlatAppearance.BorderSize = 0;
             btnExportJson.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnExportJson.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            btnExportJson.Font = Helpers.AppTheme.ButtonFontLarge;
             btnExportJson.ForeColor = System.Drawing.Color.White;
             btnExportJson.Location = new System.Drawing.Point(556, 30);
             btnExportJson.Name = "btnExportJson";
@@ -462,7 +462,7 @@ namespace GeneratorCode.Forms
             btnImportJson.BackColor = Helpers.AppTheme.Purple;
             btnImportJson.FlatAppearance.BorderSize = 0;
             btnImportJson.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnImportJson.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            btnImportJson.Font = Helpers.AppTheme.ButtonFontLarge;
             btnImportJson.ForeColor = System.Drawing.Color.White;
             btnImportJson.Location = new System.Drawing.Point(406, 30);
             btnImportJson.Name = "btnImportJson";
@@ -475,7 +475,7 @@ namespace GeneratorCode.Forms
             btnBack.BackColor = Helpers.AppTheme.Gray;
             btnBack.FlatAppearance.BorderSize = 0;
             btnBack.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnBack.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            btnBack.Font = Helpers.AppTheme.ButtonFontLarge;
             btnBack.ForeColor = System.Drawing.Color.White;
             btnBack.Location = new System.Drawing.Point(10, 30);
             btnBack.Name = "btnBack";
@@ -486,7 +486,7 @@ namespace GeneratorCode.Forms
 
             // lblStatus
             lblStatus.AutoSize = true;
-            lblStatus.Font = new System.Drawing.Font("Segoe UI", 10F);
+            lblStatus.Font = Helpers.AppTheme.DefaultFont;
             lblStatus.ForeColor = Helpers.AppTheme.Success;
             lblStatus.Location = new System.Drawing.Point(150, 45);
             lblStatus.Name = "lblStatus";
@@ -503,7 +503,7 @@ namespace GeneratorCode.Forms
             Controls.Add(grpEntities);
             Controls.Add(tabControl);
             Controls.Add(grpActions);
-            Font = new System.Drawing.Font("Segoe UI", 10F);
+            Font = Helpers.AppTheme.DefaultFont;
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             MaximizeBox = false;
             Name = "FrmEntityDesigner";

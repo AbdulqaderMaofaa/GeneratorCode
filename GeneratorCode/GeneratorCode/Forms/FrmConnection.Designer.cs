@@ -85,7 +85,7 @@ namespace GeneratorCode.Forms
             grpDatabaseType.Controls.Add(picDatabaseIcon);
             grpDatabaseType.Controls.Add(lblDatabaseType);
             grpDatabaseType.Controls.Add(cmbDatabaseType);
-            grpDatabaseType.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
+            grpDatabaseType.Font = Helpers.AppTheme.DefaultFontBold;
             grpDatabaseType.ForeColor = System.Drawing.Color.DarkBlue;
             grpDatabaseType.Location = new System.Drawing.Point(20, 20);
             grpDatabaseType.Name = "grpDatabaseType";
@@ -111,7 +111,7 @@ namespace GeneratorCode.Forms
             // lblDatabaseType
             // 
             lblDatabaseType.AutoSize = true;
-            lblDatabaseType.Font = new System.Drawing.Font("Segoe UI", 9F);
+            lblDatabaseType.Font = Helpers.AppTheme.DefaultFontSmall;
             lblDatabaseType.ForeColor = System.Drawing.Color.Black;
             lblDatabaseType.Location = new System.Drawing.Point(460, 35);
             lblDatabaseType.Name = "lblDatabaseType";
@@ -123,7 +123,7 @@ namespace GeneratorCode.Forms
             // cmbDatabaseType
             // 
             cmbDatabaseType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            cmbDatabaseType.Font = new System.Drawing.Font("Segoe UI", 9F);
+            cmbDatabaseType.Font = Helpers.AppTheme.DefaultFontSmall;
             cmbDatabaseType.FormattingEnabled = true;
             cmbDatabaseType.Location = new System.Drawing.Point(60, 32);
             cmbDatabaseType.Name = "cmbDatabaseType";
@@ -139,7 +139,7 @@ namespace GeneratorCode.Forms
             grpConnectionDetails.Controls.Add(txtPort);
             grpConnectionDetails.Controls.Add(lblDatabase);
             grpConnectionDetails.Controls.Add(cmbDatabase);
-            grpConnectionDetails.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
+            grpConnectionDetails.Font = Helpers.AppTheme.DefaultFontBold;
             grpConnectionDetails.ForeColor = System.Drawing.Color.DarkGreen;
             grpConnectionDetails.Location = new System.Drawing.Point(20, 120);
             grpConnectionDetails.Name = "grpConnectionDetails";
@@ -154,7 +154,7 @@ namespace GeneratorCode.Forms
             // lblServer
             // 
             lblServer.AutoSize = true;
-            lblServer.Font = new System.Drawing.Font("Segoe UI", 9F);
+            lblServer.Font = Helpers.AppTheme.DefaultFontSmall;
             lblServer.ForeColor = System.Drawing.Color.Black;
             lblServer.Location = new System.Drawing.Point(470, 35);
             lblServer.Name = "lblServer";
@@ -165,7 +165,7 @@ namespace GeneratorCode.Forms
             // 
             // cmbServer
             // 
-            cmbServer.Font = new System.Drawing.Font("Segoe UI", 9F);
+            cmbServer.Font = Helpers.AppTheme.DefaultFontSmall;
             cmbServer.FormattingEnabled = true;
             cmbServer.Location = new System.Drawing.Point(15, 32);
             cmbServer.Name = "cmbServer";
@@ -176,7 +176,7 @@ namespace GeneratorCode.Forms
             // lblPort
             // 
             lblPort.AutoSize = true;
-            lblPort.Font = new System.Drawing.Font("Segoe UI", 9F);
+            lblPort.Font = Helpers.AppTheme.DefaultFontSmall;
             lblPort.ForeColor = System.Drawing.Color.Black;
             lblPort.Location = new System.Drawing.Point(470, 75);
             lblPort.Name = "lblPort";
@@ -187,7 +187,7 @@ namespace GeneratorCode.Forms
             // 
             // txtPort
             // 
-            txtPort.Font = new System.Drawing.Font("Segoe UI", 9F);
+            txtPort.Font = Helpers.AppTheme.DefaultFontSmall;
             txtPort.Location = new System.Drawing.Point(15, 72);
             txtPort.Name = "txtPort";
             txtPort.Size = new System.Drawing.Size(445, 27);
@@ -198,7 +198,7 @@ namespace GeneratorCode.Forms
             // lblDatabase
             // 
             lblDatabase.AutoSize = true;
-            lblDatabase.Font = new System.Drawing.Font("Segoe UI", 9F);
+            lblDatabase.Font = Helpers.AppTheme.DefaultFontSmall;
             lblDatabase.ForeColor = System.Drawing.Color.Black;
             lblDatabase.Location = new System.Drawing.Point(440, 115);
             lblDatabase.Name = "lblDatabase";
@@ -209,7 +209,7 @@ namespace GeneratorCode.Forms
             // 
             // cmbDatabase
             // 
-            cmbDatabase.Font = new System.Drawing.Font("Segoe UI", 9F);
+            cmbDatabase.Font = Helpers.AppTheme.DefaultFontSmall;
             cmbDatabase.FormattingEnabled = true;
             cmbDatabase.Location = new System.Drawing.Point(15, 112);
             cmbDatabase.Name = "cmbDatabase";
@@ -224,7 +224,7 @@ namespace GeneratorCode.Forms
             grpAuthentication.Controls.Add(lblPassword);
             grpAuthentication.Controls.Add(txtPassword);
             grpAuthentication.Controls.Add(chkSaveCredentials);
-            grpAuthentication.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
+            grpAuthentication.Font = Helpers.AppTheme.DefaultFontBold;
             grpAuthentication.ForeColor = System.Drawing.Color.DarkOrange;
             grpAuthentication.Location = new System.Drawing.Point(20, 310);
             grpAuthentication.Name = "grpAuthentication";
@@ -239,7 +239,7 @@ namespace GeneratorCode.Forms
             // lblUsername
             // 
             lblUsername.AutoSize = true;
-            lblUsername.Font = new System.Drawing.Font("Segoe UI", 9F);
+            lblUsername.Font = Helpers.AppTheme.DefaultFontSmall;
             lblUsername.ForeColor = System.Drawing.Color.Black;
             lblUsername.Location = new System.Drawing.Point(440, 35);
             lblUsername.Name = "lblUsername";
@@ -250,7 +250,7 @@ namespace GeneratorCode.Forms
             // 
             // txtUsername
             // 
-            txtUsername.Font = new System.Drawing.Font("Segoe UI", 9F);
+            txtUsername.Font = Helpers.AppTheme.DefaultFontSmall;
             txtUsername.Location = new System.Drawing.Point(15, 32);
             txtUsername.Name = "txtUsername";
             txtUsername.Size = new System.Drawing.Size(415, 27);
@@ -260,7 +260,7 @@ namespace GeneratorCode.Forms
             // lblPassword
             // 
             lblPassword.AutoSize = true;
-            lblPassword.Font = new System.Drawing.Font("Segoe UI", 9F);
+            lblPassword.Font = Helpers.AppTheme.DefaultFontSmall;
             lblPassword.ForeColor = System.Drawing.Color.Black;
             lblPassword.Location = new System.Drawing.Point(460, 75);
             lblPassword.Name = "lblPassword";
@@ -271,7 +271,7 @@ namespace GeneratorCode.Forms
             // 
             // txtPassword
             // 
-            txtPassword.Font = new System.Drawing.Font("Segoe UI", 9F);
+            txtPassword.Font = Helpers.AppTheme.DefaultFontSmall;
             txtPassword.Location = new System.Drawing.Point(15, 72);
             txtPassword.Name = "txtPassword";
             txtPassword.PasswordChar = '•';
@@ -282,7 +282,7 @@ namespace GeneratorCode.Forms
             // chkSaveCredentials
             // 
             chkSaveCredentials.AutoSize = true;
-            chkSaveCredentials.Font = new System.Drawing.Font("Segoe UI", 9F);
+            chkSaveCredentials.Font = Helpers.AppTheme.DefaultFontSmall;
             chkSaveCredentials.ForeColor = System.Drawing.Color.Black;
             chkSaveCredentials.Location = new System.Drawing.Point(400, 115);
             chkSaveCredentials.Name = "chkSaveCredentials";
@@ -297,7 +297,7 @@ namespace GeneratorCode.Forms
             grpActions.Controls.Add(btnTestConnection);
             grpActions.Controls.Add(btnConnect);
             grpActions.Controls.Add(btnCancel);
-            grpActions.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
+            grpActions.Font = Helpers.AppTheme.DefaultFontBold;
             grpActions.ForeColor = System.Drawing.Color.DarkRed;
             grpActions.Location = new System.Drawing.Point(20, 470);
             grpActions.Name = "grpActions";
@@ -314,7 +314,7 @@ namespace GeneratorCode.Forms
             btnTestConnection.BackColor = Helpers.AppTheme.Primary;
             btnTestConnection.FlatAppearance.BorderSize = 0;
             btnTestConnection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnTestConnection.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            btnTestConnection.Font = Helpers.AppTheme.ButtonFont;
             btnTestConnection.ForeColor = System.Drawing.Color.White;
             btnTestConnection.Location = new System.Drawing.Point(380, 30);
             btnTestConnection.Name = "btnTestConnection";
@@ -329,7 +329,7 @@ namespace GeneratorCode.Forms
             btnConnect.BackColor = Helpers.AppTheme.Success;
             btnConnect.FlatAppearance.BorderSize = 0;
             btnConnect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnConnect.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            btnConnect.Font = Helpers.AppTheme.ButtonFont;
             btnConnect.ForeColor = System.Drawing.Color.White;
             btnConnect.Location = new System.Drawing.Point(200, 30);
             btnConnect.Name = "btnConnect";
@@ -344,7 +344,7 @@ namespace GeneratorCode.Forms
             btnCancel.BackColor = Helpers.AppTheme.Danger;
             btnCancel.FlatAppearance.BorderSize = 0;
             btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnCancel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            btnCancel.Font = Helpers.AppTheme.ButtonFont;
             btnCancel.ForeColor = System.Drawing.Color.White;
             btnCancel.Location = new System.Drawing.Point(20, 30);
             btnCancel.Name = "btnCancel";
@@ -359,7 +359,7 @@ namespace GeneratorCode.Forms
             btnViewLogs.BackColor = Helpers.AppTheme.Purple;
             btnViewLogs.FlatAppearance.BorderSize = 0;
             btnViewLogs.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnViewLogs.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            btnViewLogs.Font = Helpers.AppTheme.ButtonFont;
             btnViewLogs.ForeColor = System.Drawing.Color.White;
             btnViewLogs.Location = new System.Drawing.Point(20, 560);
             btnViewLogs.Name = "btnViewLogs";
@@ -374,7 +374,7 @@ namespace GeneratorCode.Forms
             btnCodeFirst.BackColor = Helpers.AppTheme.PurpleDark;
             btnCodeFirst.FlatAppearance.BorderSize = 0;
             btnCodeFirst.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnCodeFirst.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            btnCodeFirst.Font = Helpers.AppTheme.ButtonFontLarge;
             btnCodeFirst.ForeColor = System.Drawing.Color.White;
             btnCodeFirst.Location = new System.Drawing.Point(190, 560);
             btnCodeFirst.Name = "btnCodeFirst";
@@ -411,7 +411,7 @@ namespace GeneratorCode.Forms
             // 
             // lblStatus
             // 
-            lblStatus.Font = new System.Drawing.Font("Segoe UI", 9F);
+            lblStatus.Font = Helpers.AppTheme.DefaultFontSmall;
             lblStatus.Location = new System.Drawing.Point(10, 12);
             lblStatus.Name = "lblStatus";
             lblStatus.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
@@ -444,7 +444,7 @@ namespace GeneratorCode.Forms
             Controls.Add(grpAuthentication);
             Controls.Add(grpConnectionDetails);
             Controls.Add(grpDatabaseType);
-            Font = new System.Drawing.Font("Segoe UI", 9F);
+            Font = Helpers.AppTheme.DefaultFontSmall;
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             MinimizeBox = false;

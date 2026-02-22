@@ -130,7 +130,7 @@ namespace GeneratorCode.Forms
             btnSave.BackColor = global::GeneratorCode.Helpers.AppTheme.Success;
             btnSave.FlatAppearance.BorderSize = 0;
             btnSave.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnSave.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            btnSave.Font = global::GeneratorCode.Helpers.AppTheme.ButtonFont;
             btnSave.ForeColor = System.Drawing.Color.White;
             btnSave.Location = new System.Drawing.Point(287, 785);
             btnSave.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -146,7 +146,7 @@ namespace GeneratorCode.Forms
             btnCancel.BackColor = global::GeneratorCode.Helpers.AppTheme.Danger;
             btnCancel.FlatAppearance.BorderSize = 0;
             btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnCancel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            btnCancel.Font = global::GeneratorCode.Helpers.AppTheme.ButtonFont;
             btnCancel.ForeColor = System.Drawing.Color.White;
             btnCancel.Location = new System.Drawing.Point(395, 785);
             btnCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -162,7 +162,7 @@ namespace GeneratorCode.Forms
             btnViewLogs.BackColor = global::GeneratorCode.Helpers.AppTheme.Purple;
             btnViewLogs.FlatAppearance.BorderSize = 0;
             btnViewLogs.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnViewLogs.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            btnViewLogs.Font = global::GeneratorCode.Helpers.AppTheme.ButtonFont;
             btnViewLogs.ForeColor = System.Drawing.Color.White;
             btnViewLogs.Location = new System.Drawing.Point(16, 785);
             btnViewLogs.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -370,7 +370,7 @@ namespace GeneratorCode.Forms
             btnExportSettings.BackColor = global::GeneratorCode.Helpers.AppTheme.Primary;
             btnExportSettings.FlatAppearance.BorderSize = 0;
             btnExportSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnExportSettings.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            btnExportSettings.Font = global::GeneratorCode.Helpers.AppTheme.ButtonFont;
             btnExportSettings.ForeColor = System.Drawing.Color.White;
             btnExportSettings.Location = new System.Drawing.Point(144, 785);
             btnExportSettings.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -386,7 +386,7 @@ namespace GeneratorCode.Forms
             btnImportSettings.BackColor = global::GeneratorCode.Helpers.AppTheme.Primary;
             btnImportSettings.FlatAppearance.BorderSize = 0;
             btnImportSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnImportSettings.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            btnImportSettings.Font = global::GeneratorCode.Helpers.AppTheme.ButtonFont;
             btnImportSettings.ForeColor = System.Drawing.Color.White;
             btnImportSettings.Location = new System.Drawing.Point(217, 785);
             btnImportSettings.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
