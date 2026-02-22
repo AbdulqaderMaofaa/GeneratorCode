@@ -190,7 +190,7 @@ namespace GeneratorCode.Forms
         {
             lblDatabaseType.Text = $"نوع قاعدة البيانات: {_context.DatabaseType}";
             lblConnectionInfo.Text = "متصل بنجاح";
-            lblConnectionInfo.ForeColor = Color.Green;
+            lblConnectionInfo.ForeColor = AppTheme.StatusLedGreen;
         }
 
         private void LoadTables()
@@ -426,14 +426,14 @@ namespace GeneratorCode.Forms
                 btnGenerate.Enabled = true;
                 btnPreview.Enabled = true;
                 UpdateStatusLabel("✅ جاهز للتوليد - جميع الإعدادات صحيحة");
-                lblStatus.ForeColor = Color.Green;
+                lblStatus.ForeColor = AppTheme.StatusLedGreen;
             }
             else
             {
                 btnGenerate.Enabled = false;
                 btnPreview.Enabled = false;
                 UpdateStatusLabel($"❌ {validationMessage}");
-                lblStatus.ForeColor = Color.Red;
+                lblStatus.ForeColor = AppTheme.StatusLedRed;
             }
         }
 

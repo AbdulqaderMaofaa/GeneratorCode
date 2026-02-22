@@ -1,4 +1,5 @@
 using GeneratorCode.Core.Models;
+using GeneratorCode.Helpers;
 using System;
 using System.Drawing;
 using System.IO;
@@ -61,9 +62,9 @@ namespace GeneratorCode.Forms
                 "interface", "enum", "struct", "readonly", "const", "null", "true", "false", "this",
                 "base", "try", "catch", "finally", "throw", "partial", "sealed", "Task" };
 
-            var keywordColor = Color.FromArgb(86, 156, 214);   // blue
-            var stringColor = Color.FromArgb(214, 157, 133);   // orange-ish
-            var commentColor = Color.FromArgb(106, 153, 85);   // green
+            var keywordColor = AppTheme.SyntaxKeyword;
+            var stringColor = AppTheme.SyntaxString;
+            var commentColor = AppTheme.SyntaxComment;
 
             txtPreview.SuspendLayout();
 

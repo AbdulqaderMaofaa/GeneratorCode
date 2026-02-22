@@ -46,7 +46,7 @@ namespace GeneratorCode.Forms
             // txtOutput
             // 
             txtOutput.BackColor = AppTheme.ConsoleBg;
-            txtOutput.ForeColor = Color.Lime;
+            txtOutput.ForeColor = AppTheme.ConsoleSuccess;
             txtOutput.Font = AppTheme.ConsoleFontSmall;
             txtOutput.Location = new Point(12, 12);
             txtOutput.ReadOnly = true;
@@ -113,7 +113,7 @@ namespace GeneratorCode.Forms
             {
                 _cts?.Cancel();
                 btnCancel.Enabled = false;
-                AppendText("تم طلب الإلغاء...", Color.Yellow);
+                AppendText("تم طلب الإلغاء...", AppTheme.ConsoleWarning);
             };
 
             // 
@@ -159,7 +159,7 @@ namespace GeneratorCode.Forms
             Font = AppTheme.DefaultFont;
             lblStatus.Font = AppTheme.DefaultFontBold;
             lblStatus.ForeColor = AppTheme.TextPrimary;
-            AppendText("=== مولد الكود التلقائي ===", Color.Yellow);
+            AppendText("=== مولد الكود التلقائي ===", AppTheme.ConsoleWarning);
             AppendText("بدء عملية توليد الكود...", Color.White);
             AppendText("", Color.White);
         }
@@ -203,7 +203,7 @@ namespace GeneratorCode.Forms
 
         public void AppendText(string text)
         {
-            AppendText(text, Color.Lime);
+            AppendText(text, AppTheme.ConsoleSuccess);
         }
 
         public void ReportFileGenerated(string fileName, string operation)
@@ -211,23 +211,23 @@ namespace GeneratorCode.Forms
             completedFiles++;
             progressBar.Value = completedFiles;
             
-            AppendText($"✓ {operation}: {fileName}", Color.Lime);
+            AppendText($"✓ {operation}: {fileName}", AppTheme.ConsoleSuccess);
             UpdateStatus();
         }
 
         public void ReportError(string error)
         {
-            AppendText($"✗ خطأ: {error}", Color.Red);
+            AppendText($"✗ خطأ: {error}", AppTheme.ConsoleError);
         }
 
         public void ReportWarning(string warning)
         {
-            AppendText($"⚠ تحذير: {warning}", Color.Yellow);
+            AppendText($"⚠ تحذير: {warning}", AppTheme.ConsoleWarning);
         }
 
         public void ReportInfo(string info)
         {
-            AppendText($"ℹ {info}", Color.Cyan);
+            AppendText($"ℹ {info}", AppTheme.ConsoleInfo);
         }
 
         private void UpdateStatus()
@@ -246,8 +246,8 @@ namespace GeneratorCode.Forms
                 btnClose.Enabled = true;
                 btnOpenFolder.Enabled = true;
                 AppendText("", Color.White);
-                AppendText("=== تم الانتهاء من التوليد بنجاح ===", Color.Green);
-                AppendText($"تم توليد {totalFiles} ملف بنجاح!", Color.Green);
+                AppendText("=== تم الانتهاء من التوليد بنجاح ===", AppTheme.ConsoleComplete);
+                AppendText($"تم توليد {totalFiles} ملف بنجاح!", AppTheme.ConsoleComplete);
             }
         }
 
@@ -291,17 +291,17 @@ namespace GeneratorCode.Forms
 
         public void ShowStep(string stepName)
         {
-            AppendText($">>> {stepName}", Color.Cyan);
+            AppendText($">>> {stepName}", AppTheme.ConsoleInfo);
         }
 
         public void ShowTable(string tableName)
         {
-            AppendText($"📊 معالجة الجدول: {tableName}", Color.Yellow);
+            AppendText($"📊 معالجة الجدول: {tableName}", AppTheme.ConsoleWarning);
         }
 
         public void ShowSuccess(string message)
         {
-            AppendText($"✅ {message}", Color.Green);
+            AppendText($"✅ {message}", AppTheme.ConsoleComplete);
         }
     }
 } 

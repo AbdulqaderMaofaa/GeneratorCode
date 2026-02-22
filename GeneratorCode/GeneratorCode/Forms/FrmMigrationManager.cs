@@ -97,7 +97,7 @@ namespace GeneratorCode.Forms
                 {
                     AppendOutput($"تم توليد {result.GeneratedFiles?.Count ?? 0} ملف بنجاح", AppTheme.Success);
                     foreach (var file in result.GeneratedFiles ?? new System.Collections.Generic.List<Core.Models.GeneratedFile>())
-                        AppendOutput($"  > {file.RelativePath}", Color.LightGray);
+                        AppendOutput($"  > {file.RelativePath}", AppTheme.ConsoleDetail);
                 }
                 else
                 {
@@ -129,14 +129,14 @@ namespace GeneratorCode.Forms
                 SetBusy(true, "جاري إنشاء Migration...");
                 AppendOutput($"=== إنشاء Migration: {migName} ===", AppTheme.LogInfo);
 
-                var progress = new Progress<string>(msg => AppendOutput(msg, Color.LightGray));
+                var progress = new Progress<string>(msg => AppendOutput(msg, AppTheme.ConsoleDetail));
                 var result = await _migrationService.AddMigrationAsync(migName, _projectPath, progress, _cts.Token);
 
                 HandleResult(result, "تم إنشاء Migration بنجاح");
             }
             catch (OperationCanceledException)
             {
-                AppendOutput("تم إلغاء العملية", Color.Yellow);
+                AppendOutput("تم إلغاء العملية", AppTheme.ConsoleWarning);
             }
             catch (Exception ex)
             {
@@ -160,14 +160,14 @@ namespace GeneratorCode.Forms
                 SetBusy(true, "جاري تحديث قاعدة البيانات...");
                 AppendOutput("=== تحديث قاعدة البيانات ===", AppTheme.LogInfo);
 
-                var progress = new Progress<string>(msg => AppendOutput(msg, Color.LightGray));
+                var progress = new Progress<string>(msg => AppendOutput(msg, AppTheme.ConsoleDetail));
                 var result = await _migrationService.UpdateDatabaseAsync(_projectPath, connStr, progress, _cts.Token);
 
                 HandleResult(result, "تم تحديث قاعدة البيانات بنجاح");
             }
             catch (OperationCanceledException)
             {
-                AppendOutput("تم إلغاء العملية", Color.Yellow);
+                AppendOutput("تم إلغاء العملية", AppTheme.ConsoleWarning);
             }
             catch (Exception ex)
             {
@@ -188,7 +188,7 @@ namespace GeneratorCode.Forms
                 SetBusy(true, $"جاري التراجع إلى {migName}...");
                 AppendOutput($"=== التراجع إلى: {migName} ===", AppTheme.LogInfo);
 
-                var progress = new Progress<string>(msg => AppendOutput(msg, Color.LightGray));
+                var progress = new Progress<string>(msg => AppendOutput(msg, AppTheme.ConsoleDetail));
                 var result = await _migrationService.RollbackAsync(migName, _projectPath, progress, _cts.Token);
 
                 HandleResult(result, $"تم التراجع إلى {migName} بنجاح");
@@ -208,7 +208,7 @@ namespace GeneratorCode.Forms
                 SetBusy(true, "جاري توليد SQL Script...");
                 AppendOutput("=== توليد SQL Script ===", AppTheme.LogInfo);
 
-                var progress = new Progress<string>(msg => AppendOutput(msg, Color.LightGray));
+                var progress = new Progress<string>(msg => AppendOutput(msg, AppTheme.ConsoleDetail));
                 var result = await _migrationService.GenerateScriptAsync(null, null, _projectPath, progress, _cts.Token);
 
                 if (result.Success && !string.IsNullOrWhiteSpace(result.ScriptContent))
@@ -244,7 +244,7 @@ namespace GeneratorCode.Forms
                 SetBusy(true, "جاري حذف آخر Migration...");
                 AppendOutput("=== حذف آخر Migration ===", AppTheme.LogInfo);
 
-                var progress = new Progress<string>(msg => AppendOutput(msg, Color.LightGray));
+                var progress = new Progress<string>(msg => AppendOutput(msg, AppTheme.ConsoleDetail));
                 var result = await _migrationService.RemoveLastMigrationAsync(_projectPath, progress, _cts.Token);
 
                 HandleResult(result, "تم حذف آخر Migration بنجاح");
@@ -282,7 +282,7 @@ namespace GeneratorCode.Forms
             {
                 AppendOutput(successMsg, AppTheme.Success);
                 if (!string.IsNullOrWhiteSpace(result.Output))
-                    AppendOutput(result.Output, Color.LightGray);
+                    AppendOutput(result.Output, AppTheme.ConsoleDetail);
                 _ = RefreshMigrationsAsync();
             }
             else
@@ -291,7 +291,7 @@ namespace GeneratorCode.Forms
                 if (!string.IsNullOrWhiteSpace(result.ErrorOutput))
                     AppendOutput(result.ErrorOutput, AppTheme.Danger);
                 if (!string.IsNullOrWhiteSpace(result.Output))
-                    AppendOutput(result.Output, Color.LightGray);
+                    AppendOutput(result.Output, AppTheme.ConsoleDetail);
             }
         }
 

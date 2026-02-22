@@ -75,7 +75,7 @@ namespace GeneratorCode.Forms
             panelInfo.Padding = new System.Windows.Forms.Padding(15, 10, 15, 10);
 
             lblProjectName.Text = "المشروع: -";
-            lblProjectName.ForeColor = System.Drawing.Color.White;
+            lblProjectName.ForeColor = Helpers.AppTheme.TextOnDark;
             lblProjectName.Font = Helpers.AppTheme.HeaderFontSemibold;
             lblProjectName.Location = new System.Drawing.Point(15, 10);
             lblProjectName.AutoSize = true;
@@ -106,7 +106,6 @@ namespace GeneratorCode.Forms
             grpMigrations.Dock = System.Windows.Forms.DockStyle.Fill;
             grpMigrations.Padding = new System.Windows.Forms.Padding(8);
 
-            gridMigrations.BackgroundColor = System.Drawing.Color.White;
             gridMigrations.BorderStyle = System.Windows.Forms.BorderStyle.None;
             gridMigrations.Dock = System.Windows.Forms.DockStyle.Fill;
             gridMigrations.RowHeadersVisible = false;
@@ -115,7 +114,6 @@ namespace GeneratorCode.Forms
             gridMigrations.AllowUserToDeleteRows = false;
             gridMigrations.ReadOnly = true;
             gridMigrations.ColumnHeadersDefaultCellStyle.BackColor = Helpers.AppTheme.PrimaryDark;
-            gridMigrations.ColumnHeadersDefaultCellStyle.ForeColor = System.Drawing.Color.White;
             gridMigrations.ColumnHeadersDefaultCellStyle.Font = Helpers.AppTheme.DefaultFontSmall;
             gridMigrations.ColumnHeadersHeight = 34;
             gridMigrations.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
@@ -227,10 +225,7 @@ namespace GeneratorCode.Forms
         private void SetupActionButton(System.Windows.Forms.Button btn, string text, System.Drawing.Color bgColor, int x, int y, int w, int h)
         {
             btn.Text = text;
-            btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btn.FlatAppearance.BorderSize = 0;
             btn.BackColor = bgColor;
-            btn.ForeColor = System.Drawing.Color.White;
             btn.Font = Helpers.AppTheme.ButtonFont;
             btn.Location = new System.Drawing.Point(x, y);
             btn.Size = new System.Drawing.Size(w, h);

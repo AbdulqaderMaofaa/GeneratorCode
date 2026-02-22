@@ -160,7 +160,7 @@ namespace GeneratorCode.Forms
             // 
             lblTablesSelection.AutoSize = true;
             lblTablesSelection.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
-            lblTablesSelection.ForeColor = System.Drawing.Color.Black;
+            lblTablesSelection.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             lblTablesSelection.Location = new System.Drawing.Point(151, 33);
             lblTablesSelection.Name = "lblTablesSelection";
             lblTablesSelection.Size = new System.Drawing.Size(186, 20);
@@ -171,7 +171,7 @@ namespace GeneratorCode.Forms
             // 
             chkGenerateAllTables.AutoSize = true;
             chkGenerateAllTables.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
-            chkGenerateAllTables.ForeColor = System.Drawing.Color.Black;
+            chkGenerateAllTables.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkGenerateAllTables.Location = new System.Drawing.Point(187, 65);
             chkGenerateAllTables.Name = "chkGenerateAllTables";
             chkGenerateAllTables.Size = new System.Drawing.Size(150, 24);
@@ -197,7 +197,6 @@ namespace GeneratorCode.Forms
             // 
             grpColumnsInfo.Controls.Add(gridColumns);
             grpColumnsInfo.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontBold;
-            grpColumnsInfo.ForeColor = System.Drawing.Color.DarkGreen;
             grpColumnsInfo.Location = new System.Drawing.Point(13, 13);
             grpColumnsInfo.Name = "grpColumnsInfo";
             grpColumnsInfo.Padding = new System.Windows.Forms.Padding(10);
@@ -247,7 +246,6 @@ namespace GeneratorCode.Forms
             grpArchitecture.Controls.Add(chkDomainLayer);
             grpArchitecture.Controls.Add(chkPresentationLayer);
             grpArchitecture.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontBold;
-            grpArchitecture.ForeColor = System.Drawing.Color.DarkOrange;
             grpArchitecture.Location = new System.Drawing.Point(13, 180);
             grpArchitecture.Name = "grpArchitecture";
             grpArchitecture.Padding = new System.Windows.Forms.Padding(10);
@@ -261,7 +259,7 @@ namespace GeneratorCode.Forms
             // 
             chkInfrastructureLayer.AutoSize = true;
             chkInfrastructureLayer.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
-            chkInfrastructureLayer.ForeColor = System.Drawing.Color.Black;
+            chkInfrastructureLayer.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkInfrastructureLayer.Location = new System.Drawing.Point(873, 88);
             chkInfrastructureLayer.Name = "chkInfrastructureLayer";
             chkInfrastructureLayer.Size = new System.Drawing.Size(280, 24);
@@ -273,7 +271,7 @@ namespace GeneratorCode.Forms
             // 
             chkApplicationLayer.AutoSize = true;
             chkApplicationLayer.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
-            chkApplicationLayer.ForeColor = System.Drawing.Color.Black;
+            chkApplicationLayer.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkApplicationLayer.Location = new System.Drawing.Point(912, 36);
             chkApplicationLayer.Name = "chkApplicationLayer";
             chkApplicationLayer.Size = new System.Drawing.Size(241, 24);
@@ -285,7 +283,7 @@ namespace GeneratorCode.Forms
             // 
             chkDomainLayer.AutoSize = true;
             chkDomainLayer.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
-            chkDomainLayer.ForeColor = System.Drawing.Color.Black;
+            chkDomainLayer.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkDomainLayer.Location = new System.Drawing.Point(939, 62);
             chkDomainLayer.Name = "chkDomainLayer";
             chkDomainLayer.Size = new System.Drawing.Size(214, 24);
@@ -297,7 +295,7 @@ namespace GeneratorCode.Forms
             // 
             chkPresentationLayer.AutoSize = true;
             chkPresentationLayer.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
-            chkPresentationLayer.ForeColor = System.Drawing.Color.Black;
+            chkPresentationLayer.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkPresentationLayer.Location = new System.Drawing.Point(972, 114);
             chkPresentationLayer.Name = "chkPresentationLayer";
             chkPresentationLayer.Size = new System.Drawing.Size(181, 24);
@@ -309,7 +307,6 @@ namespace GeneratorCode.Forms
             // 
             lblArchitecturePattern.AutoSize = true;
             lblArchitecturePattern.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontBold;
-            lblArchitecturePattern.ForeColor = System.Drawing.Color.DarkBlue;
             lblArchitecturePattern.Location = new System.Drawing.Point(1051, 13);
             lblArchitecturePattern.Name = "lblArchitecturePattern";
             lblArchitecturePattern.Size = new System.Drawing.Size(123, 23);
@@ -332,7 +329,6 @@ namespace GeneratorCode.Forms
             // 
             lblProgrammingLanguage.AutoSize = true;
             lblProgrammingLanguage.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontBold;
-            lblProgrammingLanguage.ForeColor = System.Drawing.Color.DarkBlue;
             lblProgrammingLanguage.Location = new System.Drawing.Point(1045, 95);
             lblProgrammingLanguage.Name = "lblProgrammingLanguage";
             lblProgrammingLanguage.Size = new System.Drawing.Size(96, 23);
@@ -374,7 +370,6 @@ namespace GeneratorCode.Forms
             grpCodeGeneration.Controls.Add(chkSwagger);
             grpCodeGeneration.Controls.Add(chkDependencyInjection);
             grpCodeGeneration.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontBold;
-            grpCodeGeneration.ForeColor = System.Drawing.Color.DarkBlue;
             grpCodeGeneration.Location = new System.Drawing.Point(570, 13);
             grpCodeGeneration.Name = "grpCodeGeneration";
             grpCodeGeneration.Padding = new System.Windows.Forms.Padding(10);
@@ -388,7 +383,7 @@ namespace GeneratorCode.Forms
             // 
             chkEntities.AutoSize = true;
             chkEntities.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
-            chkEntities.ForeColor = System.Drawing.Color.Black;
+            chkEntities.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkEntities.Location = new System.Drawing.Point(503, 39);
             chkEntities.Name = "chkEntities";
             chkEntities.Size = new System.Drawing.Size(80, 24);
@@ -400,7 +395,7 @@ namespace GeneratorCode.Forms
             // 
             chkDTOs.AutoSize = true;
             chkDTOs.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
-            chkDTOs.ForeColor = System.Drawing.Color.Black;
+            chkDTOs.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkDTOs.Location = new System.Drawing.Point(476, 69);
             chkDTOs.Name = "chkDTOs";
             chkDTOs.Size = new System.Drawing.Size(107, 24);
@@ -412,7 +407,7 @@ namespace GeneratorCode.Forms
             // 
             chkRepositories.AutoSize = true;
             chkRepositories.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
-            chkRepositories.ForeColor = System.Drawing.Color.Black;
+            chkRepositories.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkRepositories.Location = new System.Drawing.Point(473, 99);
             chkRepositories.Name = "chkRepositories";
             chkRepositories.Size = new System.Drawing.Size(110, 24);
@@ -424,7 +419,7 @@ namespace GeneratorCode.Forms
             // 
             chkServices.AutoSize = true;
             chkServices.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
-            chkServices.ForeColor = System.Drawing.Color.Black;
+            chkServices.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkServices.Location = new System.Drawing.Point(499, 129);
             chkServices.Name = "chkServices";
             chkServices.Size = new System.Drawing.Size(84, 24);
@@ -436,7 +431,7 @@ namespace GeneratorCode.Forms
             // 
             chkControllers.AutoSize = true;
             chkControllers.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
-            chkControllers.ForeColor = System.Drawing.Color.Black;
+            chkControllers.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkControllers.Location = new System.Drawing.Point(494, 159);
             chkControllers.Name = "chkControllers";
             chkControllers.Size = new System.Drawing.Size(89, 24);
@@ -448,7 +443,7 @@ namespace GeneratorCode.Forms
             // 
             chkUnitTests.AutoSize = true;
             chkUnitTests.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
-            chkUnitTests.ForeColor = System.Drawing.Color.Black;
+            chkUnitTests.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkUnitTests.Location = new System.Drawing.Point(242, 39);
             chkUnitTests.Name = "chkUnitTests";
             chkUnitTests.Size = new System.Drawing.Size(127, 24);
@@ -460,7 +455,7 @@ namespace GeneratorCode.Forms
             // 
             chkValidation.AutoSize = true;
             chkValidation.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
-            chkValidation.ForeColor = System.Drawing.Color.Black;
+            chkValidation.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkValidation.Location = new System.Drawing.Point(296, 69);
             chkValidation.Name = "chkValidation";
             chkValidation.Size = new System.Drawing.Size(73, 24);
@@ -472,7 +467,7 @@ namespace GeneratorCode.Forms
             // 
             chkSwagger.AutoSize = true;
             chkSwagger.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
-            chkSwagger.ForeColor = System.Drawing.Color.Black;
+            chkSwagger.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkSwagger.Location = new System.Drawing.Point(206, 99);
             chkSwagger.Name = "chkSwagger";
             chkSwagger.Size = new System.Drawing.Size(163, 24);
@@ -484,7 +479,7 @@ namespace GeneratorCode.Forms
             // 
             chkDependencyInjection.AutoSize = true;
             chkDependencyInjection.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
-            chkDependencyInjection.ForeColor = System.Drawing.Color.Black;
+            chkDependencyInjection.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkDependencyInjection.Location = new System.Drawing.Point(256, 129);
             chkDependencyInjection.Name = "chkDependencyInjection";
             chkDependencyInjection.Size = new System.Drawing.Size(113, 24);
@@ -499,7 +494,6 @@ namespace GeneratorCode.Forms
             grpCrudOperations.Controls.Add(chkGenerateUpdate);
             grpCrudOperations.Controls.Add(chkGenerateDelete);
             grpCrudOperations.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontBold;
-            grpCrudOperations.ForeColor = System.Drawing.Color.DarkGreen;
             grpCrudOperations.Location = new System.Drawing.Point(570, 225);
             grpCrudOperations.Name = "grpCrudOperations";
             grpCrudOperations.Padding = new System.Windows.Forms.Padding(10);
@@ -513,7 +507,7 @@ namespace GeneratorCode.Forms
             // 
             chkGenerateCreate.AutoSize = true;
             chkGenerateCreate.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
-            chkGenerateCreate.ForeColor = System.Drawing.Color.Black;
+            chkGenerateCreate.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkGenerateCreate.Location = new System.Drawing.Point(13, 35);
             chkGenerateCreate.Name = "chkGenerateCreate";
             chkGenerateCreate.Size = new System.Drawing.Size(120, 24);
@@ -525,7 +519,7 @@ namespace GeneratorCode.Forms
             // 
             chkGenerateRead.AutoSize = true;
             chkGenerateRead.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
-            chkGenerateRead.ForeColor = System.Drawing.Color.Black;
+            chkGenerateRead.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkGenerateRead.Location = new System.Drawing.Point(13, 65);
             chkGenerateRead.Name = "chkGenerateRead";
             chkGenerateRead.Size = new System.Drawing.Size(110, 24);
@@ -537,7 +531,7 @@ namespace GeneratorCode.Forms
             // 
             chkGenerateUpdate.AutoSize = true;
             chkGenerateUpdate.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
-            chkGenerateUpdate.ForeColor = System.Drawing.Color.Black;
+            chkGenerateUpdate.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkGenerateUpdate.Location = new System.Drawing.Point(13, 95);
             chkGenerateUpdate.Name = "chkGenerateUpdate";
             chkGenerateUpdate.Size = new System.Drawing.Size(135, 24);
@@ -549,7 +543,7 @@ namespace GeneratorCode.Forms
             // 
             chkGenerateDelete.AutoSize = true;
             chkGenerateDelete.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
-            chkGenerateDelete.ForeColor = System.Drawing.Color.Black;
+            chkGenerateDelete.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkGenerateDelete.Location = new System.Drawing.Point(13, 125);
             chkGenerateDelete.Name = "chkGenerateDelete";
             chkGenerateDelete.Size = new System.Drawing.Size(121, 24);
@@ -565,7 +559,6 @@ namespace GeneratorCode.Forms
             grpProjectStructure.Controls.Add(chkGenerateReadme);
             grpProjectStructure.Controls.Add(chkGenerateSolution);
             grpProjectStructure.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontBold;
-            grpProjectStructure.ForeColor = System.Drawing.Color.DarkOrange;
             grpProjectStructure.Location = new System.Drawing.Point(570, 240);
             grpProjectStructure.Name = "grpProjectStructure";
             grpProjectStructure.Padding = new System.Windows.Forms.Padding(10);
@@ -579,7 +572,7 @@ namespace GeneratorCode.Forms
             // 
             chkGenerateStartup.AutoSize = true;
             chkGenerateStartup.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
-            chkGenerateStartup.ForeColor = System.Drawing.Color.Black;
+            chkGenerateStartup.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkGenerateStartup.Location = new System.Drawing.Point(471, 40);
             chkGenerateStartup.Name = "chkGenerateStartup";
             chkGenerateStartup.Size = new System.Drawing.Size(112, 24);
@@ -591,7 +584,7 @@ namespace GeneratorCode.Forms
             // 
             chkGenerateProgram.AutoSize = true;
             chkGenerateProgram.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
-            chkGenerateProgram.ForeColor = System.Drawing.Color.Black;
+            chkGenerateProgram.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkGenerateProgram.Location = new System.Drawing.Point(462, 70);
             chkGenerateProgram.Name = "chkGenerateProgram";
             chkGenerateProgram.Size = new System.Drawing.Size(121, 24);
@@ -603,7 +596,7 @@ namespace GeneratorCode.Forms
             // 
             chkGenerateGitignore.AutoSize = true;
             chkGenerateGitignore.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
-            chkGenerateGitignore.ForeColor = System.Drawing.Color.Black;
+            chkGenerateGitignore.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkGenerateGitignore.Location = new System.Drawing.Point(455, 100);
             chkGenerateGitignore.Name = "chkGenerateGitignore";
             chkGenerateGitignore.Size = new System.Drawing.Size(128, 24);
@@ -615,7 +608,7 @@ namespace GeneratorCode.Forms
             // 
             chkGenerateReadme.AutoSize = true;
             chkGenerateReadme.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
-            chkGenerateReadme.ForeColor = System.Drawing.Color.Black;
+            chkGenerateReadme.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkGenerateReadme.Location = new System.Drawing.Point(460, 130);
             chkGenerateReadme.Name = "chkGenerateReadme";
             chkGenerateReadme.Size = new System.Drawing.Size(123, 24);
@@ -627,7 +620,7 @@ namespace GeneratorCode.Forms
             // 
             chkGenerateSolution.AutoSize = true;
             chkGenerateSolution.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
-            chkGenerateSolution.ForeColor = System.Drawing.Color.Black;
+            chkGenerateSolution.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkGenerateSolution.Location = new System.Drawing.Point(250, 35);
             chkGenerateSolution.Name = "chkGenerateSolution";
             chkGenerateSolution.Size = new System.Drawing.Size(119, 24);
@@ -658,7 +651,6 @@ namespace GeneratorCode.Forms
             grpProjectSettings.Controls.Add(lblTargetFramework);
             grpProjectSettings.Controls.Add(cmbTargetFramework);
             grpProjectSettings.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontBold;
-            grpProjectSettings.ForeColor = System.Drawing.Color.DarkBlue;
             grpProjectSettings.Location = new System.Drawing.Point(13, 13);
             grpProjectSettings.Name = "grpProjectSettings";
             grpProjectSettings.Padding = new System.Windows.Forms.Padding(10);
@@ -672,7 +664,7 @@ namespace GeneratorCode.Forms
             // 
             lblNamespace.AutoSize = true;
             lblNamespace.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFont;
-            lblNamespace.ForeColor = System.Drawing.Color.Black;
+            lblNamespace.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             lblNamespace.Location = new System.Drawing.Point(948, 33);
             lblNamespace.Name = "lblNamespace";
             lblNamespace.Size = new System.Drawing.Size(205, 23);
@@ -691,7 +683,7 @@ namespace GeneratorCode.Forms
             // 
             lblOutputPath.AutoSize = true;
             lblOutputPath.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFont;
-            lblOutputPath.ForeColor = System.Drawing.Color.Black;
+            lblOutputPath.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             lblOutputPath.Location = new System.Drawing.Point(1055, 109);
             lblOutputPath.Name = "lblOutputPath";
             lblOutputPath.Size = new System.Drawing.Size(97, 23);
@@ -709,31 +701,23 @@ namespace GeneratorCode.Forms
             // btnBrowse
             // 
             btnBrowse.BackColor = global::GeneratorCode.Helpers.AppTheme.Primary;
-            btnBrowse.FlatAppearance.BorderSize = 0;
-            btnBrowse.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnBrowse.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontBold;
-            btnBrowse.ForeColor = System.Drawing.Color.White;
             btnBrowse.Location = new System.Drawing.Point(168, 135);
             btnBrowse.Name = "btnBrowse";
             btnBrowse.Size = new System.Drawing.Size(123, 30);
             btnBrowse.TabIndex = 4;
             btnBrowse.Text = "📁 استعراض";
-            btnBrowse.UseVisualStyleBackColor = false;
             btnBrowse.Click += BtnBrowse_Click;
             // 
             // btnSettings
             // 
             btnSettings.BackColor = global::GeneratorCode.Helpers.AppTheme.Purple;
-            btnSettings.FlatAppearance.BorderSize = 0;
-            btnSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnSettings.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontBold;
-            btnSettings.ForeColor = System.Drawing.Color.White;
             btnSettings.Location = new System.Drawing.Point(24, 135);
             btnSettings.Name = "btnSettings";
             btnSettings.Size = new System.Drawing.Size(138, 30);
             btnSettings.TabIndex = 5;
             btnSettings.Text = "⚙️ إعدادات";
-            btnSettings.UseVisualStyleBackColor = false;
             btnSettings.Click += BtnSettings_Click;
             //
             // lblTargetFramework
@@ -741,7 +725,7 @@ namespace GeneratorCode.Forms
             lblTargetFramework = new System.Windows.Forms.Label();
             lblTargetFramework.AutoSize = true;
             lblTargetFramework.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFont;
-            lblTargetFramework.ForeColor = System.Drawing.Color.Black;
+            lblTargetFramework.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             lblTargetFramework.Location = new System.Drawing.Point(560, 33);
             lblTargetFramework.Name = "lblTargetFramework";
             lblTargetFramework.Size = new System.Drawing.Size(100, 23);
@@ -765,7 +749,6 @@ namespace GeneratorCode.Forms
             grpDatabaseInfo.Controls.Add(lblDatabaseType);
             grpDatabaseInfo.Controls.Add(lblConnectionInfo);
             grpDatabaseInfo.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontBold;
-            grpDatabaseInfo.ForeColor = System.Drawing.Color.DarkGreen;
             grpDatabaseInfo.Location = new System.Drawing.Point(13, 233);
             grpDatabaseInfo.Name = "grpDatabaseInfo";
             grpDatabaseInfo.Padding = new System.Windows.Forms.Padding(10);
@@ -779,7 +762,7 @@ namespace GeneratorCode.Forms
             // 
             lblDatabaseType.AutoSize = true;
             lblDatabaseType.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFont;
-            lblDatabaseType.ForeColor = System.Drawing.Color.Black;
+            lblDatabaseType.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             lblDatabaseType.Location = new System.Drawing.Point(1011, 33);
             lblDatabaseType.Name = "lblDatabaseType";
             lblDatabaseType.Size = new System.Drawing.Size(142, 23);
@@ -790,7 +773,7 @@ namespace GeneratorCode.Forms
             // 
             lblConnectionInfo.AutoSize = true;
             lblConnectionInfo.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFont;
-            lblConnectionInfo.ForeColor = System.Drawing.Color.Green;
+            lblConnectionInfo.ForeColor = global::GeneratorCode.Helpers.AppTheme.Success;
             lblConnectionInfo.Location = new System.Drawing.Point(1011, 63);
             lblConnectionInfo.Name = "lblConnectionInfo";
             lblConnectionInfo.Size = new System.Drawing.Size(100, 23);
@@ -815,7 +798,6 @@ namespace GeneratorCode.Forms
             grpActions.Controls.Add(btnGenerate);
             grpActions.Controls.Add(btnViewLogs);
             grpActions.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontBold;
-            grpActions.ForeColor = System.Drawing.Color.DarkBlue;
             grpActions.Location = new System.Drawing.Point(13, 13);
             grpActions.Name = "grpActions";
             grpActions.Padding = new System.Windows.Forms.Padding(10);
@@ -828,46 +810,34 @@ namespace GeneratorCode.Forms
             // btnPreview
             // 
             btnPreview.BackColor = global::GeneratorCode.Helpers.AppTheme.Primary;
-            btnPreview.FlatAppearance.BorderSize = 0;
-            btnPreview.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnPreview.Font = global::GeneratorCode.Helpers.AppTheme.HeaderFont;
-            btnPreview.ForeColor = System.Drawing.Color.White;
             btnPreview.Location = new System.Drawing.Point(723, 36);
             btnPreview.Name = "btnPreview";
             btnPreview.Size = new System.Drawing.Size(200, 50);
             btnPreview.TabIndex = 0;
             btnPreview.Text = "👁️ معاينة الكود";
-            btnPreview.UseVisualStyleBackColor = false;
             btnPreview.Click += BtnPreview_Click;
             // 
             // btnGenerate
             // 
             btnGenerate.BackColor = global::GeneratorCode.Helpers.AppTheme.Success;
-            btnGenerate.FlatAppearance.BorderSize = 0;
-            btnGenerate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnGenerate.Font = global::GeneratorCode.Helpers.AppTheme.HeaderFont;
-            btnGenerate.ForeColor = System.Drawing.Color.White;
             btnGenerate.Location = new System.Drawing.Point(943, 36);
             btnGenerate.Name = "btnGenerate";
             btnGenerate.Size = new System.Drawing.Size(200, 50);
             btnGenerate.TabIndex = 1;
             btnGenerate.Text = "🚀 توليد الكود";
-            btnGenerate.UseVisualStyleBackColor = false;
             btnGenerate.Click += BtnGenerate_Click;
             // 
             // btnViewLogs
             // 
             btnViewLogs.BackColor = global::GeneratorCode.Helpers.AppTheme.Purple;
-            btnViewLogs.FlatAppearance.BorderSize = 0;
-            btnViewLogs.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnViewLogs.Font = global::GeneratorCode.Helpers.AppTheme.HeaderFont;
-            btnViewLogs.ForeColor = System.Drawing.Color.White;
             btnViewLogs.Location = new System.Drawing.Point(503, 36);
             btnViewLogs.Name = "btnViewLogs";
             btnViewLogs.Size = new System.Drawing.Size(200, 50);
             btnViewLogs.TabIndex = 2;
             btnViewLogs.Text = "📋 عرض السجلات";
-            btnViewLogs.UseVisualStyleBackColor = false;
             btnViewLogs.Click += BtnViewLogs_Click;
             // 
             // grpProgress
@@ -875,7 +845,6 @@ namespace GeneratorCode.Forms
             grpProgress.Controls.Add(progressBar);
             grpProgress.Controls.Add(lblStatus);
             grpProgress.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontBold;
-            grpProgress.ForeColor = System.Drawing.Color.DarkGreen;
             grpProgress.Location = new System.Drawing.Point(13, 153);
             grpProgress.Name = "grpProgress";
             grpProgress.Padding = new System.Windows.Forms.Padding(10);
@@ -896,7 +865,7 @@ namespace GeneratorCode.Forms
             // 
             lblStatus.AutoSize = true;
             lblStatus.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFont;
-            lblStatus.ForeColor = System.Drawing.Color.Black;
+            lblStatus.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             lblStatus.Location = new System.Drawing.Point(13, 75);
             lblStatus.Name = "lblStatus";
             lblStatus.Size = new System.Drawing.Size(42, 23);

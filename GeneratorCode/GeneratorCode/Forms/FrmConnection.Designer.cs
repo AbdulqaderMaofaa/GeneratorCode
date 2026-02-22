@@ -86,7 +86,6 @@ namespace GeneratorCode.Forms
             grpDatabaseType.Controls.Add(lblDatabaseType);
             grpDatabaseType.Controls.Add(cmbDatabaseType);
             grpDatabaseType.Font = Helpers.AppTheme.DefaultFontBold;
-            grpDatabaseType.ForeColor = System.Drawing.Color.DarkBlue;
             grpDatabaseType.Location = new System.Drawing.Point(20, 20);
             grpDatabaseType.Name = "grpDatabaseType";
             grpDatabaseType.Padding = new System.Windows.Forms.Padding(10);
@@ -99,7 +98,7 @@ namespace GeneratorCode.Forms
             // 
             // picDatabaseIcon
             // 
-            picDatabaseIcon.BackColor = System.Drawing.Color.Transparent;
+            picDatabaseIcon.BackColor = Helpers.AppTheme.Transparent;
             picDatabaseIcon.Location = new System.Drawing.Point(15, 30);
             picDatabaseIcon.Name = "picDatabaseIcon";
             picDatabaseIcon.Size = new System.Drawing.Size(32, 32);
@@ -112,7 +111,7 @@ namespace GeneratorCode.Forms
             // 
             lblDatabaseType.AutoSize = true;
             lblDatabaseType.Font = Helpers.AppTheme.DefaultFontSmall;
-            lblDatabaseType.ForeColor = System.Drawing.Color.Black;
+            lblDatabaseType.ForeColor = Helpers.AppTheme.TextPrimary;
             lblDatabaseType.Location = new System.Drawing.Point(460, 35);
             lblDatabaseType.Name = "lblDatabaseType";
             lblDatabaseType.Size = new System.Drawing.Size(80, 20);
@@ -140,7 +139,6 @@ namespace GeneratorCode.Forms
             grpConnectionDetails.Controls.Add(lblDatabase);
             grpConnectionDetails.Controls.Add(cmbDatabase);
             grpConnectionDetails.Font = Helpers.AppTheme.DefaultFontBold;
-            grpConnectionDetails.ForeColor = System.Drawing.Color.DarkGreen;
             grpConnectionDetails.Location = new System.Drawing.Point(20, 120);
             grpConnectionDetails.Name = "grpConnectionDetails";
             grpConnectionDetails.Padding = new System.Windows.Forms.Padding(10);
@@ -155,7 +153,7 @@ namespace GeneratorCode.Forms
             // 
             lblServer.AutoSize = true;
             lblServer.Font = Helpers.AppTheme.DefaultFontSmall;
-            lblServer.ForeColor = System.Drawing.Color.Black;
+            lblServer.ForeColor = Helpers.AppTheme.TextPrimary;
             lblServer.Location = new System.Drawing.Point(470, 35);
             lblServer.Name = "lblServer";
             lblServer.Size = new System.Drawing.Size(70, 20);
@@ -177,7 +175,7 @@ namespace GeneratorCode.Forms
             // 
             lblPort.AutoSize = true;
             lblPort.Font = Helpers.AppTheme.DefaultFontSmall;
-            lblPort.ForeColor = System.Drawing.Color.Black;
+            lblPort.ForeColor = Helpers.AppTheme.TextPrimary;
             lblPort.Location = new System.Drawing.Point(470, 75);
             lblPort.Name = "lblPort";
             lblPort.Size = new System.Drawing.Size(50, 20);
@@ -199,7 +197,7 @@ namespace GeneratorCode.Forms
             // 
             lblDatabase.AutoSize = true;
             lblDatabase.Font = Helpers.AppTheme.DefaultFontSmall;
-            lblDatabase.ForeColor = System.Drawing.Color.Black;
+            lblDatabase.ForeColor = Helpers.AppTheme.TextPrimary;
             lblDatabase.Location = new System.Drawing.Point(440, 115);
             lblDatabase.Name = "lblDatabase";
             lblDatabase.Size = new System.Drawing.Size(100, 20);
@@ -225,7 +223,6 @@ namespace GeneratorCode.Forms
             grpAuthentication.Controls.Add(txtPassword);
             grpAuthentication.Controls.Add(chkSaveCredentials);
             grpAuthentication.Font = Helpers.AppTheme.DefaultFontBold;
-            grpAuthentication.ForeColor = System.Drawing.Color.DarkOrange;
             grpAuthentication.Location = new System.Drawing.Point(20, 310);
             grpAuthentication.Name = "grpAuthentication";
             grpAuthentication.Padding = new System.Windows.Forms.Padding(10);
@@ -240,7 +237,7 @@ namespace GeneratorCode.Forms
             // 
             lblUsername.AutoSize = true;
             lblUsername.Font = Helpers.AppTheme.DefaultFontSmall;
-            lblUsername.ForeColor = System.Drawing.Color.Black;
+            lblUsername.ForeColor = Helpers.AppTheme.TextPrimary;
             lblUsername.Location = new System.Drawing.Point(440, 35);
             lblUsername.Name = "lblUsername";
             lblUsername.Size = new System.Drawing.Size(100, 20);
@@ -261,7 +258,7 @@ namespace GeneratorCode.Forms
             // 
             lblPassword.AutoSize = true;
             lblPassword.Font = Helpers.AppTheme.DefaultFontSmall;
-            lblPassword.ForeColor = System.Drawing.Color.Black;
+            lblPassword.ForeColor = Helpers.AppTheme.TextPrimary;
             lblPassword.Location = new System.Drawing.Point(460, 75);
             lblPassword.Name = "lblPassword";
             lblPassword.Size = new System.Drawing.Size(80, 20);
@@ -283,7 +280,7 @@ namespace GeneratorCode.Forms
             // 
             chkSaveCredentials.AutoSize = true;
             chkSaveCredentials.Font = Helpers.AppTheme.DefaultFontSmall;
-            chkSaveCredentials.ForeColor = System.Drawing.Color.Black;
+            chkSaveCredentials.ForeColor = Helpers.AppTheme.TextPrimary;
             chkSaveCredentials.Location = new System.Drawing.Point(400, 115);
             chkSaveCredentials.Name = "chkSaveCredentials";
             chkSaveCredentials.Size = new System.Drawing.Size(140, 24);
@@ -298,7 +295,6 @@ namespace GeneratorCode.Forms
             grpActions.Controls.Add(btnConnect);
             grpActions.Controls.Add(btnCancel);
             grpActions.Font = Helpers.AppTheme.DefaultFontBold;
-            grpActions.ForeColor = System.Drawing.Color.DarkRed;
             grpActions.Location = new System.Drawing.Point(20, 470);
             grpActions.Name = "grpActions";
             grpActions.Padding = new System.Windows.Forms.Padding(10);
@@ -312,76 +308,56 @@ namespace GeneratorCode.Forms
             // btnTestConnection
             // 
             btnTestConnection.BackColor = Helpers.AppTheme.Primary;
-            btnTestConnection.FlatAppearance.BorderSize = 0;
-            btnTestConnection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnTestConnection.Font = Helpers.AppTheme.ButtonFont;
-            btnTestConnection.ForeColor = System.Drawing.Color.White;
             btnTestConnection.Location = new System.Drawing.Point(380, 30);
             btnTestConnection.Name = "btnTestConnection";
             btnTestConnection.Size = new System.Drawing.Size(160, 40);
             btnTestConnection.TabIndex = 0;
             btnTestConnection.Text = "🔍 اختبار الاتصال";
-            btnTestConnection.UseVisualStyleBackColor = false;
 
             // 
             // btnConnect
             // 
             btnConnect.BackColor = Helpers.AppTheme.Success;
-            btnConnect.FlatAppearance.BorderSize = 0;
-            btnConnect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnConnect.Font = Helpers.AppTheme.ButtonFont;
-            btnConnect.ForeColor = System.Drawing.Color.White;
             btnConnect.Location = new System.Drawing.Point(200, 30);
             btnConnect.Name = "btnConnect";
             btnConnect.Size = new System.Drawing.Size(160, 40);
             btnConnect.TabIndex = 1;
             btnConnect.Text = "✅ اتصال";
-            btnConnect.UseVisualStyleBackColor = false;
 
             // 
             // btnCancel
             // 
             btnCancel.BackColor = Helpers.AppTheme.Danger;
-            btnCancel.FlatAppearance.BorderSize = 0;
-            btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnCancel.Font = Helpers.AppTheme.ButtonFont;
-            btnCancel.ForeColor = System.Drawing.Color.White;
             btnCancel.Location = new System.Drawing.Point(20, 30);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new System.Drawing.Size(160, 40);
             btnCancel.TabIndex = 2;
             btnCancel.Text = "❌ إلغاء";
-            btnCancel.UseVisualStyleBackColor = false;
 
             // 
             // btnViewLogs - positioned after btnCodeFirst, before panelStatus
             // 
             btnViewLogs.BackColor = Helpers.AppTheme.Purple;
-            btnViewLogs.FlatAppearance.BorderSize = 0;
-            btnViewLogs.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnViewLogs.Font = Helpers.AppTheme.ButtonFont;
-            btnViewLogs.ForeColor = System.Drawing.Color.White;
             btnViewLogs.Location = new System.Drawing.Point(20, 560);
             btnViewLogs.Name = "btnViewLogs";
             btnViewLogs.Size = new System.Drawing.Size(160, 40);
             btnViewLogs.TabIndex = 3;
             btnViewLogs.Text = "📋 عرض السجلات";
-            btnViewLogs.UseVisualStyleBackColor = false;
 
             // 
             // btnCodeFirst
             // 
             btnCodeFirst.BackColor = Helpers.AppTheme.PurpleDark;
-            btnCodeFirst.FlatAppearance.BorderSize = 0;
-            btnCodeFirst.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnCodeFirst.Font = Helpers.AppTheme.ButtonFontLarge;
-            btnCodeFirst.ForeColor = System.Drawing.Color.White;
             btnCodeFirst.Location = new System.Drawing.Point(190, 560);
             btnCodeFirst.Name = "btnCodeFirst";
             btnCodeFirst.Size = new System.Drawing.Size(390, 40);
             btnCodeFirst.TabIndex = 4;
             btnCodeFirst.Text = "Code First - تصميم الكيانات وتوليد المشروع";
-            btnCodeFirst.UseVisualStyleBackColor = false;
             btnCodeFirst.Cursor = System.Windows.Forms.Cursors.Hand;
 
             // 
@@ -400,7 +376,7 @@ namespace GeneratorCode.Forms
             // 
             // picStatus
             // 
-            picStatus.BackColor = System.Drawing.Color.Transparent;
+            picStatus.BackColor = Helpers.AppTheme.Transparent;
             picStatus.Location = new System.Drawing.Point(520, 10);
             picStatus.Name = "picStatus";
             picStatus.Size = new System.Drawing.Size(24, 24);

@@ -73,7 +73,7 @@ namespace GeneratorCode.Forms
             // 
             this.lblLineCount.AutoSize = true;
             this.lblLineCount.Font = AppTheme.DefaultFontSmall;
-            this.lblLineCount.ForeColor = System.Drawing.Color.White;
+            this.lblLineCount.ForeColor = AppTheme.TextOnDark;
             this.lblLineCount.Location = new System.Drawing.Point(240, 10);
             this.lblLineCount.Name = "lblLineCount";
             this.lblLineCount.Size = new System.Drawing.Size(0, 15);

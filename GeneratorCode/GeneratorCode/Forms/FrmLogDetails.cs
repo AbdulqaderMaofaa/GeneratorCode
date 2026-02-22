@@ -61,7 +61,7 @@ namespace GeneratorCode.Forms
             {
                 rtbDetails.Select(idx, query.Length);
                 rtbDetails.SelectionBackColor = AppTheme.Warning;
-                rtbDetails.SelectionColor = Color.Black;
+                rtbDetails.SelectionColor = AppTheme.TextPrimary;
                 rtbDetails.ScrollToCaret();
                 _lastSearchIndex = idx + query.Length;
             }

@@ -23,11 +23,13 @@ namespace GeneratorCode.Helpers
         public static readonly Color GrayDark = Color.FromArgb(127, 140, 141);
 
         // Surface colors
+        public static readonly Color SurfaceWhite = Color.White;
         public static readonly Color FormBackground = Color.FromArgb(248, 249, 250);
         public static readonly Color SurfaceLight = Color.FromArgb(245, 245, 245);
         public static readonly Color PanelBackground = Color.FromArgb(236, 240, 241);
         public static readonly Color AlternateRow = Color.FromArgb(245, 245, 245);
         public static readonly Color GridLine = Color.FromArgb(220, 220, 220);
+        public static readonly Color Transparent = Color.Transparent;
         public static readonly Color ConsoleBg = Color.FromArgb(30, 30, 30);
         public static readonly Color ConsoleFg = Color.FromArgb(204, 204, 204);
         public static readonly Color ConsoleHighlight = Color.FromArgb(220, 220, 170);
@@ -35,12 +37,38 @@ namespace GeneratorCode.Helpers
         // Text colors
         public static readonly Color TextPrimary = Color.FromArgb(44, 62, 80);
         public static readonly Color TextSecondary = Color.FromArgb(189, 195, 199);
+        public static readonly Color TextOnDark = Color.White;
+        public static readonly Color TextOnLight = Color.FromArgb(44, 62, 80);
+
+        // Console output colors
+        public static readonly Color ConsoleSuccess = Color.Lime;
+        public static readonly Color ConsoleError = Color.Red;
+        public static readonly Color ConsoleWarning = Color.Yellow;
+        public static readonly Color ConsoleInfo = Color.Cyan;
+        public static readonly Color ConsoleNeutral = Color.White;
+        public static readonly Color ConsoleDetail = Color.LightGray;
+        public static readonly Color ConsoleComplete = Color.Green;
+
+        // Status indicator colors
+        public static readonly Color StatusSuccess = Color.DarkGreen;
+        public static readonly Color StatusError = Color.DarkRed;
+        public static readonly Color StatusWarning = Color.DarkOrange;
+        public static readonly Color StatusInfo = Color.DarkBlue;
+        public static readonly Color StatusLedGreen = Color.Green;
+        public static readonly Color StatusLedRed = Color.Red;
+        public static readonly Color StatusLedOrange = Color.Orange;
+        public static readonly Color StatusLedBlue = Color.Blue;
 
         // Log level colors
         public static readonly Color LogError = Color.FromArgb(231, 76, 60);
         public static readonly Color LogWarning = Color.FromArgb(243, 156, 18);
         public static readonly Color LogInfo = Color.FromArgb(52, 152, 219);
         public static readonly Color LogDebug = Color.FromArgb(149, 165, 166);
+
+        // Syntax highlighting colors
+        public static readonly Color SyntaxKeyword = Color.FromArgb(86, 156, 214);
+        public static readonly Color SyntaxString = Color.FromArgb(214, 157, 133);
+        public static readonly Color SyntaxComment = Color.FromArgb(106, 153, 85);
 
         // Fonts (cached via Lazy to avoid repeated allocations)
         private static readonly Lazy<Font> _defaultFont = new(() => new Font("Segoe UI", 10F));

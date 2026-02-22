@@ -90,7 +90,7 @@ namespace GeneratorCode.Forms
             // Row 1
             lblDatabaseType.AutoSize = true;
             lblDatabaseType.Font = Helpers.AppTheme.DefaultFontBold;
-            lblDatabaseType.ForeColor = System.Drawing.Color.White;
+            lblDatabaseType.ForeColor = Helpers.AppTheme.TextOnDark;
             lblDatabaseType.Location = new System.Drawing.Point(1060, 15);
             lblDatabaseType.Name = "lblDatabaseType";
             lblDatabaseType.Text = "قاعدة البيانات:";
@@ -103,7 +103,7 @@ namespace GeneratorCode.Forms
 
             lblFramework.AutoSize = true;
             lblFramework.Font = Helpers.AppTheme.DefaultFontBold;
-            lblFramework.ForeColor = System.Drawing.Color.White;
+            lblFramework.ForeColor = Helpers.AppTheme.TextOnDark;
             lblFramework.Location = new System.Drawing.Point(780, 15);
             lblFramework.Name = "lblFramework";
             lblFramework.Text = "إصدار .NET:";
@@ -117,7 +117,7 @@ namespace GeneratorCode.Forms
             // Row 2
             lblProjectName.AutoSize = true;
             lblProjectName.Font = Helpers.AppTheme.DefaultFontBold;
-            lblProjectName.ForeColor = System.Drawing.Color.White;
+            lblProjectName.ForeColor = Helpers.AppTheme.TextOnDark;
             lblProjectName.Location = new System.Drawing.Point(1060, 55);
             lblProjectName.Name = "lblProjectName";
             lblProjectName.Text = "اسم المشروع:";
@@ -129,7 +129,7 @@ namespace GeneratorCode.Forms
 
             lblNamespaceLabel.AutoSize = true;
             lblNamespaceLabel.Font = Helpers.AppTheme.DefaultFontBold;
-            lblNamespaceLabel.ForeColor = System.Drawing.Color.White;
+            lblNamespaceLabel.ForeColor = Helpers.AppTheme.TextOnDark;
             lblNamespaceLabel.Location = new System.Drawing.Point(720, 55);
             lblNamespaceLabel.Name = "lblNamespaceLabel";
             lblNamespaceLabel.Text = "Namespace:";
@@ -148,7 +148,6 @@ namespace GeneratorCode.Forms
             grpEntities.Controls.Add(btnRemoveEntity);
             grpEntities.Controls.Add(btnRenameEntity);
             grpEntities.Font = Helpers.AppTheme.DefaultFontBold;
-            grpEntities.ForeColor = System.Drawing.Color.DarkBlue;
             grpEntities.Location = new System.Drawing.Point(900, 100);
             grpEntities.Name = "grpEntities";
             grpEntities.Padding = new System.Windows.Forms.Padding(10);
@@ -169,40 +168,28 @@ namespace GeneratorCode.Forms
 
             // Entity buttons
             btnAddEntity.BackColor = Helpers.AppTheme.Success;
-            btnAddEntity.FlatAppearance.BorderSize = 0;
-            btnAddEntity.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnAddEntity.Font = Helpers.AppTheme.DefaultFontBold;
-            btnAddEntity.ForeColor = System.Drawing.Color.White;
             btnAddEntity.Location = new System.Drawing.Point(188, 522);
             btnAddEntity.Name = "btnAddEntity";
             btnAddEntity.Size = new System.Drawing.Size(85, 38);
             btnAddEntity.TabIndex = 1;
             btnAddEntity.Text = "إضافة";
-            btnAddEntity.UseVisualStyleBackColor = false;
 
             btnRemoveEntity.BackColor = Helpers.AppTheme.Danger;
-            btnRemoveEntity.FlatAppearance.BorderSize = 0;
-            btnRemoveEntity.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnRemoveEntity.Font = Helpers.AppTheme.DefaultFontBold;
-            btnRemoveEntity.ForeColor = System.Drawing.Color.White;
             btnRemoveEntity.Location = new System.Drawing.Point(98, 522);
             btnRemoveEntity.Name = "btnRemoveEntity";
             btnRemoveEntity.Size = new System.Drawing.Size(85, 38);
             btnRemoveEntity.TabIndex = 2;
             btnRemoveEntity.Text = "حذف";
-            btnRemoveEntity.UseVisualStyleBackColor = false;
 
             btnRenameEntity.BackColor = Helpers.AppTheme.Warning;
-            btnRenameEntity.FlatAppearance.BorderSize = 0;
-            btnRenameEntity.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnRenameEntity.Font = Helpers.AppTheme.DefaultFontBold;
-            btnRenameEntity.ForeColor = System.Drawing.Color.White;
             btnRenameEntity.Location = new System.Drawing.Point(8, 522);
             btnRenameEntity.Name = "btnRenameEntity";
             btnRenameEntity.Size = new System.Drawing.Size(85, 38);
             btnRenameEntity.TabIndex = 3;
             btnRenameEntity.Text = "تسمية";
-            btnRenameEntity.UseVisualStyleBackColor = false;
 
             // ================================================================
             // tabControl
@@ -224,7 +211,7 @@ namespace GeneratorCode.Forms
             // ================================================================
             // tabProperties
             // ================================================================
-            tabProperties.BackColor = System.Drawing.Color.White;
+            tabProperties.BackColor = Helpers.AppTheme.SurfaceWhite;
             tabProperties.Controls.Add(gridProperties);
             tabProperties.Controls.Add(btnAddProperty);
             tabProperties.Controls.Add(btnRemoveProperty);
@@ -240,11 +227,9 @@ namespace GeneratorCode.Forms
             gridProperties.AllowUserToAddRows = false;
             gridProperties.AllowUserToDeleteRows = false;
             gridProperties.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            gridProperties.BackgroundColor = System.Drawing.Color.White;
             gridProperties.BorderStyle = System.Windows.Forms.BorderStyle.None;
             gridProperties.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             gridProperties.ColumnHeadersDefaultCellStyle.BackColor = Helpers.AppTheme.Primary;
-            gridProperties.ColumnHeadersDefaultCellStyle.ForeColor = System.Drawing.Color.White;
             gridProperties.ColumnHeadersDefaultCellStyle.Font = Helpers.AppTheme.DefaultFontBold;
             gridProperties.ColumnHeadersDefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             gridProperties.ColumnHeadersDefaultCellStyle.Padding = new System.Windows.Forms.Padding(5);
@@ -269,33 +254,25 @@ namespace GeneratorCode.Forms
 
             // Property buttons
             btnAddProperty.BackColor = Helpers.AppTheme.Success;
-            btnAddProperty.FlatAppearance.BorderSize = 0;
-            btnAddProperty.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnAddProperty.Font = Helpers.AppTheme.DefaultFontBold;
-            btnAddProperty.ForeColor = System.Drawing.Color.White;
             btnAddProperty.Location = new System.Drawing.Point(711, 480);
             btnAddProperty.Name = "btnAddProperty";
             btnAddProperty.Size = new System.Drawing.Size(150, 38);
             btnAddProperty.TabIndex = 1;
             btnAddProperty.Text = "➕ إضافة خاصية";
-            btnAddProperty.UseVisualStyleBackColor = false;
 
             btnRemoveProperty.BackColor = Helpers.AppTheme.Danger;
-            btnRemoveProperty.FlatAppearance.BorderSize = 0;
-            btnRemoveProperty.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnRemoveProperty.Font = Helpers.AppTheme.DefaultFontBold;
-            btnRemoveProperty.ForeColor = System.Drawing.Color.White;
             btnRemoveProperty.Location = new System.Drawing.Point(551, 480);
             btnRemoveProperty.Name = "btnRemoveProperty";
             btnRemoveProperty.Size = new System.Drawing.Size(150, 38);
             btnRemoveProperty.TabIndex = 2;
             btnRemoveProperty.Text = "➖ حذف خاصية";
-            btnRemoveProperty.UseVisualStyleBackColor = false;
 
             // ================================================================
             // tabRelations
             // ================================================================
-            tabRelations.BackColor = System.Drawing.Color.White;
+            tabRelations.BackColor = Helpers.AppTheme.SurfaceWhite;
             tabRelations.Controls.Add(gridRelations);
             tabRelations.Controls.Add(btnAddRelation);
             tabRelations.Controls.Add(btnRemoveRelation);
@@ -311,11 +288,9 @@ namespace GeneratorCode.Forms
             gridRelations.AllowUserToAddRows = false;
             gridRelations.AllowUserToDeleteRows = false;
             gridRelations.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            gridRelations.BackgroundColor = System.Drawing.Color.White;
             gridRelations.BorderStyle = System.Windows.Forms.BorderStyle.None;
             gridRelations.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             gridRelations.ColumnHeadersDefaultCellStyle.BackColor = Helpers.AppTheme.Primary;
-            gridRelations.ColumnHeadersDefaultCellStyle.ForeColor = System.Drawing.Color.White;
             gridRelations.ColumnHeadersDefaultCellStyle.Font = Helpers.AppTheme.DefaultFontBold;
             gridRelations.ColumnHeadersDefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             gridRelations.ColumnHeadersDefaultCellStyle.Padding = new System.Windows.Forms.Padding(5);
@@ -340,28 +315,20 @@ namespace GeneratorCode.Forms
 
             // Relation buttons
             btnAddRelation.BackColor = Helpers.AppTheme.Primary;
-            btnAddRelation.FlatAppearance.BorderSize = 0;
-            btnAddRelation.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnAddRelation.Font = Helpers.AppTheme.DefaultFontBold;
-            btnAddRelation.ForeColor = System.Drawing.Color.White;
             btnAddRelation.Location = new System.Drawing.Point(711, 480);
             btnAddRelation.Name = "btnAddRelation";
             btnAddRelation.Size = new System.Drawing.Size(150, 38);
             btnAddRelation.TabIndex = 1;
             btnAddRelation.Text = "➕ إضافة علاقة";
-            btnAddRelation.UseVisualStyleBackColor = false;
 
             btnRemoveRelation.BackColor = Helpers.AppTheme.Danger;
-            btnRemoveRelation.FlatAppearance.BorderSize = 0;
-            btnRemoveRelation.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnRemoveRelation.Font = Helpers.AppTheme.DefaultFontBold;
-            btnRemoveRelation.ForeColor = System.Drawing.Color.White;
             btnRemoveRelation.Location = new System.Drawing.Point(551, 480);
             btnRemoveRelation.Name = "btnRemoveRelation";
             btnRemoveRelation.Size = new System.Drawing.Size(150, 38);
             btnRemoveRelation.TabIndex = 2;
             btnRemoveRelation.Text = "➖ حذف علاقة";
-            btnRemoveRelation.UseVisualStyleBackColor = false;
 
             // ================================================================
             // tabPreview
@@ -396,7 +363,6 @@ namespace GeneratorCode.Forms
             grpActions.Controls.Add(btnBack);
             grpActions.Controls.Add(lblStatus);
             grpActions.Font = Helpers.AppTheme.DefaultFontBold;
-            grpActions.ForeColor = System.Drawing.Color.DarkGreen;
             grpActions.Location = new System.Drawing.Point(12, 676);
             grpActions.Name = "grpActions";
             grpActions.Padding = new System.Windows.Forms.Padding(10);
@@ -408,81 +374,57 @@ namespace GeneratorCode.Forms
 
             // btnGenerate
             btnGenerate.BackColor = Helpers.AppTheme.Success;
-            btnGenerate.FlatAppearance.BorderSize = 0;
-            btnGenerate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnGenerate.Font = Helpers.AppTheme.HeaderFont;
-            btnGenerate.ForeColor = System.Drawing.Color.White;
             btnGenerate.Location = new System.Drawing.Point(1006, 30);
             btnGenerate.Name = "btnGenerate";
             btnGenerate.Size = new System.Drawing.Size(160, 50);
             btnGenerate.TabIndex = 0;
             btnGenerate.Text = "⚡ توليد الكود";
-            btnGenerate.UseVisualStyleBackColor = false;
 
             // btnSaveModel
             btnSaveModel.BackColor = Helpers.AppTheme.Primary;
-            btnSaveModel.FlatAppearance.BorderSize = 0;
-            btnSaveModel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnSaveModel.Font = Helpers.AppTheme.ButtonFontLarge;
-            btnSaveModel.ForeColor = System.Drawing.Color.White;
             btnSaveModel.Location = new System.Drawing.Point(856, 30);
             btnSaveModel.Name = "btnSaveModel";
             btnSaveModel.Size = new System.Drawing.Size(140, 50);
             btnSaveModel.TabIndex = 1;
             btnSaveModel.Text = "💾 حفظ";
-            btnSaveModel.UseVisualStyleBackColor = false;
 
             // btnLoadModel
             btnLoadModel.BackColor = Helpers.AppTheme.Primary;
-            btnLoadModel.FlatAppearance.BorderSize = 0;
-            btnLoadModel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnLoadModel.Font = Helpers.AppTheme.ButtonFontLarge;
-            btnLoadModel.ForeColor = System.Drawing.Color.White;
             btnLoadModel.Location = new System.Drawing.Point(706, 30);
             btnLoadModel.Name = "btnLoadModel";
             btnLoadModel.Size = new System.Drawing.Size(140, 50);
             btnLoadModel.TabIndex = 2;
             btnLoadModel.Text = "📂 تحميل";
-            btnLoadModel.UseVisualStyleBackColor = false;
 
             // btnExportJson
             btnExportJson.BackColor = Helpers.AppTheme.Purple;
-            btnExportJson.FlatAppearance.BorderSize = 0;
-            btnExportJson.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnExportJson.Font = Helpers.AppTheme.ButtonFontLarge;
-            btnExportJson.ForeColor = System.Drawing.Color.White;
             btnExportJson.Location = new System.Drawing.Point(556, 30);
             btnExportJson.Name = "btnExportJson";
             btnExportJson.Size = new System.Drawing.Size(140, 50);
             btnExportJson.TabIndex = 3;
             btnExportJson.Text = "📋 تصدير";
-            btnExportJson.UseVisualStyleBackColor = false;
 
             // btnImportJson
             btnImportJson.BackColor = Helpers.AppTheme.Purple;
-            btnImportJson.FlatAppearance.BorderSize = 0;
-            btnImportJson.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnImportJson.Font = Helpers.AppTheme.ButtonFontLarge;
-            btnImportJson.ForeColor = System.Drawing.Color.White;
             btnImportJson.Location = new System.Drawing.Point(406, 30);
             btnImportJson.Name = "btnImportJson";
             btnImportJson.Size = new System.Drawing.Size(140, 50);
             btnImportJson.TabIndex = 4;
             btnImportJson.Text = "📥 استيراد";
-            btnImportJson.UseVisualStyleBackColor = false;
 
             // btnBack
             btnBack.BackColor = Helpers.AppTheme.Gray;
-            btnBack.FlatAppearance.BorderSize = 0;
-            btnBack.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnBack.Font = Helpers.AppTheme.ButtonFontLarge;
-            btnBack.ForeColor = System.Drawing.Color.White;
             btnBack.Location = new System.Drawing.Point(10, 30);
             btnBack.Name = "btnBack";
             btnBack.Size = new System.Drawing.Size(120, 50);
             btnBack.TabIndex = 5;
             btnBack.Text = "رجوع";
-            btnBack.UseVisualStyleBackColor = false;
 
             // lblStatus
             lblStatus.AutoSize = true;

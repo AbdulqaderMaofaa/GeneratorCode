@@ -142,46 +142,30 @@ namespace GeneratorCode.Forms
         private void UpdateStatusIcon(StatusType statusType)
         {
             // تحديث أيقونة الحالة حسب النوع
-            switch (statusType)
+            picStatus.BackColor = statusType switch
             {
-                case StatusType.Success:
-                    picStatus.BackColor = Color.Green;
-                    break;
-                case StatusType.Error:
-                    picStatus.BackColor = Color.Red;
-                    break;
-                case StatusType.Warning:
-                    picStatus.BackColor = Color.Orange;
-                    break;
-                case StatusType.Info:
-                default:
-                    picStatus.BackColor = Color.Blue;
-                    break;
-            }
+                StatusType.Success => AppTheme.StatusLedGreen,
+                StatusType.Error => AppTheme.StatusLedRed,
+                StatusType.Warning => AppTheme.StatusLedOrange,
+                _ => AppTheme.StatusLedBlue,
+            };
+
         }
 
         private void UpdateStatus(string message, StatusType statusType = StatusType.Info)
         {
             lblStatus.Text = message;
             UpdateStatusIcon(statusType);
-            
+
             // تحديث لون النص حسب النوع
-            switch (statusType)
+            lblStatus.ForeColor = statusType switch
             {
-                case StatusType.Success:
-                    lblStatus.ForeColor = Color.DarkGreen;
-                    break;
-                case StatusType.Error:
-                    lblStatus.ForeColor = Color.DarkRed;
-                    break;
-                case StatusType.Warning:
-                    lblStatus.ForeColor = Color.DarkOrange;
-                    break;
-                case StatusType.Info:
-                default:
-                    lblStatus.ForeColor = Color.DarkBlue;
-                    break;
-            }
+                StatusType.Success => AppTheme.StatusSuccess,
+                StatusType.Error => AppTheme.StatusError,
+                StatusType.Warning => AppTheme.StatusWarning,
+                _ => AppTheme.StatusInfo,
+            };
+
         }
 
         private void ChkSaveCredentials_CheckedChanged(object sender, EventArgs e)

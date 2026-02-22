@@ -122,55 +122,42 @@ namespace GeneratorCode.Forms
             btnBrowse.Size = new System.Drawing.Size(100, 35);
             btnBrowse.TabIndex = 5;
             btnBrowse.Text = "استعراض";
-            btnBrowse.UseVisualStyleBackColor = true;
             btnBrowse.Click += btnBrowse_Click;
             // 
             // btnSave
             // 
             btnSave.BackColor = global::GeneratorCode.Helpers.AppTheme.Success;
-            btnSave.FlatAppearance.BorderSize = 0;
-            btnSave.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnSave.Font = global::GeneratorCode.Helpers.AppTheme.ButtonFont;
-            btnSave.ForeColor = System.Drawing.Color.White;
             btnSave.Location = new System.Drawing.Point(287, 785);
             btnSave.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             btnSave.Name = "btnSave";
             btnSave.Size = new System.Drawing.Size(100, 35);
             btnSave.TabIndex = 6;
             btnSave.Text = "حفظ";
-            btnSave.UseVisualStyleBackColor = false;
             btnSave.Click += btnSave_Click;
             // 
             // btnCancel
             // 
             btnCancel.BackColor = global::GeneratorCode.Helpers.AppTheme.Danger;
-            btnCancel.FlatAppearance.BorderSize = 0;
-            btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnCancel.Font = global::GeneratorCode.Helpers.AppTheme.ButtonFont;
-            btnCancel.ForeColor = System.Drawing.Color.White;
             btnCancel.Location = new System.Drawing.Point(395, 785);
             btnCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new System.Drawing.Size(100, 35);
             btnCancel.TabIndex = 7;
             btnCancel.Text = "إلغاء";
-            btnCancel.UseVisualStyleBackColor = false;
             btnCancel.Click += btnCancel_Click;
             // 
             // btnViewLogs
             // 
             btnViewLogs.BackColor = global::GeneratorCode.Helpers.AppTheme.Purple;
-            btnViewLogs.FlatAppearance.BorderSize = 0;
-            btnViewLogs.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnViewLogs.Font = global::GeneratorCode.Helpers.AppTheme.ButtonFont;
-            btnViewLogs.ForeColor = System.Drawing.Color.White;
             btnViewLogs.Location = new System.Drawing.Point(16, 785);
             btnViewLogs.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             btnViewLogs.Name = "btnViewLogs";
             btnViewLogs.Size = new System.Drawing.Size(120, 35);
             btnViewLogs.TabIndex = 8;
             btnViewLogs.Text = "📋 عرض السجلات";
-            btnViewLogs.UseVisualStyleBackColor = false;
             btnViewLogs.Click += btnViewLogs_Click;
             // 
             // lblNamespace
@@ -368,33 +355,25 @@ namespace GeneratorCode.Forms
             // btnExportSettings
             // 
             btnExportSettings.BackColor = global::GeneratorCode.Helpers.AppTheme.Primary;
-            btnExportSettings.FlatAppearance.BorderSize = 0;
-            btnExportSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnExportSettings.Font = global::GeneratorCode.Helpers.AppTheme.ButtonFont;
-            btnExportSettings.ForeColor = System.Drawing.Color.White;
             btnExportSettings.Location = new System.Drawing.Point(144, 785);
             btnExportSettings.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             btnExportSettings.Name = "btnExportSettings";
             btnExportSettings.Size = new System.Drawing.Size(65, 35);
             btnExportSettings.TabIndex = 13;
             btnExportSettings.Text = "تصدير";
-            btnExportSettings.UseVisualStyleBackColor = false;
             btnExportSettings.Click += btnExportSettings_Click;
             // 
             // btnImportSettings
             // 
             btnImportSettings.BackColor = global::GeneratorCode.Helpers.AppTheme.Primary;
-            btnImportSettings.FlatAppearance.BorderSize = 0;
-            btnImportSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnImportSettings.Font = global::GeneratorCode.Helpers.AppTheme.ButtonFont;
-            btnImportSettings.ForeColor = System.Drawing.Color.White;
             btnImportSettings.Location = new System.Drawing.Point(217, 785);
             btnImportSettings.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             btnImportSettings.Name = "btnImportSettings";
             btnImportSettings.Size = new System.Drawing.Size(62, 35);
             btnImportSettings.TabIndex = 14;
             btnImportSettings.Text = "استيراد";
-            btnImportSettings.UseVisualStyleBackColor = false;
             btnImportSettings.Click += btnImportSettings_Click;
             // 
             // FrmSettings
