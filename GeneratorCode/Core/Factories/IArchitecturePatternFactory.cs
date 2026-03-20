@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using GeneratorCode.Core.Interfaces;
-using GeneratorCode.Core.Models;
 
 namespace GeneratorCode.Core.Factories
 {

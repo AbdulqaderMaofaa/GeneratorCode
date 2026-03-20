@@ -4,19 +4,19 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{{srcFolderGuid}}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "{{namespace}}.Domain", "{{namespace}}\src\{{namespace}}.Domain\{{namespace}}.Domain.csproj", "{{domainProjectGuid}}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "{{namespace}}.Domain", "src\{{namespace}}.Domain\{{namespace}}.Domain.csproj", "{{domainProjectGuid}}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "{{namespace}}.Application", "{{namespace}}\src\{{namespace}}.Application\{{namespace}}.Application.csproj", "{{applicationProjectGuid}}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "{{namespace}}.Application", "src\{{namespace}}.Application\{{namespace}}.Application.csproj", "{{applicationProjectGuid}}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "{{namespace}}.Infrastructure", "{{namespace}}\src\{{namespace}}.Infrastructure\{{namespace}}.Infrastructure.csproj", "{{infrastructureProjectGuid}}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "{{namespace}}.Infrastructure", "src\{{namespace}}.Infrastructure\{{namespace}}.Infrastructure.csproj", "{{infrastructureProjectGuid}}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "{{namespace}}.API", "{{namespace}}\src\{{namespace}}.API\{{namespace}}.API.csproj", "{{apiProjectGuid}}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "{{namespace}}.API", "src\{{namespace}}.API\{{namespace}}.API.csproj", "{{apiProjectGuid}}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{{testsFolderGuid}}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "{{namespace}}.UnitTests", "{{namespace}}\tests\{{namespace}}.UnitTests\{{namespace}}.UnitTests.csproj", "{{unitTestsProjectGuid}}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "{{namespace}}.UnitTests", "tests\{{namespace}}.UnitTests\{{namespace}}.UnitTests.csproj", "{{unitTestsProjectGuid}}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "{{namespace}}.IntegrationTests", "{{namespace}}\tests\{{namespace}}.IntegrationTests\{{namespace}}.IntegrationTests.csproj", "{{integrationTestsProjectGuid}}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "{{namespace}}.IntegrationTests", "tests\{{namespace}}.IntegrationTests\{{namespace}}.IntegrationTests.csproj", "{{integrationTestsProjectGuid}}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

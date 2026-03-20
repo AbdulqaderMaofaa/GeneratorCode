@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using GeneratorCode.Core.Interfaces;
 using GeneratorCode.Core.Models;
 using System.Linq;
@@ -57,8 +57,8 @@ namespace GeneratorCode.Core.DatabaseProviders
                                 Schema = reader["TABLE_SCHEMA"].ToString(),
                                 Name = tableName,
                                 Description = reader["TABLE_COMMENT"].ToString(),
-                                RowCount = Convert.ToInt64(reader["ROW_COUNT"]),
-                                Size = FormatSize(Convert.ToInt64(reader["TABLE_SIZE"])),
+                                RowCount = reader["ROW_COUNT"] is DBNull ? 0 : Convert.ToInt64(reader["ROW_COUNT"]),
+                                Size = FormatSize(reader["TABLE_SIZE"] is DBNull ? 0 : Convert.ToInt64(reader["TABLE_SIZE"])),
                                 CreatedDate = Convert.ToDateTime(reader["CREATE_DATE"]),
                                 ModifiedDate = Convert.ToDateTime(reader["MODIFY_DATE"]),
                                 HasIndexes = Convert.ToBoolean(reader["HAS_INDEXES"]),

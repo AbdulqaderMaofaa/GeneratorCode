@@ -73,7 +73,7 @@ namespace GeneratorCode.Core.DatabaseProviders
                     {
                         while (reader.Read())
                         {
-                            columns.Add(new ColumnInfo
+                            var column = new ColumnInfo
                             {
                                 Name = reader.GetString(0),
                                 DataType = reader.GetString(1),
@@ -83,7 +83,10 @@ namespace GeneratorCode.Core.DatabaseProviders
                                 IsNullable = reader.GetString(5) == "YES",
                                 DefaultValue = reader.IsDBNull(6) ? null : reader.GetString(6),
                                 OrdinalPosition = reader.GetInt32(7)
-                            });
+                            };
+                            
+                            column.CSharpType = MapDataType(column.DataType, column.IsNullable);
+                            columns.Add(column);
                         }
                     }
                 }

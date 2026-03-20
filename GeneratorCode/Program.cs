@@ -1,13 +1,15 @@
 using GeneratorCode.CLI;
+using GeneratorCode.Core.CodeFirst;
 using GeneratorCode.Core.Factories;
+using GeneratorCode.Core.Interfaces;
 using GeneratorCode.Core.Services;
 using GeneratorCode.Core.TemplateEngine;
+using GeneratorCode.Core.Logging;
 using GeneratorCode.Forms;
 using System;
 using System.CommandLine;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using GeneratorCode.Properties;
 using System.IO;
 
 namespace GeneratorCode
@@ -18,43 +20,73 @@ namespace GeneratorCode
         ///  The main entry point for the application.
         /// </summary>
         [STAThread]
-        static async Task<int> Main(string[] args)
+        static int Main(string[] args)
         {
-            Application.SetHighDpiMode(HighDpiMode.SystemAware);
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
+            // تهيئة Logger أولاً
+            var logger = LoggerFactory.Default;
             
-            // التحقق من وجود ملف الإعدادات وإنشائه إذا لم يكن موجوداً
-         
+            // تهيئة Global Exception Handlers
+            ExceptionMiddleware.Initialize(logger);
             
-            // إظهار رسالة ترحيب
-            //ShowWelcomeMessage();
-            
-            // تهيئة الخدمات
-            var patternFactory = new ArchitecturePatternFactory();
-            var databaseFactory = new DatabaseProviderFactory();
-            var diProviderFactory = new DIProviderFactory();
-            var templateEngine = new SimpleTemplateEngine();
-            
-            var codeGenerationService = new CodeGenerationService(
-                patternFactory,
-                databaseFactory,
-                diProviderFactory,
-                templateEngine
-            );
+            try
+            {
+                logger.LogInfo("Application started", "GeneratorCode.Program");
+                
+                Application.SetHighDpiMode(HighDpiMode.SystemAware);
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                
+                // التحقق من وجود ملف الإعدادات وإنشائه إذا لم يكن موجوداً
+             
+                
+                // إظهار رسالة ترحيب
+                //ShowWelcomeMessage();
+                
+                // تهيئة الخدمات
+                var templateEngine = new SimpleTemplateEngine(logger);
+                var patternFactory = new ArchitecturePatternFactory(templateEngine);
+                var databaseFactory = new DatabaseProviderFactory();
+                var diProviderFactory = new DIProviderFactory();
+                
+                var codeGenerationService = new CodeGenerationService(
+                    patternFactory,
+                    databaseFactory,
+                    diProviderFactory,
+                    templateEngine,
+                    logger
+                );
+                
+                logger.LogInfo("Services initialized successfully", "GeneratorCode.Program");
 
-            // التحقق من وجود معاملات سطر الأوامر
-            if (args.Length > 0)
-            {
-                // تشغيل واجهة سطر الأوامر
-                var cli = new CommandLineInterface(codeGenerationService);
-                return await cli.BuildRootCommand().InvokeAsync(args);
+                // التحقق من وجود معاملات سطر الأوامر
+                if (args.Length > 0)
+                {
+                    logger.LogInfo($"Running CLI mode with {args.Length} arguments", "GeneratorCode.Program");
+                    // تشغيل واجهة سطر الأوامر (async)
+                    var cli = new CommandLineInterface(codeGenerationService);
+                    var result = cli.BuildRootCommand().InvokeAsync(args).GetAwaiter().GetResult();
+                    logger.LogInfo($"CLI execution completed with exit code: {result}", "GeneratorCode.Program");
+                    return result;
+                }
+                else
+                {
+                    logger.LogInfo("Running GUI mode", "GeneratorCode.Program");
+                    // تشغيل واجهة المستخدم الرسومية
+                    Application.Run(new FrmConnection());
+                    logger.LogInfo("Application closed", "GeneratorCode.Program");
+                    return 0;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                // تشغيل واجهة المستخدم الرسومية
-                Application.Run(new FrmConnection());
-                return 0;
+                logger.LogError("Fatal error during application startup", ex, "GeneratorCode.Program");
+                MessageBox.Show(
+                    $"حدث خطأ فادح أثناء بدء التطبيق:\n{ex.Message}\n\nيرجى مراجعة ملفات السجل في:\n{Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "GeneratorCode", "Logs")}",
+                    "خطأ فادح",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return 1;
             }
         }
         

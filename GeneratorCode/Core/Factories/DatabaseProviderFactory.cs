@@ -30,6 +30,8 @@ namespace GeneratorCode.Core.Factories
             _providers[DatabaseType.SqlServer] = () => new SqlServerProvider();
             _providers[DatabaseType.PostgreSql] = () => new PostgreSqlProvider();
             _providers[DatabaseType.MySql] = () => new MySqlProvider();
+            _providers[DatabaseType.SQLite] = () => new SQLiteProvider();
+            _providers[DatabaseType.Oracle] = () => new OracleProvider();
         }
         
         /// <summary>

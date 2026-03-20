@@ -29,17 +29,15 @@ namespace GeneratorCode.Core.DatabaseProviders
                     AND table_type = 'BASE TABLE'
                     ORDER BY table_schema, table_name";
 
-                using (var command = new NpgsqlCommand(sql, connection))
-                using (var reader = command.ExecuteReader())
+                using var command = new NpgsqlCommand(sql, connection);
+                using var reader = command.ExecuteReader();
+                while (reader.Read())
                 {
-                    while (reader.Read())
+                    tables.Add(new TableInfo
                     {
-                        tables.Add(new TableInfo
-                        {
-                            Name = reader.GetString(0),
-                            Schema = reader.GetString(1)
-                        });
-                    }
+                        Name = reader.GetString(0),
+                        Schema = reader.GetString(1)
+                    });
                 }
             }
             return tables;
@@ -72,7 +70,7 @@ namespace GeneratorCode.Core.DatabaseProviders
                     {
                         while (reader.Read())
                         {
-                            columns.Add(new ColumnInfo
+                            var column = new ColumnInfo
                             {
                                 Name = reader.GetString(0),
                                 DataType = reader.GetString(1),
@@ -82,7 +80,10 @@ namespace GeneratorCode.Core.DatabaseProviders
                                 IsNullable = reader.GetString(5) == "YES",
                                 DefaultValue = reader.IsDBNull(6) ? null : reader.GetString(6),
                                 OrdinalPosition = reader.GetInt32(7)
-                            });
+                            };
+                            
+                            column.CSharpType = MapDataType(column.DataType, column.IsNullable);
+                            columns.Add(column);
                         }
                     }
                 }

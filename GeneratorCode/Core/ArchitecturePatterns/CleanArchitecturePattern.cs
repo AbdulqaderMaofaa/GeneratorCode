@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GeneratorCode.Core.Interfaces;
@@ -175,10 +176,11 @@ namespace GeneratorCode.Core.ArchitecturePatterns
                 GenerateTestProjects(context, result, unitTestsPath, integrationTestsPath);
 
                 // Generate global.json
+                // Using rollForward: latestMajor without specific version allows using any compatible SDK version
                 var globalJsonContent = @"{
   ""sdk"": {
-    ""version"": ""6.0.100"",
-    ""rollForward"": ""latestFeature""
+    ""rollForward"": ""latestMajor"",
+    ""allowPrerelease"": false
   }
 }";
                 result.GeneratedFiles.Add(new GeneratedFile
@@ -417,14 +419,17 @@ namespace GeneratorCode.Core.ArchitecturePatterns
 
         private string GenerateEntity(CodeGenerationContext context)
         {
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+                
             var sb = new StringBuilder();
 
             sb.AppendLine("using System;");
             sb.AppendLine("using System.Collections.Generic;");
             sb.AppendLine();
-            sb.AppendLine($"namespace {context.Namespace}.Domain.Entities");
+            sb.AppendLine($"namespace {context.Namespace ?? "GeneratedCode"}.Domain.Entities");
             sb.AppendLine("{");
-            sb.AppendLine($"    public class {context.EntityName}");
+            sb.AppendLine($"    public class {context.EntityName ?? "Entity"}");
             sb.AppendLine("    {");
 
             // إضافة الخصائص من معلومات الجدول
@@ -432,7 +437,10 @@ namespace GeneratorCode.Core.ArchitecturePatterns
             {
                 foreach (var column in context.TableInfo.Columns)
                 {
-                    sb.AppendLine($"        public {column.CSharpType} {column.Name} {{ get; set; }}");
+                    if (column != null && !string.IsNullOrEmpty(column.Name))
+                    {
+                        sb.AppendLine($"        public {column.CSharpType ?? "object"} {column.Name} {{ get; set; }}");
+                    }
                 }
             }
 
@@ -444,16 +452,21 @@ namespace GeneratorCode.Core.ArchitecturePatterns
 
         private string GenerateRepositoryInterface(CodeGenerationContext context)
         {
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+                
             var sb = new StringBuilder();
+            var namespaceName = context.Namespace ?? "GeneratedCode";
+            var entityName = context.EntityName ?? "Entity";
 
             sb.AppendLine("using System;");
             sb.AppendLine("using System.Collections.Generic;");
             sb.AppendLine("using System.Threading.Tasks;");
-            sb.AppendLine($"using {context.Namespace}.Domain.Entities;");
+            sb.AppendLine($"using {namespaceName}.Domain.Entities;");
             sb.AppendLine();
-            sb.AppendLine($"namespace {context.Namespace}.Domain.Repositories");
+            sb.AppendLine($"namespace {namespaceName}.Domain.Repositories");
             sb.AppendLine("{");
-            sb.AppendLine($"    public interface I{context.EntityName}Repository");
+            sb.AppendLine($"    public interface I{entityName}Repository");
             sb.AppendLine("    {");
             sb.AppendLine($"        Task<{context.EntityName}> GetByIdAsync(int id);");
             sb.AppendLine($"        Task<List<{context.EntityName}>> GetAllAsync();");
@@ -468,22 +481,28 @@ namespace GeneratorCode.Core.ArchitecturePatterns
 
         private string GenerateRepositoryImplementation(CodeGenerationContext context)
         {
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+                
             var sb = new StringBuilder();
 
             sb.AppendLine("using System;");
             sb.AppendLine("using System.Collections.Generic;");
             sb.AppendLine("using System.Threading.Tasks;");
             sb.AppendLine("using Microsoft.EntityFrameworkCore;");
-            sb.AppendLine($"using {context.Namespace}.Domain.Entities;");
-            sb.AppendLine($"using {context.Namespace}.Domain.Repositories;");
+            var namespaceName = context.Namespace ?? "GeneratedCode";
+            sb.AppendLine($"using {namespaceName}.Domain.Entities;");
+            sb.AppendLine($"using {namespaceName}.Domain.Repositories;");
+            sb.AppendLine();
+            sb.AppendLine($"using {namespaceName}.Infrastructure.Data;");
             sb.AppendLine();
             sb.AppendLine($"namespace {context.Namespace}.Infrastructure.Repositories");
             sb.AppendLine("{");
             sb.AppendLine($"    public class {context.EntityName}Repository : I{context.EntityName}Repository");
             sb.AppendLine("    {");
-            sb.AppendLine("        private readonly DbContext _context;");
+            sb.AppendLine($"        private readonly {namespaceName}DbContext _context;");
             sb.AppendLine();
-            sb.AppendLine($"        public {context.EntityName}Repository(DbContext context)");
+            sb.AppendLine($"        public {context.EntityName}Repository({namespaceName}DbContext context)");
             sb.AppendLine("        {");
             sb.AppendLine("            _context = context;");
             sb.AppendLine("        }");
@@ -528,19 +547,24 @@ namespace GeneratorCode.Core.ArchitecturePatterns
 
         private string GenerateDbContextConfiguration(CodeGenerationContext context)
         {
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+                
             var sb = new StringBuilder();
 
             sb.AppendLine("using Microsoft.EntityFrameworkCore;");
             sb.AppendLine("using Microsoft.EntityFrameworkCore.Metadata.Builders;");
-            sb.AppendLine($"using {context.Namespace}.Domain.Entities;");
+            var namespaceName = context.Namespace ?? "GeneratedCode";
+            var entityName = context.EntityName ?? "Entity";
+            sb.AppendLine($"using {namespaceName}.Domain.Entities;");
             sb.AppendLine();
-            sb.AppendLine($"namespace {context.Namespace}.Infrastructure.Data.Configurations");
+            sb.AppendLine($"namespace {namespaceName}.Infrastructure.Data.Configurations");
             sb.AppendLine("{");
-            sb.AppendLine($"    public class {context.EntityName}Configuration : IEntityTypeConfiguration<{context.EntityName}>");
+            sb.AppendLine($"    public class {entityName}Configuration : IEntityTypeConfiguration<{entityName}>");
             sb.AppendLine("    {");
-            sb.AppendLine($"        public void Configure(EntityTypeBuilder<{context.EntityName}> builder)");
+            sb.AppendLine($"        public void Configure(EntityTypeBuilder<{entityName}> builder)");
             sb.AppendLine("        {");
-            sb.AppendLine($"            builder.ToTable(\"{context.TableName}\");");
+            sb.AppendLine($"            builder.ToTable(\"{context.TableName ?? "Table"}\");");
             sb.AppendLine();
 
             // إضافة تكوين الأعمدة
@@ -548,25 +572,28 @@ namespace GeneratorCode.Core.ArchitecturePatterns
             {
                 foreach (var column in context.TableInfo.Columns)
                 {
-                    if (column.IsPrimaryKey)
+                    if (column != null && !string.IsNullOrEmpty(column.Name))
                     {
-                        sb.AppendLine($"            builder.HasKey(x => x.{column.Name});");
+                        if (column.IsPrimaryKey)
+                        {
+                            sb.AppendLine($"            builder.HasKey(x => x.{column.Name});");
+                        }
+
+                        sb.AppendLine($"            builder.Property(x => x.{column.Name})");
+                        sb.AppendLine($"                .HasColumnName(\"{column.Name}\")");
+
+                        if (column.MaxLength.HasValue)
+                        {
+                            sb.AppendLine($"                .HasMaxLength({column.MaxLength.Value})");
+                        }
+
+                        if (!column.IsNullable)
+                        {
+                            sb.AppendLine("                .IsRequired()");
+                        }
+
+                        sb.AppendLine("                ;");
                     }
-
-                    sb.AppendLine($"            builder.Property(x => x.{column.Name})");
-                    sb.AppendLine($"                .HasColumnName(\"{column.Name}\")");
-
-                    if (column.MaxLength.HasValue)
-                    {
-                        sb.AppendLine($"                .HasMaxLength({column.MaxLength.Value})");
-                    }
-
-                    if (!column.IsNullable)
-                    {
-                        sb.AppendLine("                .IsRequired()");
-                    }
-
-                    sb.AppendLine("                ;");
                 }
             }
 
@@ -588,7 +615,7 @@ namespace GeneratorCode.Core.ArchitecturePatterns
             sb.AppendLine($"using {context.Namespace}.Application.Features.{context.EntityName}.Commands;");
             sb.AppendLine($"using {context.Namespace}.Application.Features.{context.EntityName}.Queries;");
             sb.AppendLine();
-            sb.AppendLine($"namespace {context.Namespace}.Presentation.Controllers");
+            sb.AppendLine($"namespace {context.Namespace}.API.Controllers");
             sb.AppendLine("{");
             sb.AppendLine("    [ApiController]");
             sb.AppendLine($"    [Route(\"api/[controller]\")]");
@@ -641,22 +668,141 @@ namespace GeneratorCode.Core.ArchitecturePatterns
 
         private void GenerateCommands(CodeGenerationContext context, CodeGenerationResult result)
         {
-            // سيتم إضافة توليد Commands لاحقاً
+            if (!context.Options.GenerateControllers)
+                return;
+
+            var applicationPath = Path.Combine(context.OutputPath, context.Namespace, "src", $"{context.Namespace}.Application");
+            var commandsPath = Path.Combine(applicationPath, "Features", context.EntityName, "Commands");
+            
+            // Create Command
+            var createCommand = GenerateCreateCommand(context);
+            if (!string.IsNullOrEmpty(createCommand))
+            {
+                result.GeneratedFiles.Add(new GeneratedFile
+                {
+                    FileName = $"Create{context.EntityName}Command.cs",
+                    RelativePath = $"src/{context.Namespace}.Application/Features/{context.EntityName}/Commands/Create{context.EntityName}Command.cs",
+                    FullPath = Path.Combine(commandsPath, $"Create{context.EntityName}Command.cs"),
+                    Content = createCommand,
+                    FileType = "cs",
+                    Layer = "Application"
+                });
+            }
+
+            // Update Command
+            var updateCommand = GenerateUpdateCommand(context);
+            if (!string.IsNullOrEmpty(updateCommand))
+            {
+                result.GeneratedFiles.Add(new GeneratedFile
+                {
+                    FileName = $"Update{context.EntityName}Command.cs",
+                    RelativePath = $"src/{context.Namespace}.Application/Features/{context.EntityName}/Commands/Update{context.EntityName}Command.cs",
+                    FullPath = Path.Combine(commandsPath, $"Update{context.EntityName}Command.cs"),
+                    Content = updateCommand,
+                    FileType = "cs",
+                    Layer = "Application"
+                });
+            }
+
+            // Delete Command
+            var deleteCommand = GenerateDeleteCommand(context);
+            if (!string.IsNullOrEmpty(deleteCommand))
+            {
+                result.GeneratedFiles.Add(new GeneratedFile
+                {
+                    FileName = $"Delete{context.EntityName}Command.cs",
+                    RelativePath = $"src/{context.Namespace}.Application/Features/{context.EntityName}/Commands/Delete{context.EntityName}Command.cs",
+                    FullPath = Path.Combine(commandsPath, $"Delete{context.EntityName}Command.cs"),
+                    Content = deleteCommand,
+                    FileType = "cs",
+                    Layer = "Application"
+                });
+            }
         }
 
         private void GenerateQueries(CodeGenerationContext context, CodeGenerationResult result)
         {
-            // سيتم إضافة توليد Queries لاحقاً
+            if (!context.Options.GenerateControllers)
+                return;
+
+            var applicationPath = Path.Combine(context.OutputPath, context.Namespace, "src", $"{context.Namespace}.Application");
+            var queriesPath = Path.Combine(applicationPath, "Features", context.EntityName, "Queries");
+            
+            // GetById Query
+            var getByIdQuery = GenerateGetByIdQuery(context);
+            if (!string.IsNullOrEmpty(getByIdQuery))
+            {
+                result.GeneratedFiles.Add(new GeneratedFile
+                {
+                    FileName = $"Get{context.EntityName}ByIdQuery.cs",
+                    RelativePath = $"src/{context.Namespace}.Application/Features/{context.EntityName}/Queries/Get{context.EntityName}ByIdQuery.cs",
+                    FullPath = Path.Combine(queriesPath, $"Get{context.EntityName}ByIdQuery.cs"),
+                    Content = getByIdQuery,
+                    FileType = "cs",
+                    Layer = "Application"
+                });
+            }
+
+            // GetAll Query
+            var getAllQuery = GenerateGetAllQuery(context);
+            if (!string.IsNullOrEmpty(getAllQuery))
+            {
+                result.GeneratedFiles.Add(new GeneratedFile
+                {
+                    FileName = $"GetAll{context.EntityName}Query.cs",
+                    RelativePath = $"src/{context.Namespace}.Application/Features/{context.EntityName}/Queries/GetAll{context.EntityName}Query.cs",
+                    FullPath = Path.Combine(queriesPath, $"GetAll{context.EntityName}Query.cs"),
+                    Content = getAllQuery,
+                    FileType = "cs",
+                    Layer = "Application"
+                });
+            }
         }
 
         private void GenerateValidators(CodeGenerationContext context, CodeGenerationResult result)
         {
-            // سيتم إضافة توليد Validators لاحقاً
+            if (!context.Options.GenerateValidators)
+                return;
+
+            var applicationPath = Path.Combine(context.OutputPath, context.Namespace, "src", $"{context.Namespace}.Application");
+            var validatorsPath = Path.Combine(applicationPath, "Validators");
+            
+            var validatorContent = GenerateValidator(context);
+            if (!string.IsNullOrEmpty(validatorContent))
+            {
+                result.GeneratedFiles.Add(new GeneratedFile
+                {
+                    FileName = $"{context.EntityName}Validator.cs",
+                    RelativePath = $"src/{context.Namespace}.Application/Validators/{context.EntityName}Validator.cs",
+                    FullPath = Path.Combine(validatorsPath, $"{context.EntityName}Validator.cs"),
+                    Content = validatorContent,
+                    FileType = "cs",
+                    Layer = "Application"
+                });
+            }
         }
 
         private void GenerateMappers(CodeGenerationContext context, CodeGenerationResult result)
         {
-            // سيتم إضافة توليد Mappers لاحقاً
+            if (!context.Options.GenerateDTOs)
+                return;
+
+            var applicationPath = Path.Combine(context.OutputPath, context.Namespace, "src", $"{context.Namespace}.Application");
+            var mappingsPath = Path.Combine(applicationPath, "Mappings");
+            
+            var mapperContent = GenerateAutoMapperProfile(context);
+            if (!string.IsNullOrEmpty(mapperContent))
+            {
+                result.GeneratedFiles.Add(new GeneratedFile
+                {
+                    FileName = $"{context.EntityName}Profile.cs",
+                    RelativePath = $"src/{context.Namespace}.Application/Mappings/{context.EntityName}Profile.cs",
+                    FullPath = Path.Combine(mappingsPath, $"{context.EntityName}Profile.cs"),
+                    Content = mapperContent,
+                    FileType = "cs",
+                    Layer = "Application"
+                });
+            }
         }
 
         private void GenerateTestProjects(CodeGenerationContext context, CodeGenerationResult result, string unitTestsPath, string integrationTestsPath)
@@ -691,31 +837,30 @@ namespace GeneratorCode.Core.ArchitecturePatterns
             var sb = new StringBuilder();
             
             sb.AppendLine("using System;");
+            sb.AppendLine("using System.Collections.Generic;");
             sb.AppendLine("using System.Threading.Tasks;");
             sb.AppendLine("using Xunit;");
             sb.AppendLine("using Moq;");
             sb.AppendLine($"using {context.Namespace}.Domain.Entities;");
             sb.AppendLine($"using {context.Namespace}.Domain.Repositories;");
-            sb.AppendLine($"using {context.Namespace}.Application.Services;");
+            sb.AppendLine($"using {context.Namespace}.Infrastructure.Repositories;");
             sb.AppendLine();
-            
+
             sb.AppendLine($"namespace {context.Namespace}.UnitTests");
             sb.AppendLine("{");
-            sb.AppendLine($"    public class {context.EntityName}Tests");
+            sb.AppendLine($"    public class {context.EntityName}RepositoryTests");
             sb.AppendLine("    {");
             sb.AppendLine($"        private readonly Mock<I{context.EntityName}Repository> _mockRepository;");
-            sb.AppendLine($"        private readonly I{context.EntityName}Service _service;");
             sb.AppendLine();
-            
-            sb.AppendLine($"        public {context.EntityName}Tests()");
+
+            sb.AppendLine($"        public {context.EntityName}RepositoryTests()");
             sb.AppendLine("        {");
             sb.AppendLine($"            _mockRepository = new Mock<I{context.EntityName}Repository>();");
-            sb.AppendLine($"            _service = new {context.EntityName}Service(_mockRepository.Object);");
             sb.AppendLine("        }");
             sb.AppendLine();
-            
+
             sb.AppendLine("        [Fact]");
-            sb.AppendLine("        public async Task GetById_ShouldReturnEntity_WhenEntityExists()");
+            sb.AppendLine("        public async Task GetByIdAsync_ShouldReturnEntity_WhenEntityExists()");
             sb.AppendLine("        {");
             sb.AppendLine("            // Arrange");
             sb.AppendLine($"            var entity = new {context.EntityName}();");
@@ -723,10 +868,41 @@ namespace GeneratorCode.Core.ArchitecturePatterns
             sb.AppendLine("                .ReturnsAsync(entity);");
             sb.AppendLine();
             sb.AppendLine("            // Act");
-            sb.AppendLine("            var result = await _service.GetByIdAsync(1);");
+            sb.AppendLine("            var result = await _mockRepository.Object.GetByIdAsync(1);");
             sb.AppendLine();
             sb.AppendLine("            // Assert");
             sb.AppendLine("            Assert.NotNull(result);");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+
+            sb.AppendLine("        [Fact]");
+            sb.AppendLine("        public async Task GetAllAsync_ShouldReturnList()");
+            sb.AppendLine("        {");
+            sb.AppendLine("            // Arrange");
+            sb.AppendLine($"            var entities = new List<{context.EntityName}> {{ new {context.EntityName}() }};");
+            sb.AppendLine("            _mockRepository.Setup(repo => repo.GetAllAsync())");
+            sb.AppendLine("                .ReturnsAsync(entities);");
+            sb.AppendLine();
+            sb.AppendLine("            // Act");
+            sb.AppendLine("            var result = await _mockRepository.Object.GetAllAsync();");
+            sb.AppendLine();
+            sb.AppendLine("            // Assert");
+            sb.AppendLine("            Assert.NotEmpty(result);");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+
+            sb.AppendLine("        [Fact]");
+            sb.AppendLine("        public async Task GetByIdAsync_ShouldReturnNull_WhenEntityNotFound()");
+            sb.AppendLine("        {");
+            sb.AppendLine("            // Arrange");
+            sb.AppendLine($"            _mockRepository.Setup(repo => repo.GetByIdAsync(It.IsAny<int>()))");
+            sb.AppendLine($"                .ReturnsAsync(({context.EntityName})null);");
+            sb.AppendLine();
+            sb.AppendLine("            // Act");
+            sb.AppendLine("            var result = await _mockRepository.Object.GetByIdAsync(999);");
+            sb.AppendLine();
+            sb.AppendLine("            // Assert");
+            sb.AppendLine("            Assert.Null(result);");
             sb.AppendLine("        }");
             sb.AppendLine("    }");
             sb.AppendLine("}");
@@ -1099,38 +1275,165 @@ namespace GeneratorCode.Core.ArchitecturePatterns
 
         private string GenerateValueObjects(CodeGenerationContext context)
         {
-            // Add implementation for generating value objects
-            return string.Empty;
+            var sb = new StringBuilder();
+            sb.AppendLine("using System;");
+            sb.AppendLine();
+            sb.AppendLine($"namespace {context.Namespace}.Domain.ValueObjects");
+            sb.AppendLine("{");
+            sb.AppendLine($"    /// <summary>");
+            sb.AppendLine($"    /// Value Object for {context.EntityName}");
+            sb.AppendLine($"    /// </summary>");
+            sb.AppendLine($"    public class {context.EntityName}ValueObject");
+            sb.AppendLine("    {");
+            
+            if (context.TableInfo?.Columns != null)
+            {
+                foreach (var column in context.TableInfo.Columns)
+                {
+                    if (!column.IsPrimaryKey && column.Name.ToLower() != "id")
+                    {
+                        sb.AppendLine($"        public {column.CSharpType} {column.Name} {{ get; set; }}");
+                    }
+                }
+            }
+            
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            return sb.ToString();
         }
 
         private string GenerateCreateCommand(CodeGenerationContext context)
         {
-            // Add implementation for generating create command
-            return string.Empty;
+            var sb = new StringBuilder();
+            sb.AppendLine("using MediatR;");
+            sb.AppendLine($"using {context.Namespace}.Application.DTOs;");
+            sb.AppendLine();
+            sb.AppendLine($"namespace {context.Namespace}.Application.Features.{context.EntityName}.Commands");
+            sb.AppendLine("{");
+            sb.AppendLine($"    public class Create{context.EntityName}Command : IRequest<{context.EntityName}DTO>");
+            sb.AppendLine("    {");
+            
+            if (context.TableInfo?.Columns != null)
+            {
+                foreach (var column in context.TableInfo.Columns)
+                {
+                    if (!column.IsPrimaryKey && !column.IsAutoIncrement && column.Name.ToLower() != "id")
+                    {
+                        sb.AppendLine($"        public {column.CSharpType ?? "object"} {column.Name} {{ get; set; }}");
+                    }
+                }
+            }
+            
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            return sb.ToString();
         }
 
         private string GenerateUpdateCommand(CodeGenerationContext context)
         {
-            // Add implementation for generating update command
-            return string.Empty;
+            var sb = new StringBuilder();
+            sb.AppendLine("using MediatR;");
+            sb.AppendLine($"using {context.Namespace}.Application.DTOs;");
+            sb.AppendLine();
+            sb.AppendLine($"namespace {context.Namespace}.Application.Features.{context.EntityName}.Commands");
+            sb.AppendLine("{");
+            sb.AppendLine($"    public class Update{context.EntityName}Command : IRequest<{context.EntityName}DTO>");
+            sb.AppendLine("    {");
+            
+            // Add ID for update
+            var primaryKeyColumn = context.TableInfo?.Columns.FirstOrDefault(c => c.IsPrimaryKey);
+            if (primaryKeyColumn != null)
+            {
+                sb.AppendLine($"        public {primaryKeyColumn.CSharpType ?? "int"} {primaryKeyColumn.Name} {{ get; set; }}");
+            }
+            else
+            {
+                sb.AppendLine("        public int Id { get; set; }");
+            }
+            
+            if (context.TableInfo?.Columns != null)
+            {
+                foreach (var column in context.TableInfo.Columns)
+                {
+                    if (!column.IsPrimaryKey && column.Name.ToLower() != "id")
+                    {
+                        sb.AppendLine($"        public {column.CSharpType ?? "object"} {column.Name} {{ get; set; }}");
+                    }
+                }
+            }
+            
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            return sb.ToString();
         }
 
         private string GenerateDeleteCommand(CodeGenerationContext context)
         {
-            // Add implementation for generating delete command
-            return string.Empty;
+            var sb = new StringBuilder();
+            sb.AppendLine("using MediatR;");
+            sb.AppendLine();
+            sb.AppendLine($"namespace {context.Namespace}.Application.Features.{context.EntityName}.Commands");
+            sb.AppendLine("{");
+            sb.AppendLine($"    public class Delete{context.EntityName}Command : IRequest<Unit>");
+            sb.AppendLine("    {");
+            
+            // Add ID for delete
+            var primaryKeyColumn = context.TableInfo?.Columns?.FirstOrDefault(c => c.IsPrimaryKey);
+            if (primaryKeyColumn != null)
+            {
+                sb.AppendLine($"        public {primaryKeyColumn.CSharpType ?? "int"} {primaryKeyColumn.Name} {{ get; set; }}");
+            }
+            else
+            {
+                sb.AppendLine("        public int Id { get; set; }");
+            }
+            
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            return sb.ToString();
         }
 
         private string GenerateGetByIdQuery(CodeGenerationContext context)
         {
-            // Add implementation for generating get by id query
-            return string.Empty;
+            var sb = new StringBuilder();
+            sb.AppendLine("using MediatR;");
+            sb.AppendLine($"using {context.Namespace}.Application.DTOs;");
+            sb.AppendLine();
+            sb.AppendLine($"namespace {context.Namespace}.Application.Features.{context.EntityName}.Queries");
+            sb.AppendLine("{");
+            sb.AppendLine($"    public class Get{context.EntityName}ByIdQuery : IRequest<{context.EntityName}DTO>");
+            sb.AppendLine("    {");
+            
+            // Add ID parameter
+            var primaryKeyColumn = context.TableInfo?.Columns?.FirstOrDefault(c => c.IsPrimaryKey);
+            if (primaryKeyColumn != null)
+            {
+                sb.AppendLine($"        public {primaryKeyColumn.CSharpType ?? "int"} {primaryKeyColumn.Name} {{ get; set; }}");
+            }
+            else
+            {
+                sb.AppendLine("        public int Id { get; set; }");
+            }
+            
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            return sb.ToString();
         }
 
         private string GenerateGetAllQuery(CodeGenerationContext context)
         {
-            // Add implementation for generating get all query
-            return string.Empty;
+            var sb = new StringBuilder();
+            sb.AppendLine("using System.Collections.Generic;");
+            sb.AppendLine("using MediatR;");
+            sb.AppendLine($"using {context.Namespace}.Application.DTOs;");
+            sb.AppendLine();
+            sb.AppendLine($"namespace {context.Namespace}.Application.Features.{context.EntityName}.Queries");
+            sb.AppendLine("{");
+            sb.AppendLine($"    public class GetAll{context.EntityName}Query : IRequest<List<{context.EntityName}DTO>>");
+            sb.AppendLine("    {");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            return sb.ToString();
         }
 
         private string GenerateDbContext(CodeGenerationContext context)
@@ -1174,7 +1477,7 @@ namespace GeneratorCode.Core.ArchitecturePatterns
             {
                 foreach (var column in context.TableInfo.Columns)
                 {
-                    sb.AppendLine($"        public {column.CSharpType} {column.Name} {{ get; set; }}");
+                    sb.AppendLine($"        public {column.CSharpType ?? "object"} {column.Name} {{ get; set; }}");
                 }
             }
 
@@ -1320,10 +1623,15 @@ namespace GeneratorCode.Core.ArchitecturePatterns
         {
             var sb = new StringBuilder();
             sb.AppendLine("using System;");
-            sb.AppendLine($"using {context.Namespace}.Domain.Common;");
+            sb.AppendLine($"using {context.Namespace}.Domain.Entities;");
             sb.AppendLine();
             sb.AppendLine($"namespace {context.Namespace}.Domain.Events");
             sb.AppendLine("{");
+            sb.AppendLine("    public abstract class DomainEvent");
+            sb.AppendLine("    {");
+            sb.AppendLine("        public DateTime OccurredOn { get; } = DateTime.UtcNow;");
+            sb.AppendLine("    }");
+            sb.AppendLine();
             sb.AppendLine($"    public class {context.EntityName}CreatedEvent : DomainEvent");
             sb.AppendLine("    {");
             sb.AppendLine($"        public {context.EntityName}CreatedEvent({context.EntityName} item)");
@@ -1332,6 +1640,26 @@ namespace GeneratorCode.Core.ArchitecturePatterns
             sb.AppendLine("        }");
             sb.AppendLine();
             sb.AppendLine($"        public {context.EntityName} Item {{ get; }}");
+            sb.AppendLine("    }");
+            sb.AppendLine();
+            sb.AppendLine($"    public class {context.EntityName}UpdatedEvent : DomainEvent");
+            sb.AppendLine("    {");
+            sb.AppendLine($"        public {context.EntityName}UpdatedEvent({context.EntityName} item)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            Item = item;");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine($"        public {context.EntityName} Item {{ get; }}");
+            sb.AppendLine("    }");
+            sb.AppendLine();
+            sb.AppendLine($"    public class {context.EntityName}DeletedEvent : DomainEvent");
+            sb.AppendLine("    {");
+            sb.AppendLine($"        public {context.EntityName}DeletedEvent(int id)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            Id = id;");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public int Id { get; }");
             sb.AppendLine("    }");
             sb.AppendLine("}");
             return sb.ToString();
@@ -1361,7 +1689,7 @@ namespace GeneratorCode.Core.ArchitecturePatterns
             sb.AppendLine("using System;");
             sb.AppendLine("using System.ComponentModel.DataAnnotations;");
             sb.AppendLine();
-            sb.AppendLine($"namespace {context.Namespace}.Presentation.ViewModels");
+            sb.AppendLine($"namespace {context.Namespace}.API.ViewModels");
             sb.AppendLine("{");
             sb.AppendLine($"    public class {context.EntityName}ViewModel");
             sb.AppendLine("    {");
@@ -1378,7 +1706,7 @@ namespace GeneratorCode.Core.ArchitecturePatterns
                     {
                         sb.AppendLine($"        [MaxLength({column.MaxLength.Value})]");
                     }
-                    sb.AppendLine($"        public {column.CSharpType} {column.Name} {{ get; set; }}");
+                    sb.AppendLine($"        public {column.CSharpType ?? "object"} {column.Name} {{ get; set; }}");
                     sb.AppendLine();
                 }
             }
@@ -1391,7 +1719,7 @@ namespace GeneratorCode.Core.ArchitecturePatterns
         private string GenerateView(CodeGenerationContext context, string viewName)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"@model {context.Namespace}.Presentation.ViewModels.{context.EntityName}ViewModel");
+            sb.AppendLine($"@model {context.Namespace}.API.ViewModels.{context.EntityName}ViewModel");
             sb.AppendLine();
             sb.AppendLine("@{");
             sb.AppendLine($"    ViewData[\"Title\"] = \"{viewName} {context.EntityName}\";");

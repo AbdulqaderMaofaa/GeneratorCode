@@ -1,0 +1,32 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using {{Namespace}}.Entities;
+
+namespace {{Namespace}}.Configurations
+{
+    public class {{EntityName}}Configuration : IEntityTypeConfiguration<{{EntityName}}>
+    {
+        public void Configure(EntityTypeBuilder<{{EntityName}}> builder)
+        {
+            builder.ToTable("{{TableName}}"{{#HasSchema}}, "{{Schema}}"{{/HasSchema}});
+
+            {{#PrimaryKey}}
+            builder.HasKey(e => e.{{PrimaryKeyName}});
+            {{/PrimaryKey}}
+
+            {{#Properties}}
+            builder.Property(e => e.{{PropertyName}})
+                {{#IsRequired}}.IsRequired(){{/IsRequired}}
+                {{#HasMaxLength}}.HasMaxLength({{MaxLength}}){{/HasMaxLength}}
+                {{#HasPrecision}}.HasPrecision({{Precision}}, {{Scale}}){{/HasPrecision}}
+                .HasColumnType("{{ColumnType}}")
+                {{#HasDefaultValue}}.HasDefaultValueSql("{{DefaultValue}}"){{/HasDefaultValue}}
+                {{#IsIdentity}}.ValueGeneratedOnAdd(){{/IsIdentity}};
+
+            {{/Properties}}
+            {{#Relations}}
+            {{RelationConfiguration}}
+            {{/Relations}}
+        }
+    }
+}

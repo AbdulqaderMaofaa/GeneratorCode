@@ -1,3 +1,5 @@
+using GeneratorCode.Helpers;
+
 namespace GeneratorCode.Forms
 {
     partial class FrmTabls
@@ -38,6 +40,7 @@ namespace GeneratorCode.Forms
             gridColumns = new System.Windows.Forms.DataGridView();
             tabArchitecture = new System.Windows.Forms.TabPage();
             grpArchitecture = new System.Windows.Forms.GroupBox();
+            chkInfrastructureLayer = new System.Windows.Forms.CheckBox();
             chkApplicationLayer = new System.Windows.Forms.CheckBox();
             chkDomainLayer = new System.Windows.Forms.CheckBox();
             chkPresentationLayer = new System.Windows.Forms.CheckBox();
@@ -82,10 +85,10 @@ namespace GeneratorCode.Forms
             grpActions = new System.Windows.Forms.GroupBox();
             btnPreview = new System.Windows.Forms.Button();
             btnGenerate = new System.Windows.Forms.Button();
+            btnViewLogs = new System.Windows.Forms.Button();
             grpProgress = new System.Windows.Forms.GroupBox();
             progressBar = new System.Windows.Forms.ProgressBar();
             lblStatus = new System.Windows.Forms.Label();
-            chkInfrastructureLayer = new System.Windows.Forms.CheckBox();
             tabControl.SuspendLayout();
             tabTables.SuspendLayout();
             grpTablesInfo.SuspendLayout();
@@ -113,15 +116,15 @@ namespace GeneratorCode.Forms
             tabControl.Controls.Add(tabSettings);
             tabControl.Controls.Add(tabOutput);
             tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            tabControl.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            tabControl.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFont;
             tabControl.Location = new System.Drawing.Point(0, 0);
-            tabControl.Multiline = false;
             tabControl.Name = "tabControl";
             tabControl.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             tabControl.RightToLeftLayout = true;
             tabControl.SelectedIndex = 0;
             tabControl.Size = new System.Drawing.Size(1200, 800);
             tabControl.TabIndex = 0;
+            tabControl.SelectedIndexChanged += TabControl_SelectedIndexChanged;
             // 
             // tabTables
             // 
@@ -140,7 +143,7 @@ namespace GeneratorCode.Forms
             grpTablesInfo.Controls.Add(lblTablesSelection);
             grpTablesInfo.Controls.Add(chkGenerateAllTables);
             grpTablesInfo.Controls.Add(lstTables);
-            grpTablesInfo.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            grpTablesInfo.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontBold;
             grpTablesInfo.Location = new System.Drawing.Point(829, 13);
             grpTablesInfo.Name = "grpTablesInfo";
             grpTablesInfo.Padding = new System.Windows.Forms.Padding(10);
@@ -149,12 +152,15 @@ namespace GeneratorCode.Forms
             grpTablesInfo.TabIndex = 0;
             grpTablesInfo.TabStop = false;
             grpTablesInfo.Text = "🗂️ الجداول المتاحة";
+            lstTables.SelectedIndexChanged += LstTables_SelectedIndexChanged;
+
+
             // 
             // lblTablesSelection
             // 
             lblTablesSelection.AutoSize = true;
-            lblTablesSelection.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            lblTablesSelection.ForeColor = System.Drawing.Color.Black;
+            lblTablesSelection.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
+            lblTablesSelection.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             lblTablesSelection.Location = new System.Drawing.Point(151, 33);
             lblTablesSelection.Name = "lblTablesSelection";
             lblTablesSelection.Size = new System.Drawing.Size(186, 20);
@@ -164,18 +170,20 @@ namespace GeneratorCode.Forms
             // chkGenerateAllTables
             // 
             chkGenerateAllTables.AutoSize = true;
-            chkGenerateAllTables.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            chkGenerateAllTables.ForeColor = System.Drawing.Color.Black;
+            chkGenerateAllTables.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
+            chkGenerateAllTables.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkGenerateAllTables.Location = new System.Drawing.Point(187, 65);
             chkGenerateAllTables.Name = "chkGenerateAllTables";
             chkGenerateAllTables.Size = new System.Drawing.Size(150, 24);
             chkGenerateAllTables.TabIndex = 1;
             chkGenerateAllTables.Text = "توليد جميع الجداول";
             chkGenerateAllTables.UseVisualStyleBackColor = true;
+            chkGenerateAllTables.CheckedChanged += ChkGenerateAllTables_CheckedChanged;
+
             // 
             // lstTables
             // 
-            lstTables.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            lstTables.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
             lstTables.FormattingEnabled = true;
             lstTables.ItemHeight = 20;
             lstTables.Location = new System.Drawing.Point(13, 95);
@@ -188,8 +196,7 @@ namespace GeneratorCode.Forms
             // grpColumnsInfo
             // 
             grpColumnsInfo.Controls.Add(gridColumns);
-            grpColumnsInfo.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            grpColumnsInfo.ForeColor = System.Drawing.Color.DarkGreen;
+            grpColumnsInfo.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontBold;
             grpColumnsInfo.Location = new System.Drawing.Point(13, 13);
             grpColumnsInfo.Name = "grpColumnsInfo";
             grpColumnsInfo.Padding = new System.Windows.Forms.Padding(10);
@@ -205,7 +212,7 @@ namespace GeneratorCode.Forms
             gridColumns.AllowUserToDeleteRows = false;
             gridColumns.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             gridColumns.Dock = System.Windows.Forms.DockStyle.Fill;
-            gridColumns.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            gridColumns.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
             gridColumns.Location = new System.Drawing.Point(10, 33);
             gridColumns.Name = "gridColumns";
             gridColumns.ReadOnly = true;
@@ -228,6 +235,9 @@ namespace GeneratorCode.Forms
             tabArchitecture.Size = new System.Drawing.Size(1192, 764);
             tabArchitecture.TabIndex = 1;
             tabArchitecture.Text = "النمط المعماري";
+           
+            // أحداث اللغة
+            cmbLanguage.SelectedIndexChanged += CmbLanguage_SelectedIndexChanged;
             // 
             // grpArchitecture
             // 
@@ -235,8 +245,7 @@ namespace GeneratorCode.Forms
             grpArchitecture.Controls.Add(chkApplicationLayer);
             grpArchitecture.Controls.Add(chkDomainLayer);
             grpArchitecture.Controls.Add(chkPresentationLayer);
-            grpArchitecture.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            grpArchitecture.ForeColor = System.Drawing.Color.DarkOrange;
+            grpArchitecture.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontBold;
             grpArchitecture.Location = new System.Drawing.Point(13, 180);
             grpArchitecture.Name = "grpArchitecture";
             grpArchitecture.Padding = new System.Windows.Forms.Padding(10);
@@ -246,11 +255,23 @@ namespace GeneratorCode.Forms
             grpArchitecture.TabStop = false;
             grpArchitecture.Text = "🏛️ طبقات النمط المعماري";
             // 
+            // chkInfrastructureLayer
+            // 
+            chkInfrastructureLayer.AutoSize = true;
+            chkInfrastructureLayer.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
+            chkInfrastructureLayer.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
+            chkInfrastructureLayer.Location = new System.Drawing.Point(873, 88);
+            chkInfrastructureLayer.Name = "chkInfrastructureLayer";
+            chkInfrastructureLayer.Size = new System.Drawing.Size(280, 24);
+            chkInfrastructureLayer.TabIndex = 1;
+            chkInfrastructureLayer.Text = "طبقة البنية التحتية  Infrastructure Layer";
+            chkInfrastructureLayer.UseVisualStyleBackColor = true;
+            // 
             // chkApplicationLayer
             // 
             chkApplicationLayer.AutoSize = true;
-            chkApplicationLayer.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            chkApplicationLayer.ForeColor = System.Drawing.Color.Black;
+            chkApplicationLayer.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
+            chkApplicationLayer.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkApplicationLayer.Location = new System.Drawing.Point(912, 36);
             chkApplicationLayer.Name = "chkApplicationLayer";
             chkApplicationLayer.Size = new System.Drawing.Size(241, 24);
@@ -261,8 +282,8 @@ namespace GeneratorCode.Forms
             // chkDomainLayer
             // 
             chkDomainLayer.AutoSize = true;
-            chkDomainLayer.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            chkDomainLayer.ForeColor = System.Drawing.Color.Black;
+            chkDomainLayer.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
+            chkDomainLayer.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkDomainLayer.Location = new System.Drawing.Point(939, 62);
             chkDomainLayer.Name = "chkDomainLayer";
             chkDomainLayer.Size = new System.Drawing.Size(214, 24);
@@ -273,8 +294,8 @@ namespace GeneratorCode.Forms
             // chkPresentationLayer
             // 
             chkPresentationLayer.AutoSize = true;
-            chkPresentationLayer.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            chkPresentationLayer.ForeColor = System.Drawing.Color.Black;
+            chkPresentationLayer.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
+            chkPresentationLayer.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkPresentationLayer.Location = new System.Drawing.Point(972, 114);
             chkPresentationLayer.Name = "chkPresentationLayer";
             chkPresentationLayer.Size = new System.Drawing.Size(181, 24);
@@ -285,8 +306,7 @@ namespace GeneratorCode.Forms
             // lblArchitecturePattern
             // 
             lblArchitecturePattern.AutoSize = true;
-            lblArchitecturePattern.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            lblArchitecturePattern.ForeColor = System.Drawing.Color.DarkBlue;
+            lblArchitecturePattern.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontBold;
             lblArchitecturePattern.Location = new System.Drawing.Point(1051, 13);
             lblArchitecturePattern.Name = "lblArchitecturePattern";
             lblArchitecturePattern.Size = new System.Drawing.Size(123, 23);
@@ -296,18 +316,19 @@ namespace GeneratorCode.Forms
             // cmbArchitecture
             // 
             cmbArchitecture.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            cmbArchitecture.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            cmbArchitecture.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFont;
             cmbArchitecture.FormattingEnabled = true;
             cmbArchitecture.Location = new System.Drawing.Point(779, 45);
             cmbArchitecture.Name = "cmbArchitecture";
             cmbArchitecture.Size = new System.Drawing.Size(400, 31);
             cmbArchitecture.TabIndex = 1;
+            cmbArchitecture.SelectedIndexChanged += CmbArchitecture_SelectedIndexChanged;
+            
             // 
             // lblProgrammingLanguage
             // 
             lblProgrammingLanguage.AutoSize = true;
-            lblProgrammingLanguage.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            lblProgrammingLanguage.ForeColor = System.Drawing.Color.DarkBlue;
+            lblProgrammingLanguage.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontBold;
             lblProgrammingLanguage.Location = new System.Drawing.Point(1045, 95);
             lblProgrammingLanguage.Name = "lblProgrammingLanguage";
             lblProgrammingLanguage.Size = new System.Drawing.Size(96, 23);
@@ -317,7 +338,7 @@ namespace GeneratorCode.Forms
             // cmbLanguage
             // 
             cmbLanguage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            cmbLanguage.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            cmbLanguage.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFont;
             cmbLanguage.FormattingEnabled = true;
             cmbLanguage.Location = new System.Drawing.Point(779, 127);
             cmbLanguage.Name = "cmbLanguage";
@@ -348,8 +369,7 @@ namespace GeneratorCode.Forms
             grpCodeGeneration.Controls.Add(chkValidation);
             grpCodeGeneration.Controls.Add(chkSwagger);
             grpCodeGeneration.Controls.Add(chkDependencyInjection);
-            grpCodeGeneration.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            grpCodeGeneration.ForeColor = System.Drawing.Color.DarkBlue;
+            grpCodeGeneration.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontBold;
             grpCodeGeneration.Location = new System.Drawing.Point(570, 13);
             grpCodeGeneration.Name = "grpCodeGeneration";
             grpCodeGeneration.Padding = new System.Windows.Forms.Padding(10);
@@ -362,8 +382,8 @@ namespace GeneratorCode.Forms
             // chkEntities
             // 
             chkEntities.AutoSize = true;
-            chkEntities.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            chkEntities.ForeColor = System.Drawing.Color.Black;
+            chkEntities.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
+            chkEntities.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkEntities.Location = new System.Drawing.Point(503, 39);
             chkEntities.Name = "chkEntities";
             chkEntities.Size = new System.Drawing.Size(80, 24);
@@ -374,8 +394,8 @@ namespace GeneratorCode.Forms
             // chkDTOs
             // 
             chkDTOs.AutoSize = true;
-            chkDTOs.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            chkDTOs.ForeColor = System.Drawing.Color.Black;
+            chkDTOs.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
+            chkDTOs.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkDTOs.Location = new System.Drawing.Point(476, 69);
             chkDTOs.Name = "chkDTOs";
             chkDTOs.Size = new System.Drawing.Size(107, 24);
@@ -386,8 +406,8 @@ namespace GeneratorCode.Forms
             // chkRepositories
             // 
             chkRepositories.AutoSize = true;
-            chkRepositories.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            chkRepositories.ForeColor = System.Drawing.Color.Black;
+            chkRepositories.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
+            chkRepositories.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkRepositories.Location = new System.Drawing.Point(473, 99);
             chkRepositories.Name = "chkRepositories";
             chkRepositories.Size = new System.Drawing.Size(110, 24);
@@ -398,8 +418,8 @@ namespace GeneratorCode.Forms
             // chkServices
             // 
             chkServices.AutoSize = true;
-            chkServices.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            chkServices.ForeColor = System.Drawing.Color.Black;
+            chkServices.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
+            chkServices.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkServices.Location = new System.Drawing.Point(499, 129);
             chkServices.Name = "chkServices";
             chkServices.Size = new System.Drawing.Size(84, 24);
@@ -410,8 +430,8 @@ namespace GeneratorCode.Forms
             // chkControllers
             // 
             chkControllers.AutoSize = true;
-            chkControllers.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            chkControllers.ForeColor = System.Drawing.Color.Black;
+            chkControllers.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
+            chkControllers.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkControllers.Location = new System.Drawing.Point(494, 159);
             chkControllers.Name = "chkControllers";
             chkControllers.Size = new System.Drawing.Size(89, 24);
@@ -422,8 +442,8 @@ namespace GeneratorCode.Forms
             // chkUnitTests
             // 
             chkUnitTests.AutoSize = true;
-            chkUnitTests.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            chkUnitTests.ForeColor = System.Drawing.Color.Black;
+            chkUnitTests.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
+            chkUnitTests.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkUnitTests.Location = new System.Drawing.Point(242, 39);
             chkUnitTests.Name = "chkUnitTests";
             chkUnitTests.Size = new System.Drawing.Size(127, 24);
@@ -434,8 +454,8 @@ namespace GeneratorCode.Forms
             // chkValidation
             // 
             chkValidation.AutoSize = true;
-            chkValidation.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            chkValidation.ForeColor = System.Drawing.Color.Black;
+            chkValidation.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
+            chkValidation.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkValidation.Location = new System.Drawing.Point(296, 69);
             chkValidation.Name = "chkValidation";
             chkValidation.Size = new System.Drawing.Size(73, 24);
@@ -446,8 +466,8 @@ namespace GeneratorCode.Forms
             // chkSwagger
             // 
             chkSwagger.AutoSize = true;
-            chkSwagger.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            chkSwagger.ForeColor = System.Drawing.Color.Black;
+            chkSwagger.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
+            chkSwagger.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkSwagger.Location = new System.Drawing.Point(206, 99);
             chkSwagger.Name = "chkSwagger";
             chkSwagger.Size = new System.Drawing.Size(163, 24);
@@ -458,8 +478,8 @@ namespace GeneratorCode.Forms
             // chkDependencyInjection
             // 
             chkDependencyInjection.AutoSize = true;
-            chkDependencyInjection.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            chkDependencyInjection.ForeColor = System.Drawing.Color.Black;
+            chkDependencyInjection.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
+            chkDependencyInjection.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkDependencyInjection.Location = new System.Drawing.Point(256, 129);
             chkDependencyInjection.Name = "chkDependencyInjection";
             chkDependencyInjection.Size = new System.Drawing.Size(113, 24);
@@ -473,13 +493,12 @@ namespace GeneratorCode.Forms
             grpCrudOperations.Controls.Add(chkGenerateRead);
             grpCrudOperations.Controls.Add(chkGenerateUpdate);
             grpCrudOperations.Controls.Add(chkGenerateDelete);
-            grpCrudOperations.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            grpCrudOperations.ForeColor = System.Drawing.Color.DarkGreen;
-            grpCrudOperations.Location = new System.Drawing.Point(609, 13);
+            grpCrudOperations.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontBold;
+            grpCrudOperations.Location = new System.Drawing.Point(570, 225);
             grpCrudOperations.Name = "grpCrudOperations";
             grpCrudOperations.Padding = new System.Windows.Forms.Padding(10);
             grpCrudOperations.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            grpCrudOperations.Size = new System.Drawing.Size(570, 180);
+            grpCrudOperations.Size = new System.Drawing.Size(609, 180);
             grpCrudOperations.TabIndex = 1;
             grpCrudOperations.TabStop = false;
             grpCrudOperations.Text = "📝 عمليات CRUD";
@@ -487,8 +506,8 @@ namespace GeneratorCode.Forms
             // chkGenerateCreate
             // 
             chkGenerateCreate.AutoSize = true;
-            chkGenerateCreate.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            chkGenerateCreate.ForeColor = System.Drawing.Color.Black;
+            chkGenerateCreate.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
+            chkGenerateCreate.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkGenerateCreate.Location = new System.Drawing.Point(13, 35);
             chkGenerateCreate.Name = "chkGenerateCreate";
             chkGenerateCreate.Size = new System.Drawing.Size(120, 24);
@@ -499,8 +518,8 @@ namespace GeneratorCode.Forms
             // chkGenerateRead
             // 
             chkGenerateRead.AutoSize = true;
-            chkGenerateRead.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            chkGenerateRead.ForeColor = System.Drawing.Color.Black;
+            chkGenerateRead.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
+            chkGenerateRead.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkGenerateRead.Location = new System.Drawing.Point(13, 65);
             chkGenerateRead.Name = "chkGenerateRead";
             chkGenerateRead.Size = new System.Drawing.Size(110, 24);
@@ -511,8 +530,8 @@ namespace GeneratorCode.Forms
             // chkGenerateUpdate
             // 
             chkGenerateUpdate.AutoSize = true;
-            chkGenerateUpdate.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            chkGenerateUpdate.ForeColor = System.Drawing.Color.Black;
+            chkGenerateUpdate.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
+            chkGenerateUpdate.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkGenerateUpdate.Location = new System.Drawing.Point(13, 95);
             chkGenerateUpdate.Name = "chkGenerateUpdate";
             chkGenerateUpdate.Size = new System.Drawing.Size(135, 24);
@@ -523,8 +542,8 @@ namespace GeneratorCode.Forms
             // chkGenerateDelete
             // 
             chkGenerateDelete.AutoSize = true;
-            chkGenerateDelete.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            chkGenerateDelete.ForeColor = System.Drawing.Color.Black;
+            chkGenerateDelete.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
+            chkGenerateDelete.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkGenerateDelete.Location = new System.Drawing.Point(13, 125);
             chkGenerateDelete.Name = "chkGenerateDelete";
             chkGenerateDelete.Size = new System.Drawing.Size(121, 24);
@@ -539,8 +558,7 @@ namespace GeneratorCode.Forms
             grpProjectStructure.Controls.Add(chkGenerateGitignore);
             grpProjectStructure.Controls.Add(chkGenerateReadme);
             grpProjectStructure.Controls.Add(chkGenerateSolution);
-            grpProjectStructure.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            grpProjectStructure.ForeColor = System.Drawing.Color.DarkOrange;
+            grpProjectStructure.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontBold;
             grpProjectStructure.Location = new System.Drawing.Point(570, 240);
             grpProjectStructure.Name = "grpProjectStructure";
             grpProjectStructure.Padding = new System.Windows.Forms.Padding(10);
@@ -553,8 +571,8 @@ namespace GeneratorCode.Forms
             // chkGenerateStartup
             // 
             chkGenerateStartup.AutoSize = true;
-            chkGenerateStartup.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            chkGenerateStartup.ForeColor = System.Drawing.Color.Black;
+            chkGenerateStartup.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
+            chkGenerateStartup.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkGenerateStartup.Location = new System.Drawing.Point(471, 40);
             chkGenerateStartup.Name = "chkGenerateStartup";
             chkGenerateStartup.Size = new System.Drawing.Size(112, 24);
@@ -565,8 +583,8 @@ namespace GeneratorCode.Forms
             // chkGenerateProgram
             // 
             chkGenerateProgram.AutoSize = true;
-            chkGenerateProgram.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            chkGenerateProgram.ForeColor = System.Drawing.Color.Black;
+            chkGenerateProgram.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
+            chkGenerateProgram.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkGenerateProgram.Location = new System.Drawing.Point(462, 70);
             chkGenerateProgram.Name = "chkGenerateProgram";
             chkGenerateProgram.Size = new System.Drawing.Size(121, 24);
@@ -577,8 +595,8 @@ namespace GeneratorCode.Forms
             // chkGenerateGitignore
             // 
             chkGenerateGitignore.AutoSize = true;
-            chkGenerateGitignore.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            chkGenerateGitignore.ForeColor = System.Drawing.Color.Black;
+            chkGenerateGitignore.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
+            chkGenerateGitignore.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkGenerateGitignore.Location = new System.Drawing.Point(455, 100);
             chkGenerateGitignore.Name = "chkGenerateGitignore";
             chkGenerateGitignore.Size = new System.Drawing.Size(128, 24);
@@ -589,8 +607,8 @@ namespace GeneratorCode.Forms
             // chkGenerateReadme
             // 
             chkGenerateReadme.AutoSize = true;
-            chkGenerateReadme.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            chkGenerateReadme.ForeColor = System.Drawing.Color.Black;
+            chkGenerateReadme.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
+            chkGenerateReadme.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkGenerateReadme.Location = new System.Drawing.Point(460, 130);
             chkGenerateReadme.Name = "chkGenerateReadme";
             chkGenerateReadme.Size = new System.Drawing.Size(123, 24);
@@ -601,8 +619,8 @@ namespace GeneratorCode.Forms
             // chkGenerateSolution
             // 
             chkGenerateSolution.AutoSize = true;
-            chkGenerateSolution.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            chkGenerateSolution.ForeColor = System.Drawing.Color.Black;
+            chkGenerateSolution.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontSmall;
+            chkGenerateSolution.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             chkGenerateSolution.Location = new System.Drawing.Point(250, 35);
             chkGenerateSolution.Name = "chkGenerateSolution";
             chkGenerateSolution.Size = new System.Drawing.Size(119, 24);
@@ -630,8 +648,9 @@ namespace GeneratorCode.Forms
             grpProjectSettings.Controls.Add(txtOutputPath);
             grpProjectSettings.Controls.Add(btnBrowse);
             grpProjectSettings.Controls.Add(btnSettings);
-            grpProjectSettings.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            grpProjectSettings.ForeColor = System.Drawing.Color.DarkBlue;
+            grpProjectSettings.Controls.Add(lblTargetFramework);
+            grpProjectSettings.Controls.Add(cmbTargetFramework);
+            grpProjectSettings.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontBold;
             grpProjectSettings.Location = new System.Drawing.Point(13, 13);
             grpProjectSettings.Name = "grpProjectSettings";
             grpProjectSettings.Padding = new System.Windows.Forms.Padding(10);
@@ -644,8 +663,8 @@ namespace GeneratorCode.Forms
             // lblNamespace
             // 
             lblNamespace.AutoSize = true;
-            lblNamespace.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            lblNamespace.ForeColor = System.Drawing.Color.Black;
+            lblNamespace.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFont;
+            lblNamespace.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             lblNamespace.Location = new System.Drawing.Point(948, 33);
             lblNamespace.Name = "lblNamespace";
             lblNamespace.Size = new System.Drawing.Size(205, 23);
@@ -654,7 +673,7 @@ namespace GeneratorCode.Forms
             // 
             // txtNamespace
             // 
-            txtNamespace.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            txtNamespace.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFont;
             txtNamespace.Location = new System.Drawing.Point(297, 59);
             txtNamespace.Name = "txtNamespace";
             txtNamespace.Size = new System.Drawing.Size(856, 30);
@@ -663,8 +682,8 @@ namespace GeneratorCode.Forms
             // lblOutputPath
             // 
             lblOutputPath.AutoSize = true;
-            lblOutputPath.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            lblOutputPath.ForeColor = System.Drawing.Color.Black;
+            lblOutputPath.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFont;
+            lblOutputPath.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             lblOutputPath.Location = new System.Drawing.Point(1055, 109);
             lblOutputPath.Name = "lblOutputPath";
             lblOutputPath.Size = new System.Drawing.Size(97, 23);
@@ -673,7 +692,7 @@ namespace GeneratorCode.Forms
             // 
             // txtOutputPath
             // 
-            txtOutputPath.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            txtOutputPath.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFont;
             txtOutputPath.Location = new System.Drawing.Point(297, 135);
             txtOutputPath.Name = "txtOutputPath";
             txtOutputPath.Size = new System.Drawing.Size(856, 30);
@@ -681,38 +700,55 @@ namespace GeneratorCode.Forms
             // 
             // btnBrowse
             // 
-            btnBrowse.BackColor = System.Drawing.Color.FromArgb(52, 152, 219);
-            btnBrowse.FlatAppearance.BorderSize = 0;
-            btnBrowse.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnBrowse.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            btnBrowse.ForeColor = System.Drawing.Color.White;
+            btnBrowse.BackColor = global::GeneratorCode.Helpers.AppTheme.Primary;
+            btnBrowse.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontBold;
             btnBrowse.Location = new System.Drawing.Point(168, 135);
             btnBrowse.Name = "btnBrowse";
             btnBrowse.Size = new System.Drawing.Size(123, 30);
             btnBrowse.TabIndex = 4;
             btnBrowse.Text = "📁 استعراض";
-            btnBrowse.UseVisualStyleBackColor = false;
+            btnBrowse.Click += BtnBrowse_Click;
             // 
             // btnSettings
             // 
-            btnSettings.BackColor = System.Drawing.Color.FromArgb(155, 89, 182);
-            btnSettings.FlatAppearance.BorderSize = 0;
-            btnSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnSettings.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            btnSettings.ForeColor = System.Drawing.Color.White;
+            btnSettings.BackColor = global::GeneratorCode.Helpers.AppTheme.Purple;
+            btnSettings.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontBold;
             btnSettings.Location = new System.Drawing.Point(24, 135);
             btnSettings.Name = "btnSettings";
             btnSettings.Size = new System.Drawing.Size(138, 30);
             btnSettings.TabIndex = 5;
             btnSettings.Text = "⚙️ إعدادات";
-            btnSettings.UseVisualStyleBackColor = false;
+            btnSettings.Click += BtnSettings_Click;
+            //
+            // lblTargetFramework
+            //
+            lblTargetFramework = new System.Windows.Forms.Label();
+            lblTargetFramework.AutoSize = true;
+            lblTargetFramework.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFont;
+            lblTargetFramework.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
+            lblTargetFramework.Location = new System.Drawing.Point(560, 33);
+            lblTargetFramework.Name = "lblTargetFramework";
+            lblTargetFramework.Size = new System.Drawing.Size(100, 23);
+            lblTargetFramework.TabIndex = 6;
+            lblTargetFramework.Text = "إصدار .NET:";
+            //
+            // cmbTargetFramework
+            //
+            cmbTargetFramework = new System.Windows.Forms.ComboBox();
+            cmbTargetFramework.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFont;
+            cmbTargetFramework.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            cmbTargetFramework.Items.AddRange(new object[] { ".NET 6", ".NET 7", ".NET 8", ".NET 9" });
+            cmbTargetFramework.Location = new System.Drawing.Point(297, 30);
+            cmbTargetFramework.Name = "cmbTargetFramework";
+            cmbTargetFramework.Size = new System.Drawing.Size(250, 31);
+            cmbTargetFramework.TabIndex = 7;
+            cmbTargetFramework.SelectedIndex = 2;
             // 
             // grpDatabaseInfo
             // 
             grpDatabaseInfo.Controls.Add(lblDatabaseType);
             grpDatabaseInfo.Controls.Add(lblConnectionInfo);
-            grpDatabaseInfo.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            grpDatabaseInfo.ForeColor = System.Drawing.Color.DarkGreen;
+            grpDatabaseInfo.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontBold;
             grpDatabaseInfo.Location = new System.Drawing.Point(13, 233);
             grpDatabaseInfo.Name = "grpDatabaseInfo";
             grpDatabaseInfo.Padding = new System.Windows.Forms.Padding(10);
@@ -725,8 +761,8 @@ namespace GeneratorCode.Forms
             // lblDatabaseType
             // 
             lblDatabaseType.AutoSize = true;
-            lblDatabaseType.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            lblDatabaseType.ForeColor = System.Drawing.Color.Black;
+            lblDatabaseType.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFont;
+            lblDatabaseType.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             lblDatabaseType.Location = new System.Drawing.Point(1011, 33);
             lblDatabaseType.Name = "lblDatabaseType";
             lblDatabaseType.Size = new System.Drawing.Size(142, 23);
@@ -736,8 +772,8 @@ namespace GeneratorCode.Forms
             // lblConnectionInfo
             // 
             lblConnectionInfo.AutoSize = true;
-            lblConnectionInfo.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            lblConnectionInfo.ForeColor = System.Drawing.Color.Green;
+            lblConnectionInfo.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFont;
+            lblConnectionInfo.ForeColor = global::GeneratorCode.Helpers.AppTheme.Success;
             lblConnectionInfo.Location = new System.Drawing.Point(1011, 63);
             lblConnectionInfo.Name = "lblConnectionInfo";
             lblConnectionInfo.Size = new System.Drawing.Size(100, 23);
@@ -760,8 +796,8 @@ namespace GeneratorCode.Forms
             // 
             grpActions.Controls.Add(btnPreview);
             grpActions.Controls.Add(btnGenerate);
-            grpActions.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            grpActions.ForeColor = System.Drawing.Color.DarkBlue;
+            grpActions.Controls.Add(btnViewLogs);
+            grpActions.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontBold;
             grpActions.Location = new System.Drawing.Point(13, 13);
             grpActions.Name = "grpActions";
             grpActions.Padding = new System.Windows.Forms.Padding(10);
@@ -773,38 +809,42 @@ namespace GeneratorCode.Forms
             // 
             // btnPreview
             // 
-            btnPreview.BackColor = System.Drawing.Color.FromArgb(52, 152, 219);
-            btnPreview.FlatAppearance.BorderSize = 0;
-            btnPreview.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnPreview.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            btnPreview.ForeColor = System.Drawing.Color.White;
+            btnPreview.BackColor = global::GeneratorCode.Helpers.AppTheme.Primary;
+            btnPreview.Font = global::GeneratorCode.Helpers.AppTheme.HeaderFont;
             btnPreview.Location = new System.Drawing.Point(723, 36);
             btnPreview.Name = "btnPreview";
             btnPreview.Size = new System.Drawing.Size(200, 50);
             btnPreview.TabIndex = 0;
             btnPreview.Text = "👁️ معاينة الكود";
-            btnPreview.UseVisualStyleBackColor = false;
+            btnPreview.Click += BtnPreview_Click;
             // 
             // btnGenerate
             // 
-            btnGenerate.BackColor = System.Drawing.Color.FromArgb(46, 204, 113);
-            btnGenerate.FlatAppearance.BorderSize = 0;
-            btnGenerate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnGenerate.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            btnGenerate.ForeColor = System.Drawing.Color.White;
+            btnGenerate.BackColor = global::GeneratorCode.Helpers.AppTheme.Success;
+            btnGenerate.Font = global::GeneratorCode.Helpers.AppTheme.HeaderFont;
             btnGenerate.Location = new System.Drawing.Point(943, 36);
             btnGenerate.Name = "btnGenerate";
             btnGenerate.Size = new System.Drawing.Size(200, 50);
             btnGenerate.TabIndex = 1;
             btnGenerate.Text = "🚀 توليد الكود";
-            btnGenerate.UseVisualStyleBackColor = false;
+            btnGenerate.Click += BtnGenerate_Click;
+            // 
+            // btnViewLogs
+            // 
+            btnViewLogs.BackColor = global::GeneratorCode.Helpers.AppTheme.Purple;
+            btnViewLogs.Font = global::GeneratorCode.Helpers.AppTheme.HeaderFont;
+            btnViewLogs.Location = new System.Drawing.Point(503, 36);
+            btnViewLogs.Name = "btnViewLogs";
+            btnViewLogs.Size = new System.Drawing.Size(200, 50);
+            btnViewLogs.TabIndex = 2;
+            btnViewLogs.Text = "📋 عرض السجلات";
+            btnViewLogs.Click += BtnViewLogs_Click;
             // 
             // grpProgress
             // 
             grpProgress.Controls.Add(progressBar);
             grpProgress.Controls.Add(lblStatus);
-            grpProgress.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            grpProgress.ForeColor = System.Drawing.Color.DarkGreen;
+            grpProgress.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFontBold;
             grpProgress.Location = new System.Drawing.Point(13, 153);
             grpProgress.Name = "grpProgress";
             grpProgress.Padding = new System.Windows.Forms.Padding(10);
@@ -824,34 +864,22 @@ namespace GeneratorCode.Forms
             // lblStatus
             // 
             lblStatus.AutoSize = true;
-            lblStatus.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            lblStatus.ForeColor = System.Drawing.Color.Black;
+            lblStatus.Font = global::GeneratorCode.Helpers.AppTheme.DefaultFont;
+            lblStatus.ForeColor = global::GeneratorCode.Helpers.AppTheme.TextPrimary;
             lblStatus.Location = new System.Drawing.Point(13, 75);
             lblStatus.Name = "lblStatus";
             lblStatus.Size = new System.Drawing.Size(42, 23);
             lblStatus.TabIndex = 1;
             lblStatus.Text = "جاهز";
             // 
-            // chkInfrastructureLayer
-            // 
-            chkInfrastructureLayer.AutoSize = true;
-            chkInfrastructureLayer.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            chkInfrastructureLayer.ForeColor = System.Drawing.Color.Black;
-            chkInfrastructureLayer.Location = new System.Drawing.Point(873, 88);
-            chkInfrastructureLayer.Name = "chkInfrastructureLayer";
-            chkInfrastructureLayer.Size = new System.Drawing.Size(280, 24);
-            chkInfrastructureLayer.TabIndex = 1;
-            chkInfrastructureLayer.Text = "طبقة البنية التحتية  Infrastructure Layer";
-            chkInfrastructureLayer.UseVisualStyleBackColor = true;
-            // 
             // FrmTabls
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(9F, 23F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            BackColor = System.Drawing.Color.FromArgb(248, 249, 250);
+            BackColor = global::GeneratorCode.Helpers.AppTheme.FormBackground;
             ClientSize = new System.Drawing.Size(1200, 800);
             Controls.Add(tabControl);
-            Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            Font = global::GeneratorCode.Helpers.AppTheme.DefaultFont;
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             MaximizeBox = false;
             Name = "FrmTabls";
@@ -948,6 +976,8 @@ namespace GeneratorCode.Forms
         private System.Windows.Forms.TextBox txtOutputPath;
         private System.Windows.Forms.Button btnBrowse;
         private System.Windows.Forms.Button btnSettings;
+        private System.Windows.Forms.Label lblTargetFramework;
+        private System.Windows.Forms.ComboBox cmbTargetFramework;
         private System.Windows.Forms.Label lblDatabaseType;
         private System.Windows.Forms.Label lblConnectionInfo;
         private System.Windows.Forms.Label lblNamespace;
@@ -958,6 +988,7 @@ namespace GeneratorCode.Forms
         private System.Windows.Forms.GroupBox grpProgress;
         private System.Windows.Forms.Button btnGenerate;
         private System.Windows.Forms.Button btnPreview;
+        private System.Windows.Forms.Button btnViewLogs;
         private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.Label lblStatus;
         private System.Windows.Forms.CheckBox chkInfrastructureLayer;
